@@ -1,8 +1,8 @@
-<?php 
-include 'db_connect.php'; 
-if(isset($_GET['id'])){
-	$qry = $conn->query("SELECT * FROM employee where id = ".$_GET['id'])->fetch_array();
-	foreach($qry as $k => $v){
+<?php
+include './config/db_connect.php';
+if (isset($_GET['id'])) {
+	$qry = $conn->query("SELECT * FROM employee where id = " . $_GET['id'])->fetch_array();
+	foreach ($qry as $k => $v) {
 		$$k = $v;
 	}
 }
@@ -17,7 +17,7 @@ if(isset($_GET['id'])){
 		</div>
 		<div class="form-group">
 			<label>Middlename</label>
-			<input type="text" name ="middlename" placeholder="(optional)" class="form-control" value="<?php echo isset($middlename) ? $middlename : "" ?>" />
+			<input type="text" name="middlename" placeholder="(optional)" class="form-control" value="<?php echo isset($middlename) ? $middlename : "" ?>" />
 		</div>
 		<div class="form-group">
 			<label>Lastname:</label>
@@ -27,24 +27,24 @@ if(isset($_GET['id'])){
 			<label>Department</label>
 			<select class="custom-select browser-default select2" name="department_id">
 				<option value=""></option>
-			<?php
-			$dept = $conn->query("SELECT * from department order by name asc");
-			while($row=$dept->fetch_assoc()):
-			?>
-				<option value="<?php echo $row['id'] ?>" <?php echo isset($department_id) && $department_id == $row['id'] ? "selected" :"" ?>><?php echo $row['name'] ?></option>
-			<?php endwhile; ?>
+				<?php
+				$dept = $conn->query("SELECT * from department order by name asc");
+				while ($row = $dept->fetch_assoc()) :
+				?>
+					<option value="<?php echo $row['id'] ?>" <?php echo isset($department_id) && $department_id == $row['id'] ? "selected" : "" ?>><?php echo $row['name'] ?></option>
+				<?php endwhile; ?>
 			</select>
 		</div>
 		<div class="form-group">
 			<label>Position</label>
 			<select class="custom-select browser-default select2" name="position_id">
 				<option value=""></option>
-			<?php
-			$pos = $conn->query("SELECT * from position order by name asc");
-			while($row=$pos->fetch_assoc()):
-			?>
-				<option class="opt" value="<?php echo $row['id'] ?>" data-did="<?php echo $row['department_id'] ?>" <?php echo isset($department_id) && $department_id == $row['department_id'] ? '' :"disabled" ?> <?php echo isset($position_id) && $position_id == $row['id'] ? " selected" : '' ?> ><?php echo $row['name'] ?></option>
-			<?php endwhile; ?>
+				<?php
+				$pos = $conn->query("SELECT * from position order by name asc");
+				while ($row = $pos->fetch_assoc()) :
+				?>
+					<option class="opt" value="<?php echo $row['id'] ?>" data-did="<?php echo $row['department_id'] ?>" <?php echo isset($department_id) && $department_id == $row['department_id'] ? '' : "disabled" ?> <?php echo isset($position_id) && $position_id == $row['id'] ? " selected" : '' ?>><?php echo $row['name'] ?></option>
+				<?php endwhile; ?>
 			</select>
 		</div>
 		<div class="form-group">
@@ -54,37 +54,37 @@ if(isset($_GET['id'])){
 	</form>
 </div>
 <script>
-	$('[name="department_id"]').change(function(){
+	$('[name="department_id"]').change(function() {
 		var did = $(this).val()
-		$('[name="position_id"] .opt').each(function(){
-			if($(this).attr('data-did') == did){
-				$(this).attr('disabled',false)
-			}else{
-				$(this).attr('disabled',true)
+		$('[name="position_id"] .opt').each(function() {
+			if ($(this).attr('data-did') == did) {
+				$(this).attr('disabled', false)
+			} else {
+				$(this).attr('disabled', true)
 			}
 		})
 	})
-	$(document).ready(function(){
+	$(document).ready(function() {
 		$('.select2').select2({
-			placeholder:"Please Select Here",
-			width:"100%"
+			placeholder: "Please Select Here",
+			width: "100%"
 		})
-		$('#employee_frm').submit(function(e){
-				e.preventDefault()
-				start_load();
+		$('#employee_frm').submit(function(e) {
+			e.preventDefault()
+			start_load();
 			$.ajax({
-				url:'ajax.php?action=save_employee',
-				method:"POST",
-				data:$(this).serialize(),
-				error:err=>console.log(),
-				success:function(resp){
-						if(resp == 1){
-							alert_toast("Employee's data successfully saved","success");
-								setTimeout(function(){
-								location.reload();
+				url: './services/ajax.php?action=save_employee',
+				method: "POST",
+				data: $(this).serialize(),
+				error: err => console.log(),
+				success: function(resp) {
+					if (resp == 1) {
+						alert_toast("Employee's data successfully saved", "success");
+						setTimeout(function() {
+							location.reload();
 
-							},1000)
-						}
+						}, 1000)
+					}
 				}
 			})
 		})

@@ -1,4 +1,4 @@
-<?php include 'db_connect.php' ?>
+<?php include './config/db_connect.php' ?>
 
 <?php ?>
 
@@ -10,9 +10,9 @@
 				<label for="" class="control-label">Deduction</label>
 				<select id="deduction_id" class="borwser-default select2">
 					<option value=""></option>
-					<?php 
+					<?php
 					$deduction = $conn->query("SELECT * FROM deductions order by deduction asc");
-					while($row = $deduction->fetch_assoc()):
+					while ($row = $deduction->fetch_assoc()) :
 					?>
 						<option value="<?php echo $row['id'] ?>"><?php echo $row['deduction'] ?></option>
 					<?php endwhile; ?>
@@ -34,12 +34,12 @@
 		<div class="row form-group">
 			<div class="col-md-5">
 				<label for="" class="control-label">Amount</label>
-				<input type="number" id="amount" class="form-control text-right" step="any" >
-			</div>	
+				<input type="number" id="amount" class="form-control text-right" step="any">
+			</div>
 			<div class="col-md-2 offset-md-2">
 				<label for="" class="control-label">&nbsp</label>
 				<button class="btn btn-primary btn-block btn-sm" type="button" id="add_list"> Add to List</button>
-			</div>	
+			</div>
 		</div>
 		<hr>
 		<div class="row">
@@ -59,7 +59,7 @@
 							Date
 						</th>
 						<th class="text-center">
-							
+
 						</th>
 					</tr>
 				</thead>
@@ -96,56 +96,56 @@
 
 <script>
 	$('.select2').select2({
-		placeholder:"Select here",
-		width:"100%"
+		placeholder: "Select here",
+		width: "100%"
 	})
-	$('#type').change(function(){
-		if($(this).val() == 3){
+	$('#type').change(function() {
+		if ($(this).val() == 3) {
 			$('#dfield').show()
-		}else{
+		} else {
 			$('#dfield').hide()
 		}
 	})
-	$('#add_list').click(function(){
+	$('#add_list').click(function() {
 		var deduction_id = $('#deduction_id').val(),
 			type = $('#type').val(),
 			amount = $('#amount').val(),
 			edate = $('#edate').val();
-			console
+		console
 		var tr = $('#tr_clone tr').clone()
 		tr.find('[name="deduction_id[]"]').val(deduction_id)
 		tr.find('[name="type[]"]').val(type)
 		tr.find('[name="effective_date[]"]').val(edate)
 		tr.find('[name="amount[]"]').val(amount)
-		tr.find('.deduction').html($('#deduction_id option[value="'+deduction_id+'"]').html())
-		tr.find('.type').html($('#type option[value="'+type+'"]').html())
+		tr.find('.deduction').html($('#deduction_id option[value="' + deduction_id + '"]').html())
+		tr.find('.type').html($('#type option[value="' + type + '"]').html())
 		tr.find('.amount').html(amount)
 		tr.find('.edate').html(edate)
 		$('#deduction-list tbody').append(tr)
 		$('#deduction_id').val('').select2({
-			placeholder:"Select here",
-			width:"100%"
+			placeholder: "Select here",
+			width: "100%"
 		})
 		$('#type').val('')
 		$('#amount').val('')
 		$('#edate').val('')
 
 	})
-	$(document).ready(function(){
-		$('#employee-deduction').submit(function(e){
-				e.preventDefault()
-				start_load();
+	$(document).ready(function() {
+		$('#employee-deduction').submit(function(e) {
+			e.preventDefault()
+			start_load();
 			$.ajax({
-				url:'ajax.php?action=save_employee_deduction',
-				method:"POST",
-				data:$(this).serialize(),
-				error:err=>console.log(),
-				success:function(resp){
-						if(resp == 1){
-							alert_toast("Employee's data successfully saved","success");
-							end_load()
-							uni_modal("Employee Details",'view_employee.php?id=<?php echo $_GET['id'] ?>','mid-large')
-						}
+				url: './services/ajax.php?action=save_employee_deduction',
+				method: "POST",
+				data: $(this).serialize(),
+				error: err => console.log(),
+				success: function(resp) {
+					if (resp == 1) {
+						alert_toast("Employee's data successfully saved", "success");
+						end_load()
+						uni_modal("Employee Details", 'view_employee.php?id=<?php echo $_GET['id'] ?>', 'mid-large')
+					}
 				}
 			})
 		})
