@@ -12,7 +12,9 @@
         <large><b>Payroll Management System</b></large>
       </div>
       <div class="col-md-2 float-right text-white">
+
         <a href="./services/ajax.php?action=logout" class="text-white"><?php echo $_SESSION['login_name'] ?> <i class="fa fa-power-off"></i></a>
+
       </div>
     </div>
   </div>
