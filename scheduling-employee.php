@@ -26,7 +26,7 @@ $tasks = [
 <div class="row gap-3 w-full mx-auto  ">
     <section class="card h-full p-2  col-8">
         <div class="card-header">
-            <span><b>Scheduling for Aug 3 2023</b></span>
+            <span><b>Scheduling for <?php echo isset($_GET['date']) ? (new DateTime(htmlspecialchars($_GET['date'])))->format("F j, Y") : "" ?></b></span>
             <!-- <button class="btn btn-primary btn-sm btn-block col-md-3 float-right" type="button" id="new_attendance_btn"><span class="fa fa-plus"></span> Add Attendance</button> -->
         </div>
         <div style="height: 75vh;" class="card-body overflow-auto">
@@ -95,77 +95,78 @@ $tasks = [
     }
 </style>
 
-<!-- jqeury -->
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script> -->
 
 <script type="text/javascript">
-    $(document).ready(function() {
-        let isDragInPlace = false; // drag variable for checking drag is in right place
+    // $(document).ready(function() {
+    let isDragInPlace = false; // drag variable for checking drag is in right place
 
-        // drag element function
-        $(".employee").draggable({
-            helper: function() {
-                const helperElement = $(this).clone().appendTo("body");
-                helperElement.css({
-                    "zIndex": 5,
-                    "background-color": "#B4D4FF"
-                });
 
-                // Show the helper element
-                return helperElement.show();
-            },
-            cursor: "move",
-            containment: "document",
-            revert: function(valid) {
-                // if drag in the wrong place the drag cancel
-                if (!valid) {
-                    isDragInPlace = false;
-                    return true
-                }
+    // drag element function
+    $(".employee").draggable({
+        helper: function() {
+            const helperElement = $(this).clone().appendTo("body");
+            helperElement.css({
+                "zIndex": 5,
+                "background-color": "#B4D4FF"
+            });
 
-                // if drag in the right place
-                isDragInPlace = true;
-                return false
-
-            },
-            start: function(event, ui) {
-                $(this).hide();
-            },
-            stop: function(event, ui) {
-
-                // Remove the original element when dragging is in the right place
-                if (isDragInPlace) {
-                    return $(this).remove();
-                }
-                // Show the original element when dragging is in the wrong place
-                return $(this).show();
+            // Show the helper element
+            return helperElement.show();
+        },
+        cursor: "move",
+        containment: "document",
+        revert: function(valid) {
+            // if drag in the wrong place the drag cancel
+            if (!valid) {
+                isDragInPlace = false;
+                return true
             }
-        })
 
+            // if drag in the right place
+            isDragInPlace = true;
+            return false
 
-        // Make .canvas droppable
-        $(".canvas, .canvas *").droppable({
-            accept: ".employee",
-            drop: function(event, ui) {
-                // Create a new element with the desired content
-                const newElement = $("<div>").addClass("bg-lights fw-medium py-1 px-3 rounded shadow border").css({
-                    "width": "max-content",
-                    "font-size": ".8rem ",
-                    "background-color": "#EEF5FF"
-                }).text(ui.helper.find("p").text());
+        },
+        start: function(event, ui) {
+            $(this).hide();
+        },
+        stop: function(event, ui) {
 
-                // Append the new element to the dropped area
-                $(this).append(newElement);
-
-                // Remove the cloned helper elements after dropping
-                $(".ui-draggable-helper").remove();
+            // Remove the original element when dragging is in the right place
+            if (isDragInPlace) {
+                return $(this).remove();
             }
-        }).sortable({
-            placeholder: "sort-placer",
-            cursor: "move",
-            connectWith: ".canvas"
+            // Show the original element when dragging is in the wrong place
+            return $(this).show();
+        }
+    })
 
-        });
+
+    // Make .canvas droppable
+    $(".canvas, .canvas *").droppable({
+        accept: ".employee",
+        drop: function(event, ui) {
+            // Create a new element with the desired content
+            const newElement = $("<div>").addClass("bg-lights fw-medium py-1 px-3 rounded shadow border").css({
+                "width": "max-content",
+                "font-size": ".8rem ",
+                "background-color": "#EEF5FF"
+            }).text(ui.helper.find("p").text());
+
+            // Append the new element to the dropped area
+            $(this).append(newElement);
+
+            // Remove the cloned helper elements after dropping
+            $(".ui-draggable-helper").remove();
+        }
+    }).sortable({
+        placeholder: "sort-placer",
+        cursor: "move",
+        connectWith: ".canvas"
+
     });
+    // });
 </script>
