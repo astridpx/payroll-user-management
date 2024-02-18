@@ -478,4 +478,66 @@ class Action
 			return 1;
 		}
 	}
+
+	function employee_scheduling_drag()
+	{
+		extract($_POST);
+		// Use prepared statements to prevent SQL injection
+		$stmt = $this->db->prepare("INSERT INTO schedule (employee_id, department_id, date) VALUES (?, ?, ?)");
+
+		// Bind parameters
+		$stmt->bind_param("iss", $employee_id, $department_id, $date);
+
+		// Execute the query
+		$success = $stmt->execute();
+
+		// Check for errors and return appropriate response
+		if ($success) {
+			return "Data saved successfully";
+		} else {
+			// Log the error or return a meaningful message
+			return "Error: " . $stmt->error;
+		}
+	}
+	function move_employee_scheduling_drag()
+	{
+		extract($_POST);
+		// Use prepared statements to prevent SQL injection
+		// $stmt = $this->db->prepare("UPDATE schedule (employee_id, department_id) VALUES (?, ?)");
+		$stmt = $this->db->prepare("UPDATE schedule SET department_id = ? WHERE employee_id = ? AND date = ?");
+
+		// Bind parameters
+		$stmt->bind_param("sis", $department_id, $employee_id,  $date);
+
+		// Execute the query
+		$success = $stmt->execute();
+
+		// Check for errors and return appropriate response
+		if ($success) {
+			return "Data updated successfully";
+		} else {
+			// Log the error or return a meaningful message
+			return "Error: " . $stmt->error;
+		}
+	}
+	function remove_employee_schedule()
+	{
+		extract($_POST);
+		// Use prepared statements to prevent SQL injection
+		$stmt = $this->db->prepare("DELETE FROM schedule WHERE department_id = ? AND employee_id = ? AND date = ?");
+
+		// Bind parameters
+		$stmt->bind_param("sis", $department_id, $employee_id,  $date);
+
+		// Execute the query
+		$success = $stmt->execute();
+
+		// Check for errors and return appropriate response
+		if ($success) {
+			return "Employee remove successfully";
+		} else {
+			// Log the error or return a meaningful message
+			return "Error: " . $stmt->error;
+		}
+	}
 }
