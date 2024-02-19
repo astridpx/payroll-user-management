@@ -1,0 +1,54 @@
+body {
+  background-color: #f0f2f5;
+}
+
+@media (min-width: 991.98px) {
+  main {
+    padding-left: 240px;
+  }
+}
+
+/* SIDEBAR DESIGN */
+.sidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  padding: 20px 0 0;
+  box-shadow: 0 2px 5px 0 rgb(0 0 0 / 5%), 0 2px 10px 0 rgb(0 0 0 / 5%);
+  width: 240px;
+  z-index: 600;
+}
+
+/* SIDEBAR SAMPLE RESPONSIVE */
+@media (max-width: 991.98px) {
+  .sidebar {
+    width: 100%;
+  }
+}
+
+.list-group-item.active {
+  background-color: #fedede !important;
+  border: none;
+  color: #b91c1c;
+  border-radius: 6px;
+}
+.list-group-item:hover {
+  background-color: #fedede !important;
+  border: none;
+  color: #b91c1c;
+  border-radius: 6px;
+}
+
+.list-group-item {
+  height: 50px;
+  border: none;
+}
+.sidebar-sticky {
+  position: relative;
+  top: 0;
+  height: calc(100vh - 48px);
+  padding-top: 0.5rem;
+  overflow-x: hidden;
+  overflow-y: auto; /* SCROLLABLE VIEW POINT. */
+}

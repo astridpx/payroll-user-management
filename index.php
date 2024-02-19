@@ -12,6 +12,7 @@
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
 
+
   <title>Admin | Employee's Payroll Management System</title>
 
 
@@ -51,7 +52,9 @@
     <div class="toast-body text-white">
     </div>
   </div>
-  <main id="view-panel">
+
+  <!--i removed the id = "view-panel"-->
+  <main>
     <?php $page = isset($_GET['page']) ? $_GET['page'] : 'home'; ?>
     <?php include $page . '.php' ?>
 
