@@ -146,3 +146,18 @@ if ($action == "calculate_payroll") {
 	if ($save)
 		echo $save;
 }
+if ($action == "drag_employee") {
+	$save = $crud->employee_scheduling_drag();
+	if ($save)
+		echo $save;
+}
+if ($action == "move_employee") {
+	$save = $crud->move_employee_scheduling_drag();
+	if ($save)
+		echo $save;
+}
+if ($action == "remove_employee") {
+	$save = $crud->remove_employee_schedule();
+	if ($save)
+		echo $save;
+}
