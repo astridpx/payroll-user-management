@@ -66,9 +66,9 @@ foreach ($deptArray  as $newEntry) {
 
 ?>
 
-<div class="row gap-3 w-full mx-auto  ">
-    <section class="card h-full p-2  col-8">
-        <div class="card-header">
+<div class="row p-2 gap-3 w-full mx-auto  ">
+    <section class="card h-full p-2 shadow-sm col-8">
+        <div style="background-color: #FFFFFF;" class="card-header ">
             <span><b>Scheduling for <?php echo isset($_GET['date']) ? (new DateTime(htmlspecialchars($_GET['date'])))->format("F j, Y") : "" ?></b></span>
 
             <div class="d-flex align-items-center float-right ">
@@ -120,7 +120,7 @@ foreach ($deptArray  as $newEntry) {
         </div>
     </section>
 
-    <section style="background-color: rgb(241 245 249); " class="col  p-2 rounded">
+    <section style="background-color: #FFFFFF; " class="col  shadow-sm p-2 rounded">
         <header style="background-color: #FEBB0C; color: #2B2A0B;" class=" rounded mb-1 py-2 px-2 d-flex gap-2 align-items-center">
             <i class="fa fa-regular fa-user fs-4"></i>
             <p class="m-0 fs-4 fw-bold">Employee Lists</p>
@@ -130,7 +130,7 @@ foreach ($deptArray  as $newEntry) {
             <?php
             foreach ($empResult as $emp) {
             ?>
-                <div id="<?php echo $emp["id"] ?>" style="background-color: #DEDEDE;color: #334256; cursor:grab; font-family: 'Poppins', sans-serif; border: 1px solid #315994;" class="employee noselect p-2 rounded  d-flex gap-2 align-items-center">
+                <div id="<?php echo $emp["id"] ?>" style="background-color: rgb(241 245 249);color: #334256; cursor:grab; font-family: 'Poppins', sans-serif; border: 1px solid #315994;" class="employee noselect p-2 rounded  d-flex gap-2 align-items-center">
                     <!-- <i class="fa fa-regular fa-user"></i> -->
                     <img src="./assets/img/profile.jpg" alt="profile" height="35" width="35" style="aspect-ratio: 1/1;" class="rounded-circle">
                     <p class="m-0 fs-6 text-capitalize fw-medium"><?php echo "{$emp['firstname']} {$emp['lastname']}" ?></p>
