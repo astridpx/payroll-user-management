@@ -540,4 +540,31 @@ class Action
 			return "Error: " . $stmt->error;
 		}
 	}
+
+	function setScheduleTime()
+	{
+		extract($_POST);
+		// Assuming $Ids is an array of IDs
+
+		// Construct the SQL statement
+		$sql = "UPDATE schedule SET time_start = ?, time_end = ?, isOT = $isOT WHERE ID = ?";
+
+		// Prepare the statement
+		$stmt = $this->db->prepare($sql);
+
+		foreach ($IDs as $id) {
+			$stmt->bind_param("ssi", $time_start, $time_end, $id);
+			// Execute the query
+			$success = $stmt->execute();
+
+			// Check for errors and return appropriate response
+			if (!$success) {
+				// Log the error or return a meaningful message
+				return "Error: " . $stmt->error;
+			}
+		}
+
+		// Return success message after all iterations
+		return "Time set successfully for IDs: " . implode(', ', $IDs) . $isOT;
+	}
 }
