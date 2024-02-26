@@ -144,11 +144,11 @@ class Action
 		$data = " firstname='$firstname' ";
 		$data .= ", middlename='$middlename' ";
 		$data .= ", lastname='$lastname' ";
-		$data .= ", position_id='$position_id' ";
-		$data .= ", department_id='$department_id' ";
-		$data .= ", salary='$salary' ";
+		$data .= ", email='$email' ";
+		$data .= ", status='$status' ";
 
-
+		// if theres is no ID the request will recognized as new employee
+		// otherwise the request will recognized as update employee based on Id passed in
 		if (empty($id)) {
 			$i = 1;
 			while ($i == 1) {
