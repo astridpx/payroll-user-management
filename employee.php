@@ -1,5 +1,54 @@
 <?php include('./config/db_connect.php') ?>
 
+<!-- Modal -->
+<div class="modal fade " id="addEmpModal" tabindex="-1" aria-labelledby="addEmpModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="addEmpModalLabel">New Employee</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="container-fluid ">
+					<div class="row mb-3">
+						<div class="col ">
+							<label for="firstname" style="font-size: 14px;" class="fw-medium">*Firstname</label>
+							<input type="text" id="firstname" class="form-control" placeholder="firstname*" aria-label="firstname*">
+						</div>
+						<div class="col">
+							<label for="middlename" style="font-size: 14px;" class="fw-medium">*Middlename</label>
+							<input type="text" id="middlename" class="form-control" placeholder="middlename*" aria-label="middlename*">
+						</div>
+						<div class="col">
+							<label for="lastname" style="font-size: 14px;" class="fw-medium">*Lastname</label>
+							<input type="text" id="lastname" class="form-control" placeholder="lastname*" aria-label="lastname*">
+						</div>
+					</div>
+					<div class="row">
+						<div class="col ">
+							<label for="email" style="font-size: 14px;" class="fw-medium">*Email</label>
+							<input type="email" id="email" class="form-control" placeholder="email*" aria-label="email*">
+						</div>
+						<div class="col ">
+							<label for="status" style="font-size: 14px;" class="fw-medium">*Job-Type</label>
+							<select id="status" class="form-select" aria-label="Default select example">
+								<option selected value="0" class="fw-semibold">Select a job-type</option>
+								<option value="Parttime">Parttime</option>
+								<option value="Fulltime">Fulltime</option>
+							</select>
+						</div>
+					</div>
+
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+				<button type="button" id="saveEmp" class="btn btn-primary btn-sm">Save Employee</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 <div class="container-fluid ">
 	<div class="col-lg-12">
 
@@ -8,18 +57,18 @@
 		<div class="card">
 			<div class="card-header">
 				<span><b>Employee List</b></span>
-				<button class="btn btn-primary btn-sm btn-block col-md-3 float-right" type="button" id="new_emp_btn"><span class="fa fa-plus"></span> Add Employee</button>
+				<button class="btn btn-primary btn-sm btn-block col-md-3 float-right" data-bs-toggle="modal" data-bs-target="#addEmpModal" type="button" id="addEmpbtn"><span class="fa fa-plus"></span> Add Employee</button>
 			</div>
 			<div class="card-body">
 				<table id="table" class="table table-bordered table-striped">
 					<thead>
 						<tr>
 							<th>Employee No</th>
-							<th>Firstname</th>
+							<th>Fullname</th>
 							<th>Middlename</th>
 							<th>Lastname</th>
-							<th>Department</th>
-							<th>Position</th>
+							<th>Email</th>
+							<th>Status</th>
 							<th>Action</th>
 						</tr>
 					</thead>
@@ -38,17 +87,16 @@
 						$employee_qry = $conn->query("SELECT * FROM employee") or die(mysqli_error($conn));
 						while ($row = $employee_qry->fetch_array()) {
 						?>
-							<tr>
+							<tr class="empRow">
 								<td><?php echo $row['employee_no'] ?></td>
-								<td><?php echo $row['firstname'] ?></td>
-								<td><?php echo $row['middlename'] ?></td>
-								<td><?php echo $row['lastname'] ?></td>
-								<td><?php echo $d_arr[$row['department_id']] ?></td>
-								<td><?php echo $p_arr[$row['position_id']] ?></td>
+								<td data-firstname="<?php echo $row['firstname'] ?>"><?php echo $row['firstname'] ?></td>
+								<td data-middlename="<?php echo $row['middlename'] ?>"><?php echo $row['middlename'] ?></td>
+								<td data-lastname="<?php echo $row['lastname'] ?>"> <?php echo $row['lastname'] ?></td>
+								<td data-email="<?php echo $row['email']  ?>"><?php echo $row['email']  ?></td>
+								<td data-status="<?php echo $row['status'] ?>"><?php echo $row['status'] ?></td>
 								<td>
 									<center>
-										<button class="btn btn-sm btn-outline-primary view_employee" data-id="<?php echo $row['id'] ?>" type="button"><i class="fa fa-eye"></i></button>
-										<button class="btn btn-sm btn-outline-primary edit_employee" data-id="<?php echo $row['id'] ?>" type="button"><i class="fa fa-edit"></i></button>
+										<button class="btn btn-sm btn-outline-primary edit_employee" data-bs-toggle="modal" data-bs-target="#addEmpModal" data-id="<?php echo $row['id'] ?>" type="button"><i class="fa fa-edit"></i></button>
 										<button class="btn btn-sm btn-outline-danger remove_employee" data-id="<?php echo $row['id'] ?>" type="button"><i class="fa fa-trash"></i></button>
 									</center>
 								</td>
@@ -73,45 +121,106 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 
-
-
-
-		$('.edit_employee').click(function() {
-			var $id = $(this).attr('data-id');
-			uni_modal("Edit Employee", "manage_employee.php?id=" + $id)
-
-		});
-		$('.view_employee').click(function() {
-			var $id = $(this).attr('data-id');
-			uni_modal("Employee Details", "view_employee.php?id=" + $id, "mid-large")
-
-		});
-		$('#new_emp_btn').click(function() {
-			uni_modal("New Employee", "manage_employee.php")
-		})
-		$('.remove_employee').click(function() {
-			_conf("Are you sure to delete this employee?", "remove_employee", [$(this).attr('data-id')])
-		})
-	});
-
-	function remove_employee(id) {
-		start_load()
-		$.ajax({
-			url: './services/ajax.php?action=delete_employee',
-			method: "POST",
-			data: {
-				id: id
-			},
-			error: err => console.log(err),
-			success: function(resp) {
-				if (resp == 1) {
-					alert_toast("Employee's data successfully deleted", "success");
-					setTimeout(function() {
-						location.reload();
-
-					}, 1000)
+		$('.remove_employee').on("click", function() {
+			Swal.fire({
+				title: "Are you sure?",
+				text: "You won't be able to revert this!",
+				icon: "warning",
+				showCancelButton: true,
+				confirmButtonColor: "#3085d6",
+				cancelButtonColor: "#d33",
+				confirmButtonText: "Yes, delete it!"
+			}).then((result) => {
+				if (result.isConfirmed) {
+					remove_employee($(this).attr('data-id'))
 				}
-			}
+			})
 		})
-	}
+
+		const newEmpData = {
+			isNew: true,
+			id: null,
+			firstname: "",
+			middlename: "",
+			lastname: "",
+			email: "",
+			status: "",
+		}
+
+		$("#saveEmp").on("click", async function() {
+			newEmpData.firstname = $("#firstname").val();
+			newEmpData.lastname = $("#lastname").val();
+			newEmpData.middlename = $("#middlename").val();
+			newEmpData.email = $("#email").val();
+			newEmpData.status = $("#status").val();
+
+			if (newEmpData.isNew)
+				newEmpData.id = null
+
+			await add_employee_req(newEmpData)
+
+		})
+
+		function add_employee_req(data) {
+			start_load()
+			$.ajax({
+				url: './services/ajax.php?action=save_employee',
+				method: "POST",
+				data: newEmpData,
+				error: err => console.log(err),
+				success: function(resp) {
+					if (resp == 1) {
+						alert_toast("New Employee successfully save", "success");
+						setTimeout(function() {
+							location.reload();
+						}, 1000)
+					}
+				}
+			})
+		}
+
+		$(".edit_employee").on("click", function() {
+			newEmpData.isNew = false
+
+			// Get data from the clicked row
+			var row = $(this).closest("tr");
+			var firstname = row.find("td:eq(1)").data("firstname");
+			var middlename = row.find("td:eq(2)").data("middlename");
+			var lastname = row.find("td:eq(3)").data("lastname");
+			var email = row.find("td:eq(4)").data("email");
+			var status = row.find("td:eq(5)").data("status");
+			var employeeId = $(this).data("id");
+			newEmpData.id = employeeId
+
+			// Use the data to populate the form fields or perform other actions
+			// For example, you can update the modal fields if using a modal for editing
+			$("#addEmpModal #firstname").val(firstname);
+			$("#addEmpModal #middlename").val(middlename);
+			$("#addEmpModal #lastname").val(lastname);
+			$("#addEmpModal #email").val(email);
+			$("#addEmpModal #status").val(status);
+		});
+
+
+
+		function remove_employee(id) {
+			start_load()
+			$.ajax({
+				url: './services/ajax.php?action=delete_employee',
+				method: "POST",
+				data: {
+					id: id
+				},
+				error: err => console.log(err),
+				success: function(resp) {
+					if (resp == 1) {
+						alert_toast("Employee's data successfully deleted", "success");
+						setTimeout(function() {
+							location.reload();
+						}, 1000)
+					}
+				}
+			})
+		}
+	});
 </script>
