@@ -161,3 +161,8 @@ if ($action == "remove_employee") {
 	if ($save)
 		echo $save;
 }
+if ($action == "set_employee_time") {
+	$save = $crud->setScheduleTime();
+	if ($save)
+		echo $save;
+}

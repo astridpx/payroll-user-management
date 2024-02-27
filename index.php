@@ -149,6 +149,9 @@
       focus: true
     })
   }
+
+
+  // TOAST MESSAGE UNIVERSAL
   window.alert_toast = function($msg = 'TEST', $bg = 'success') {
     $('#alert_toast').removeClass('bg-success')
     $('#alert_toast').removeClass('bg-danger')

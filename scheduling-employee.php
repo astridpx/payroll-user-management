@@ -16,7 +16,9 @@ $empResult = $emp->fetch_all(MYSQLI_ASSOC);
 
 
 // FETCH SCHED WITH DEPARTMENT AND EMPLOYEE NAME
-$sched = $conn->query("SELECT  s.*, d.name AS department, d.id AS departmentID, s.ID AS sched_ID, CONCAT(e.firstname,' ',e.lastname) AS fullname FROM department d lEFT JOIN schedule s ON d.id = s.department_id AND s.date = '$date' LEFT JOIN employee e ON s.employee_id = e.id  ORDER BY departmentID ASC;");
+$sched = $conn->query("SELECT  s.*, CASE
+WHEN  LENGTH(s.time_start) = 0 OR  LENGTH(s.time_end) = 0  THEN  CONCAT(s.time_start,'',s.time_end) 
+WHEN LENGTH(s.time_start) != 0 AND  LENGTH(s.time_end) != 0 THEN CONCAT(s.time_start,'-',s.time_end)  END AS time, d.name AS department, d.id AS departmentID, s.ID AS sched_ID, CONCAT(e.firstname,' ',e.lastname) AS fullname FROM department d lEFT JOIN schedule s ON d.id = s.department_id AND s.date = '$date' LEFT JOIN employee e ON s.employee_id = e.id  ORDER BY departmentID ASC;");
 $deptArray = $sched->fetch_all(MYSQLI_ASSOC);
 
 
@@ -35,7 +37,9 @@ foreach ($deptArray  as $newEntry) {
             // id dep_id found insert this on the employee
             $data["employee"][] = [
                 "fullname" => $newEntry["fullname"],
-                "emp_id" => $newEntry['employee_ID']
+                "emp_id" => $newEntry['employee_ID'],
+                "sid" => $newEntry["ID"],
+                "time" => $newEntry["time"],
             ];
             $data["employee"] = array_values($data["employee"]); // Reindex the array
 
@@ -52,7 +56,9 @@ foreach ($deptArray  as $newEntry) {
             "employee" => [
                 [
                     "fullname" => $newEntry["fullname"],
-                    "emp_id" => $newEntry['employee_ID']
+                    "emp_id" => $newEntry['employee_ID'],
+                    "sid" => $newEntry["ID"],
+                    "time" => $newEntry["time"],
                 ]
             ]
         ];
@@ -66,19 +72,48 @@ foreach ($deptArray  as $newEntry) {
 
 ?>
 
+<div class="modal fade" id="timeModal" tabindex="-1" aria-labelledby="timeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <form class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="timeModalLabel">Set Time Schedule</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex">
+                    <div class="d-flex flex-column">
+                        <label for="time_start" class="col-form-label mb-1">Start:</label>
+                        <label for="time_end" class=" col-form-label mb-1">Out:</label>
+                        <label for="recipient-name" class=" col-form-label">Status:</label>
+                    </div>
+                    <div class="col">
+                        <input type="time" class="form-control mb-2" required id="time_start">
+                        <input type="time" class="form-control mb-2" required id="time_end">
+                        <p class="mt-2" id="statusTime"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary btn-sm" id="saveTime">Set Time</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <div class="row p-2 gap-3 w-full mx-auto  ">
     <section class="card h-full p-2 shadow-sm col-8">
         <div style="background-color: #FFFFFF;" class="card-header ">
             <span><b>Scheduling for <?php echo isset($_GET['date']) ? (new DateTime(htmlspecialchars($_GET['date'])))->format("F j, Y") : "" ?></b></span>
 
-            <div class="d-flex align-items-center float-right ">
+            <!-- <div class="d-flex align-items-center float-right ">
                 <button style="background-color: #315994;" class="fw-medium btn btn-sm text-light d-flex mr-1 " type="button" id="normalBtn">
                     <i class="bi bi-cursor mr-1"></i> Cursor</button>
                 <button style="background-color: #D61A42;" class="fw-medium btn btn-sm text-light d-flex  " type="button" id="disposeBtn">
                     <i class="bi bi-trash3 mr-1"></i> Dispose</button>
-            </div>
+            </div> -->
         </div>
-        <div style="height: 75vh;" class="card-body overflow-auto">
+        <div style="height: 68vh;" class="card-body overflow-auto">
             <table id="table" class="table table-bordered ">
                 <colgroup>
                     <col width="20%">
@@ -86,7 +121,7 @@ foreach ($deptArray  as $newEntry) {
                 </colgroup>
                 <thead>
                     <tr>
-                        <th>Task</th>
+                        <th>Station</th>
                         <th>Assigned</th>
                     </tr>
                 </thead>
@@ -98,13 +133,14 @@ foreach ($deptArray  as $newEntry) {
                         <tr>
                             <td class="fs-6 fw-semibold "><?php echo $sched["dep_name"]; ?>
                             </td>
-                            <td id="<?php echo $sched["dep_id"] ?>" style="max-height: 5rem; min-height: 4rem;" class="canvas d-flex flex-wrap gap-2 ">
+                            <td id="<?php echo $sched["dep_id"] ?>" style="max-height: max-content; min-height: 4rem;" class="canvas d-flex flex-wrap gap-2 ">
                                 <?php
                                 foreach ($sched["employee"]  as $emp) {
                                     if ($emp["emp_id"] !== null) {
                                 ?>
-                                        <div id="<?php echo $emp["emp_id"] ?>" style="height: max-content; width: max-content; font-size: .8rem;background-color: #EEF5FF" class="employee_sched bg-lights fw-medium py-1 px-3 rounded shadow border">
-                                            <?php echo $emp['fullname'] ?>
+                                        <div id="<?php echo $emp["emp_id"] ?>" data-value="<?php echo $emp["sid"] ?>" style="height: max-content; width: max-content; font-size: .8rem;background-color: #EEF5FF" class="employee_sched  fw-medium py-1 px-3 rounded shadow border">
+                                            <?php echo $emp['fullname'] ?> <?php echo isset($emp['time']) ? $emp['time'] : ""; ?>
+
                                         </div>
                                 <?php
                                     }
@@ -117,6 +153,24 @@ foreach ($deptArray  as $newEntry) {
                     ?>
                 </tbody>
             </table>
+        </div>
+
+        <div class="d-flex align-items-center justify-content-end p-4 float-right ">
+            <button style="background-color: #FEBB0C;" class="fw-medium btn btn-sm text-light d-flex mr-1 " data-bs-toggle="modal" data-bs-target="#timeModal" type="button" id="saBtn">
+                <i class="bi bi-clock-history mr-1"></i> Time
+            </button>
+
+            <button class="bg-success fw-medium btn btn-sm text-light d-flex mr-1 " type="button" id="selectBtn">
+                <i class="bi bi-person-plus mr-1"></i> Select
+            </button>
+
+            <button style="background-color: #315994;" class="fw-medium btn btn-sm text-light d-flex mr-1 " type="button" id="normalBtn">
+                <i class="bi bi-cursor mr-1"></i> Cursor
+            </button>
+
+            <button style="background-color: #D61A42;" class="fw-medium btn btn-sm text-light d-flex  " type="button" id="disposeBtn">
+                <i class="bi bi-trash3 mr-1"></i> Dispose
+            </button>
         </div>
     </section>
 
@@ -156,15 +210,26 @@ foreach ($deptArray  as $newEntry) {
         cursor: url('./assets/img/trash.svg'), auto !important;
         /* cursor: not-allowed !important; */
     }
+
+    .add-cursor {
+        cursor: url('./assets/img/add.svg'), auto !important;
+        /* cursor: not-allowed !important; */
+    }
 </style>
 
 
-<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script> -->
 
 <script type="text/javascript">
     let isDragInPlace = false; // drag variable for checking drag is in right place
     let isAllowRemoveEmployee = false;
+    let isSelectEmployee = false
+    const selectedEmp = {
+        IDs: [],
+        time_start: "",
+        time_end: "",
+        isOT: false
+    };
+
 
     // GET URL PARAMS DATE
     const urlParams = new URLSearchParams(window.location.search);
@@ -174,15 +239,119 @@ foreach ($deptArray  as $newEntry) {
     // BTN FUNCTION
     $("#disposeBtn").on("click", () => {
         isAllowRemoveEmployee = true;
+        isSelectEmployee = false;
 
+        $(".canvas").removeClass("add-cursor")
         $(".canvas").addClass("spatula-cursor")
     })
+    // reset the curson to normal
     $("#normalBtn").on("click", () => {
+        isAllowRemoveEmployee = false;
+        isSelectEmployee = false;
+
+        $(".canvas").removeClass("spatula-cursor")
+        $(".canvas").removeClass("add-cursor")
+    })
+    // select employee cursor
+    $("#selectBtn").on("click", () => {
+        isSelectEmployee = true;
         isAllowRemoveEmployee = false;
 
         $(".canvas").removeClass("spatula-cursor")
+        $(".canvas").addClass("add-cursor")
     })
 
+    // Highlight selected employee
+    $(".employee_sched").on("click", function() {
+        if (isSelectEmployee) {
+            const $this = $(this);
+
+            // Check if the element has the class "bg-success"
+            const hasBgSuccessClass = $this.hasClass("bg-success");
+
+            if (hasBgSuccessClass) {
+                // If it has the class, remove it
+                $this.removeClass("bg-success").css({
+                    "color": "#2C2D2F"
+                });
+
+                // Remove the data-value from selectedEmp.IDs
+                const valueToRemove = $this.attr("data-value");
+                selectedEmp.IDs = selectedEmp.IDs.filter(value => value !== valueToRemove);
+            } else {
+                // If it doesn't have the class, add it
+                $this.addClass("bg-success").css({
+                    "color": "#fff"
+                });
+
+                // Add the data-value to selectedEmp.IDs
+                selectedEmp.IDs.push($this.attr("data-value"));
+            }
+        }
+    });
+
+
+    $("#time_end").on("change", function() {
+        const startTime = $("#time_start").val();
+        const endTime = $(this).val();
+
+        // Calculate the time difference in milliseconds
+        const timeDifference = OT_Calculator(startTime, endTime);
+
+        // Convert the time difference to hours
+        const hoursDifference = timeDifference / (1000 * 60 * 60);
+
+        $("#statusTime").text(hoursDifference > 8 ? "Overtime" : "Normal Time")
+        // set isOT true or false
+        selectedEmp.isOT = hoursDifference > 8 ? true : false
+    })
+
+    $("#saveTime").on("click", async function(e) {
+        e.preventDefault()
+
+        selectedEmp.time_start = formatTime($("#time_start").val());
+        selectedEmp.time_end = formatTime($("#time_end").val());
+
+        function formatTime(timeString) {
+            const date = new Date();
+            const [hours, minutes] = timeString.split(':');
+            date.setHours(hours);
+            date.setMinutes(minutes);
+
+            return date.toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        await $.ajax({
+            url: './services/ajax.php?action=set_employee_time',
+            method: 'POST',
+            data: selectedEmp,
+            error: err => {
+                console.log(err)
+            },
+            success: (resp) => {
+                if (resp) {
+                    // alert(resp)
+                    location.reload();
+                    // console.log(resp)
+                }
+            }
+        })
+    })
+
+    // Function to calculate time difference in milliseconds
+    function OT_Calculator(startTime, endTime) {
+        // Parse the time strings into Date objects
+        const startDateTime = new Date("2000-01-01 " + startTime);
+        const endDateTime = new Date("2000-01-01 " + endTime);
+
+        // Calculate the time difference in milliseconds
+        const timeDifference = endDateTime - startDateTime;
+
+        return timeDifference;
+    }
 
 
     const InitialDropReq = async (data) => {
@@ -298,12 +467,13 @@ foreach ($deptArray  as $newEntry) {
     $(".canvas, .canvas *").droppable({
         accept: ".employee",
         drop: async function(event, ui) {
-            const newElement = $("<div>").addClass("employee_sched bg-lights fw-medium py-1 px-3 rounded shadow border").css({
+            const newElement = $("<div>").addClass("employee_sched fw-medium py-1 px-3 rounded shadow border").css({
                 "width": "max-content",
                 "height": "max-content",
                 "font-size": ".8rem ",
                 "background-color": "#EEF5FF"
             }).text(ui.helper.find("p").text());
+
 
             // Set the ID of the new element to the ID of the dropped element
             newElement.attr("id", ui.draggable.attr("id"));

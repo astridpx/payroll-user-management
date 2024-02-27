@@ -144,11 +144,11 @@ class Action
 		$data = " firstname='$firstname' ";
 		$data .= ", middlename='$middlename' ";
 		$data .= ", lastname='$lastname' ";
-		$data .= ", position_id='$position_id' ";
-		$data .= ", department_id='$department_id' ";
-		$data .= ", salary='$salary' ";
+		$data .= ", email='$email' ";
+		$data .= ", status='$status' ";
 
-
+		// if theres is no ID the request will recognized as new employee
+		// otherwise the request will recognized as update employee based on Id passed in
 		if (empty($id)) {
 			$i = 1;
 			while ($i == 1) {
@@ -539,5 +539,32 @@ class Action
 			// Log the error or return a meaningful message
 			return "Error: " . $stmt->error;
 		}
+	}
+
+	function setScheduleTime()
+	{
+		extract($_POST);
+		// Assuming $Ids is an array of IDs
+
+		// Construct the SQL statement
+		$sql = "UPDATE schedule SET time_start = ?, time_end = ?, isOT = $isOT WHERE ID = ?";
+
+		// Prepare the statement
+		$stmt = $this->db->prepare($sql);
+
+		foreach ($IDs as $id) {
+			$stmt->bind_param("ssi", $time_start, $time_end, $id);
+			// Execute the query
+			$success = $stmt->execute();
+
+			// Check for errors and return appropriate response
+			if (!$success) {
+				// Log the error or return a meaningful message
+				return "Error: " . $stmt->error;
+			}
+		}
+
+		// Return success message after all iterations
+		return "Time set successfully for IDs: " . implode(', ', $IDs) . $isOT;
 	}
 }
