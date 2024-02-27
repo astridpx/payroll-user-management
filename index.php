@@ -101,6 +101,8 @@
     </div>
   </div>
 </body>
+
+
 <script>
   window.start_load = function() {
     $('body').prepend('<di id="preloader2"></di>')
