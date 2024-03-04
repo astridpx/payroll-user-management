@@ -60,6 +60,37 @@
 		overflow-y: auto;
 		/* SCROLLABLE VIEW POINT. */
 	}
+
+	.item a .dropdown{
+		position: absolute;
+		right: 0;
+		margin: 20px;
+		transition: 0.3 ease;
+		}
+	.item .sub-menu{
+		box-shadow: 0 2px 5px 0 rgb(0 0 0 / 5%), 0 2px 10px 0 rgb(0 0 0 / 5%);
+		display: none;
+	}
+	.dropdown-container {
+ 		 display: none;
+ 		 /* background-color: #262626; */
+ 		 padding-left: 8px;
+}
+.dropdown-container::after {
+    display: block;
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+}
+.dropdown-container::after {
+    top: auto;
+    bottom: 10px;
+    right: 50%;
+    -webkit-transform: translateX(50%);
+    -ms-transform: translateX(50%);
+    transform: translateX(50%);
+}
 </style>
 
 <!--MAIN NAVIGATION-->
@@ -79,21 +110,35 @@
 			<a href="index.php?page=home" class="list-group-item list-group-item-action py-2 ripple nav-home">
 				<i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Dashboard</span>
 			</a>
-			<a href="index.php?page=attendance" class="list-group-item list-group-item-action py-2 ripple nav-attendance">
+			<!-- <a href="index.php?page=attendance" class="list-group-item list-group-item-action py-2 ripple nav-attendance">
 				<i class="fas fa-clipboard-list fa-fw me-3"></i><span>Attendance</span>
-			</a>
+			</a> -->
 
 			<a href="index.php?page=payroll" class="list-group-item list-group-item-action py-2 ripple nav-payroll"><i class="fas fa-money-check-alt fa-fw me-3"></i><span>Payroll</span></a>
 			<a href="index.php?page=employee" class="list-group-item list-group-item-action py-2 ripple nav-employee"><i class="fas fa-users fa-fw me-3"></i><span>Employee list</span></a>
 			<a href="index.php?page=department" class="list-group-item list-group-item-action py-2 ripple nav-department">
-				<i class="fas fa-building fa-fw me-3"></i><span>Department</span>
+				<i class="fas fa-building fa-fw me-3"></i><span>Station</span>
 			</a>
-			<a href="index.php?page=position" class="list-group-item list-group-item-action py-2 ripple nav-position"><i class="fas fa-briefcase fa-fw me-3"></i><span>Position</span></a>
-			<a href="index.php?page=allowances" class="list-group-item list-group-item-action py-2 ripple nav-allowances"><i class="fas fa-wallet fa-fw me-3"></i><span>Allowance</span></a>
-			<a href="index.php?page=deductions" class="list-group-item list-group-item-action py-2 ripple nav-deductions"><i class="fas fa-file-invoice-dollar fa-fw me-3"></i><span>Deduction</span></a>
+			<!-- <a href="index.php?page=position" class="list-group-item list-group-item-action py-2 ripple nav-position"><i class="fas fa-briefcase fa-fw me-3"></i><span>Position</span></a> -->
+			<!-- <a href="index.php?page=allowances" class="list-group-item list-group-item-action py-2 ripple nav-allowances"><i class="fas fa-wallet fa-fw me-3"></i><span>Allowance</span></a> -->
+			<button class="dropdown-btn list-group-item list-group-item-action">    <i class="fas fa-clipboard-list fa-fw me-3"></i> <span>Opperation</span>
+   				 <i class="fa fa-caret-down"></i>
+ 			 </button>
 
-			<a href="index.php?page=schedule" class="list-group-item list-group-item-action py-2 ripple nav-schedule"><i class="fas fa-calendar-alt fa-fw me-3"></i><span>Schedule</span></a>
-			<a href="index.php?page=user" class="list-group-item list-group-item-action py-2 ripple nav-user"><i class="fas fa-user fa-fw me-3"></i><span>User</span></a>
+			  <div class="dropdown-container">
+			 		 <a href="index.php?page=schedule" class="list-group-item list-group-item-action py-2 ripple nav-schedule"><i class="fas fa-calendar-alt fa-fw me-3"></i><span>Schedule</span></a>
+					<a href="index.php?page=attendance" class="list-group-item list-group-item-action py-2 ripple nav-attendance">
+				     <i class="fas fa-clipboard-list fa-fw me-3"></i><span>Attendance</span></a>
+					
+			 </div>
+
+			
+			
+			
+			<?php if ($_SESSION['login_type'] == 1) : ?>
+			<a href="index.php?page=users" class="list-group-item list-group-item-action py-2 ripple nav-users"><i class='fas fa-user fa-fw me-3'></i><span> Users</span></a>
+
+		<?php endif; ?>
 		</div>
 		</div>
 	</nav>
@@ -112,6 +157,21 @@
 				});
 			});
 		});
+
+		var dropdown = document.getElementsByClassName("dropdown-btn");
+		var i;
+
+		for (i = 0; i < dropdown.length; i++) {
+		dropdown[i].addEventListener("click", function() {
+			this.classList.toggle("active");
+			var dropdownContent = this.nextElementSibling;
+			if (dropdownContent.style.display === "block") {
+			dropdownContent.style.display = "none";
+			} else {
+			dropdownContent.style.display = "block";
+			}
+		});
+		}
 	</script>
 </header>
 
@@ -155,9 +215,9 @@
 
 
 			<!-- AVATARA ICON -->
-			<li class="nav-item dropdown>
-          <a class=" nav-link dropdown-toggle hidden-arrow d-flex align-items-center" href="#" id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-				<img style="color: white" src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img (31).webp" class="rounded-circle" height="22" alt="Avatar" loading="lazy" />
+			<li class="nav-item dropdown">
+				<a class=" nav-link dropdown-toggle hidden-arrow d-flex align-items-center " href="#" id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+					<img style="color: white; aspect-ratio: 1/1;" src="./assets/img/profile.jpg" class="rounded-circle" height="30" width="35" alt="Avatar" loading="lazy" />
 				</a>
 				<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
 					<li>
@@ -183,20 +243,6 @@
 <main style="margin-top: 30px;">
 	<div class="container pt-4"></div>
 </main>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
