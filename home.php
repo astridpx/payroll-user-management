@@ -21,15 +21,19 @@
 		</div>
 	</div>
 
-	<div style="width: 60%; background-color: #fff; position: relative; height:60vh" class="ro mt-3 rounded-2">
-		<canvas id="chart1" class=""></canvas>
-		<!-- <canvas id="chart2" class=""></canvas> -->
+	<div style="column-gap: 8px;" class="d-flex  mt-3 ">
+		<div style="width: 59%; background-color: #fff; position: relative; height:60vh" class="flex-1 rounded-2">
+			<canvas id="chart1" class=""></canvas>
+		</div>
+		<div style=" background-color: #fff; position: relative; height:60vh" class="flex-fill rounded-2">
+			<canvas id="chart2" class=""></canvas>
+		</div>
 	</div>
 
 </div>
 <script>
 	const ctx1 = $('#chart1');
-	// const ctx2 = $('#chart2');
+	const ctx2 = $('#chart2');
 
 	new Chart(ctx1, {
 		type: 'bar',
@@ -60,6 +64,40 @@
 					},
 				},
 			},
+			plugins: {
+				legend: {
+					display: true,
+					labels: {
+						usePointStyle: true,
+						pointStyle: "circle",
+						boxWidth: 8,
+						boxHeight: 8,
+					},
+				},
+				title: {
+					display: true,
+					text: "Total Profit",
+					font: {
+						size: 19,
+					},
+				},
+			}
+
+		},
+	});
+
+	new Chart(ctx2, {
+		type: 'pie',
+		data: {
+			labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+			datasets: [{
+				label: '# of Votes',
+				data: [12, 19, 3, 5, 20, 3],
+				borderWidth: 1,
+			}]
+		},
+		options: {
+			// aspectRatio: 16 / 9,
 			plugins: {
 				legend: {
 					display: true,
