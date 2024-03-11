@@ -26,7 +26,10 @@
       <div class="forms-container">
         <div class="signin-signup">
           <form class="sign-in-form" id="login-form">
-            <h2 class="title">Sign in</h2>
+        
+          <img src="img/1.png" class="image" alt="" style="width: 60%;"/>
+       
+          <br>
           
             <br>
 
@@ -49,7 +52,7 @@
           <div class="content">
             <h3> Jollibee User Management and Payroll System</h3>
           </div>
-          <img src="img/logo.svg" class="image" alt="" style="width: 50%; margin-right: 120px;"/>
+          <img src="img/register.svg" class="image" alt="" style="width: 100%; padding-left: 20%;"/>
         </div>
       
   </body>

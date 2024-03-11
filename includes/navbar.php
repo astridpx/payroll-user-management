@@ -68,7 +68,7 @@
 	<nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
 
 		<a style="margin-left: 10%">
-			<img src="./assets/img/logo.png" alt="System LOGO" width="50%;">
+			<img src="img/1.png"  alt="System LOGO" width="80%;">
 		</a>
 
 		<div class="list-group list-group-flush mx-3 mt-4">
@@ -155,28 +155,40 @@
 
 
 			<!-- AVATARA ICON -->
+
 			<li class="nav-item dropdown">
-				<a class=" nav-link dropdown-toggle hidden-arrow d-flex align-items-center " href="#" id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-					<img style="color: white; aspect-ratio: 1/1;" src="./assets/img/profile.jpg" class="rounded-circle" height="30" width="35" alt="Avatar" loading="lazy" />
-				</a>
-				<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-					<li>
-						<a class="dropdown-item" href="#" style="color: white">My profile</a>
-					</li>
-					<li>
-						<a class="dropdown-item" href="#">Settings</a>
-					</li>
-					<li>
-						<a class="dropdown-item" href="#">Logout</a>
-					</li>
-				</ul>
-			</li>
+    <a class="nav-link dropdown-toggle hidden-arrow d-flex align-items-center" href="#" id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+        <img style="color: white; aspect-ratio: 1/1;" src="./assets/img/profile.jpg" class="rounded-circle" height="30" width="35" alt="Avatar" loading="lazy" />
+    </a>
+    <ul class="dropdown-menu dropdown-menu-start" aria-labelledby="navbarDropdownMenuLink">
+        <li>
+            <a class="dropdown-item" href="#" style="color: white">My profile</a>
+        </li>
+        <li>
+            <a class="dropdown-item" href="#">Settings</a>
+        </li>
+        <li>
+            <a class="dropdown-item" href="#">Logout</a>
+        </li>
+    </ul>
+</li>
+
+
 		</ul>
 	</div>
 
 </nav>
 
 </header>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.2.0/mdb.min.js"></script>
+<script>
+    new mdb.Dropdown(document.getElementById('navbarDropdownMenuLink'));
+</script>
+
 
 
 <!--Main layout-->
