@@ -6,16 +6,16 @@
         <br>
         <div class="card">
             <div class="card-header">
-                <span id="selected_date_display"><b>Select Date</b></span> 
+                <span id="selected_date_display"><b>Select Date</b></span>
 
-                <input  class="btn btn-sm col-md-3 float-right" type="date" id="selected_date" onchange="displaySelectedDate()">
-            
-            <!--    <button class="btn btn-sm col-md-3 float-right" type="button" id="new_attendance_btn" style="background-color: #d04848; color: white; padding: 5px 10px;"><span class="fa fa-plus"></span> Add Attendance</button>
+                <input class="btn btn-sm col-md-3 float-right" type="date" id="selected_date" onchange="displaySelectedDate()">
+
+                <!--    <button class="btn btn-sm col-md-3 float-right" type="button" id="new_attendance_btn" style="background-color: #d04848; color: white; padding: 5px 10px;"><span class="fa fa-plus"></span> Add Attendance</button>
             -->
             </div>
 
 
-       
+
             <div class="card-body">
                 <div class="table-responsive">
                     <table id="table" class="table table-striped table-bordered custom-table">
@@ -40,10 +40,10 @@
                                 <th>Schedule</th>
                                 <th>1st In</th>
                                 <th>1st Out</th>
-                                <th>1st Break</th> 
+                                <th>1st Break</th>
                                 <th>2nd In</th>
                                 <th>2nd Out</th>
-                                <th>2nd Break</th> 
+                                <th>2nd Break</th>
                                 <th>3rd In</th>
                                 <th>3rd Out</th>
                                 <th>Status</th>
@@ -63,35 +63,35 @@
                                 <td><i class="fas fa-minus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span></td>
 
                                 <td>
-  <i class="fas fa-caret-down dropdown-icon" onclick="toggleDropdown(this)"></i>
-  <div class="dropdown-content">
-    <a href="#">30 mins</a>
-    <a href="#">1 hour</a>
-  </div>
-</td>
+                                    <i class="fas fa-caret-down dropdown-icon" onclick="toggleDropdown(this)"></i>
+                                    <div class="dropdown-content">
+                                        <a href="#">30 mins</a>
+                                        <a href="#">1 hour</a>
+                                    </div>
+                                </td>
 
-                                
+
                                 <td><i class="fas fa-plus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span></td>
                                 <td><i class="fas fa-minus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span></td>
 
                                 <td>
-  <i class="fas fa-caret-down dropdown-icon" onclick="toggleDropdown(this)"></i>
-  <div class="dropdown-content">
-    <a href="#">30 mins</a>
-    <a href="#">1 hour</a>
-  </div>
-</td>
-        
+                                    <i class="fas fa-caret-down dropdown-icon" onclick="toggleDropdown(this)"></i>
+                                    <div class="dropdown-content">
+                                        <a href="#">30 mins</a>
+                                        <a href="#">1 hour</a>
+                                    </div>
+                                </td>
+
                                 <td><i class="fas fa-plus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span></td>
                                 <td><i class="fas fa-minus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span></td>
-                           
+
                                 <?php
-                           
+
                                 $current_time_displayed = true;
                                 ?>
-                                <?php if ($current_time_displayed): ?>
+                                <?php if ($current_time_displayed) : ?>
                                     <td><i class="fas fa-circle text-success"></i></td>
-                                <?php else: ?>
+                                <?php else : ?>
                                     <td><i class="fas fa-circle text-danger"></i></td>
                                 <?php endif; ?>
                                 <td></td>
@@ -174,59 +174,56 @@
     .custom-table td {
         border: 1px solid #dee2e6;
 
-        
+
     }
 
 
     /* Style the dropdown button */
-.dropbtn {
-  background-color: #fff;
-  color: #333;
-  border: none;
-  font-size: 16px;
-  cursor: pointer;
-}
+    .dropbtn {
+        background-color: #fff;
+        color: #333;
+        border: none;
+        font-size: 16px;
+        cursor: pointer;
+    }
 
-.dropbtn i {
-  margin-right: 5px;
-}
+    .dropbtn i {
+        margin-right: 5px;
+    }
 
-/* The container <div> - needed to position the dropdown content */
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
+    /* The container <div> - needed to position the dropdown content */
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
 
-/* Dropdown content (hidden by default) */
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #fff;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
-}
+    /* Dropdown content (hidden by default) */
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #fff;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+    }
 
-/* Links inside the dropdown */
-.dropdown-content a {
-  color: #333;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-}
+    /* Links inside the dropdown */
+    .dropdown-content a {
+        color: #333;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
 
-/* Change color of dropdown links on hover */
-.dropdown-content a:hover {
-  background-color: #f1f1f1;
-}
+    /* Change color of dropdown links on hover */
+    .dropdown-content a:hover {
+        background-color: #f1f1f1;
+    }
 
-/* Show the dropdown menu (use JS to add this class to the dropdown content when the user clicks on the button) */
-.show {
-  display: block;
-}
-
-
-    
+    /* Show the dropdown menu (use JS to add this class to the dropdown content when the user clicks on the button) */
+    .show {
+        display: block;
+    }
 </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
@@ -235,24 +232,23 @@
 
 
 <script>
-
-function toggleDropdown(icon) {
-  var dropdownContent = icon.nextElementSibling;
-  dropdownContent.classList.toggle("show");
-}
-
-// Close the dropdown if the user clicks outside of it
-window.onclick = function(event) {
-  if (!event.target.matches('.dropdown-icon')) {
-    var dropdowns = document.getElementsByClassName("dropdown-content");
-    for (var i = 0; i < dropdowns.length; i++) {
-      var openDropdown = dropdowns[i];
-      if (openDropdown.classList.contains('show')) {
-        openDropdown.classList.remove('show');
-      }
+    function toggleDropdown(icon) {
+        var dropdownContent = icon.nextElementSibling;
+        dropdownContent.classList.toggle("show");
     }
-  }
-}
+
+    // Close the dropdown if the user clicks outside of it
+    window.onclick = function(event) {
+        if (!event.target.matches('.dropdown-icon')) {
+            var dropdowns = document.getElementsByClassName("dropdown-content");
+            for (var i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.remove('show');
+                }
+            }
+        }
+    }
 
 
     // CALENDAR FUNCTION
@@ -277,7 +273,11 @@ window.onclick = function(event) {
     function displaySelectedDate() {
         var selectedDate = document.getElementById("selected_date").value;
         var displayElement = document.getElementById("selected_date_display");
-        var formattedDate = new Date(selectedDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        var formattedDate = new Date(selectedDate).toLocaleDateString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+        });
         displayElement.innerHTML = "<b>" + formattedDate + "</b>";
     }
 
@@ -322,17 +322,17 @@ window.onclick = function(event) {
             }).then((result) => {
                 if (result.isConfirmed) {
                     $('#qrScannerModal').modal('hide'); // Close the modal
-              
-                    var currentTime = new Date().toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit', hour12: false});
-                    $('.clicked-cell').find('.current-time').text(currentTime).fadeIn().removeClass('current-time'); 
+
+                    var currentTime = new Date().toLocaleTimeString('en-US', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false
+                    });
+                    $('.clicked-cell').find('.current-time').text(currentTime).fadeIn().removeClass('current-time');
                 }
             });
         }
     });
-
-    
-
-    
 </script>
 
 
@@ -366,7 +366,7 @@ window.onclick = function(event) {
         })
     });
 
-    
+
     function remove_attendance(id) {
         start_load()
         $.ajax({

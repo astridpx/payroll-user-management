@@ -567,4 +567,24 @@ class Action
 		// Return success message after all iterations
 		return "Time set successfully for IDs: " . implode(', ', $IDs) . $isOT;
 	}
+
+	function employee_attendance()
+	{
+		extract($_POST);
+		$stmt = $this->db->prepare("UPDATE attendance SET department_id = ? WHERE employee_id = ? AND date = ?");
+
+		// Bind parameters
+		$stmt->bind_param("sis", $department_id, $employee_id,  $date);
+
+		// Execute the query
+		$success = $stmt->execute();
+
+		// Check for errors and return appropriate response
+		if ($success) {
+			return "Data updated successfully";
+		} else {
+			// Log the error or return a meaningful message
+			return "Error: " . $stmt->error;
+		}
+	}
 }

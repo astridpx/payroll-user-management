@@ -7,7 +7,7 @@
         <div class="card">
             <div class="card-header">
                 <span><b>March 1, 2024</b></span>
-				<button class="btn btn-sm col-md-3 float-right" type="button" id="new_attendance_btn" style="background-color: #d04848; color: white; padding: 5px 10px;"><span class="fa fa-plus"></span> Add Attendance</button>
+                <button class="btn btn-sm col-md-3 float-right" type="button" id="new_attendance_btn" style="background-color: #d04848; color: white; padding: 5px 10px;"><span class="fa fa-plus"></span> Add Attendance</button>
 
 
             </div>
@@ -29,23 +29,23 @@
                             <col width="8%">
                             <col width="8%">
                         </colgroup>
-						<thead>
-    <tr>
-        <th>Name</th>
-        <th>Schedule</th>
-        <th>1st In</th>
-        <th>1st Out</th>
-        <th>1st Break</th> 
-        <th>2nd In</th>
-        <th>2nd Out</th>
-        <th>2nd Break</th> 
-        <th>3rd In</th>
-        <th>3rd Out</th>
-        <th>Status</th>
-        <th>Net</th>
-        <th>Action</th>
-    </tr>
-</thead>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Schedule</th>
+                                <th>1st In</th>
+                                <th>1st Out</th>
+                                <th>1st Break</th>
+                                <th>2nd In</th>
+                                <th>2nd Out</th>
+                                <th>2nd Break</th>
+                                <th>3rd In</th>
+                                <th>3rd Out</th>
+                                <th>Status</th>
+                                <th>Net</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
 
                         <tbody>
                             <?php
@@ -66,51 +66,51 @@
 
 
 
-                        
-							
-    <td><?php echo "Lubuguin"; ?></td>
-	<td><?php echo " 08:00:00"; ?></td>
-
-    <td><i class="fas fa-plus-circle " style="margin-right: 10px;"></i></td>
 
 
+                                <td><?php echo "Lubuguin"; ?></td>
+                                <td><?php echo " 08:00:00"; ?></td>
 
-    <td><i class="fas fa-minus-circle" style="margin-right: 10px;"></i><?php echo "11:00"; ?></td>
-    <td></td> 
+                                <td><i class="fas fa-plus-circle " style="margin-right: 10px;"></i></td>
 
 
 
-    <td><i class="fas fa-plus-circle " style="margin-right: 10px;"></i></td>
+                                <td><i class="fas fa-minus-circle" style="margin-right: 10px;"></i><?php echo "11:00"; ?></td>
+                                <td></td>
+
+
+
+                                <td><i class="fas fa-plus-circle " style="margin-right: 10px;"></i></td>
 
 
 
 
-    
-    <td><i class="fas fa-minus-circle " style="margin-right: 10px;"></i><?php echo "13:00"; ?></td>
-    <td></td> <!-- Breaktime icon -->
-    
-    <td><i class="fas fa-plus-circle " style="margin-right: 10px;"></i></td>
+
+                                <td><i class="fas fa-minus-circle " style="margin-right: 10px;"></i><?php echo "13:00"; ?></td>
+                                <td></td> <!-- Breaktime icon -->
+
+                                <td><i class="fas fa-plus-circle " style="margin-right: 10px;"></i></td>
 
 
-    
-    <td><i class="fas fa-minus-circle " style="margin-right: 10px;"></i><?php echo "18:00 "; ?></td>
-    <td>
-        <?php 
-            $status = "Present"; // Example status pero kung kayang i lagay sa backend G!
-            if ($status == "Present") {
-                echo '<i class="fas fa-circle text-success"></i>'; // Green dot for present
-            } else {
-                echo '<i class="fas fa-circle text-danger"></i>'; // Red dot for absent
-            }
-        ?>
-    </td>
-    <td><?php echo "560"; ?></td>
-    <td>
-        <center>
-            <button class="btn btn-sm btn-outline-danger remove_attendance" data-id="1" type="button"><i class="fa fa-trash"></i></button>
-        </center>
-    </td>
-</tr>
+
+                                <td><i class="fas fa-minus-circle " style="margin-right: 10px;"></i><?php echo "18:00 "; ?></td>
+                                <td>
+                                    <?php
+                                    $status = "Present"; // Example status pero kung kayang i lagay sa backend G!
+                                    if ($status == "Present") {
+                                        echo '<i class="fas fa-circle text-success"></i>'; // Green dot for present
+                                    } else {
+                                        echo '<i class="fas fa-circle text-danger"></i>'; // Red dot for absent
+                                    }
+                                    ?>
+                                </td>
+                                <td><?php echo "560"; ?></td>
+                                <td>
+                                    <center>
+                                        <button class="btn btn-sm btn-outline-danger remove_attendance" data-id="1" type="button"><i class="fa fa-trash"></i></button>
+                                    </center>
+                                </td>
+                                </tr>
 
                             <?php
                             }
@@ -124,7 +124,8 @@
 </div>
 
 <style>
-    th, td {
+    th,
+    td {
         text-align: center;
     }
 
@@ -199,7 +200,7 @@
         })
     });
 
-    
+
     function remove_attendance(id) {
         start_load()
         $.ajax({
@@ -242,5 +243,3 @@
         })
     }
 </script>
-
-
