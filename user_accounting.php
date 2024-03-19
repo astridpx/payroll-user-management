@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <!-- CSS for full calendar -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.css" rel="stylesheet">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+
+
+  <title>Admin | Employee's Payroll Management System</title>
+
+
+  <?php
+  session_start();
+  if (!isset($_SESSION['login_id']))
+    header('location:login.php');
+  include('./includes/header.php');
+  // include('./auth.php'); 
+  ?>
+
+</head>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+  body {
+    background: #80808045;
+    /* font-family: "Poppins", sans-serif !important; */
+    font-family: "Open Sans", sans-serif;
+  }
+
+  .modal-dialog.large {
+    width: 80% !important;
+    max-width: unset;
+  }
+
+  .modal-dialog.mid-large {
+    width: 50% !important;
+    max-width: unset;
+  }
+
+  div#confirm_modal {
+    z-index: 9991;
+  }
+</style>
+
+<body>
+  <?php include './includes/topbar.php' ?>
+  <?php include('./includes/navbar_accounting_user.php');?>
+  <div class="toast" id="alert_toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-body text-white">
+    </div>
+  </div>
+
+  <!--i removed the id = "view-panel"-->
+  <main>
+    <?php $page = isset($_GET['page']) ? $_GET['page'] : 'home'; ?>
+    <?php include $page . '.php' ?>
+
+
+  </main>
+
+  <div id="preloader"></div>
+  <a href="#" class="back-to-top"><i class="icofont-simple-up"></i></a>
+
+  <div class="modal fade" id="confirm_modal" role='dialog'>
+    <div class="modal-dialog modal-md" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Confirmation</h5>
+        </div>
+        <div class="modal-body">
+          <div id="delete_content"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" id='confirm' onclick="">Continue</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="uni_modal" role='dialog'>
+    <div class="modal-dialog modal-md" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"></h5>
+        </div>
+        <div class="modal-body">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" id='submit' onclick="$('#uni_modal form').submit()">Save</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+
+<script>
+  window.start_load = function() {
+    $('body').prepend('<di id="preloader2"></di>')
+  }
+  window.end_load = function() {
+    $('#preloader2').fadeOut('fast', function() {
+      $(this).remove();
+    })
+  }
+
+  window.uni_modal = function($title = '', $url = '', $size = "") {
+    start_load()
+    $.ajax({
+      url: $url,
+      error: err => {
+        console.log()
+        alert("An error occured")
+      },
+      success: function(resp) {
+        if (resp) {
+          $('#uni_modal .modal-title').html($title)
+          $('#uni_modal .modal-body').html(resp)
+          if ($size != '') {
+            $('#uni_modal .modal-dialog').addClass($size)
+          } else {
+            $('#uni_modal .modal-dialog').removeAttr("class").addClass("modal-dialog modal-md")
+          }
+          $('#uni_modal').modal({
+            show: true,
+            backdrop: 'static',
+            keyboard: false,
+            focus: true
+          })
+          end_load()
+        }
+      }
+    })
+  }
+  window._conf = function($msg = '', $func = '', $params = []) {
+    $('#confirm_modal #confirm').attr('onclick', $func + "(" + $params.join(',') + ")")
+    $('#confirm_modal .modal-body').html($msg)
+    $('#confirm_modal').modal({
+      show: true,
+      backdrop: 'static',
+      keyboard: false,
+      focus: true
+    })
+  }
+
+
+  // TOAST MESSAGE UNIVERSAL
+  window.alert_toast = function($msg = 'TEST', $bg = 'success') {
+    $('#alert_toast').removeClass('bg-success')
+    $('#alert_toast').removeClass('bg-danger')
+    $('#alert_toast').removeClass('bg-info')
+    $('#alert_toast').removeClass('bg-warning')
+
+    if ($bg == 'success')
+      $('#alert_toast').addClass('bg-success')
+    if ($bg == 'danger')
+      $('#alert_toast').addClass('bg-danger')
+    if ($bg == 'info')
+      $('#alert_toast').addClass('bg-info')
+    if ($bg == 'warning')
+      $('#alert_toast').addClass('bg-warning')
+    $('#alert_toast .toast-body').html($msg)
+    $('#alert_toast').toast({
+      delay: 3000
+    }).toast('show');
+  }
+  $(document).ready(function() {
+    $('#preloader').fadeOut('fast', function() {
+      $(this).remove();
+    })
+  })
+  $('.datetimepicker').datetimepicker({
+    format: 'Y/m/d H:i',
+    startDate: '+3d'
+  })
+  $('.select2').select2({
+    placeholder: "Please select here",
+    width: "100%"
+  })
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js"></script>
+
+</html>
