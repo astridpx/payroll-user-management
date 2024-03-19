@@ -79,18 +79,18 @@
 			<!-- <a href="index.php?page=home" class="list-group-item list-group-item-action py-2 ripple nav-home">
 				<i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Dashboard</span>
 			</a> -->
-			<a href="index.php?page=attendance" class="list-group-item list-group-item-action py-2 ripple nav-attendance">
+			<a href="user_accounting.php?page=attendance" class="list-group-item list-group-item-action py-2 ripple nav-attendance">
 				<i class="fas fa-clipboard-list fa-fw me-3"></i><span>Attendance</span>
 			</a>
 
-			<a href="index.php?page=payroll" class="list-group-item list-group-item-action py-2 ripple nav-payroll"><i class="fas fa-money-check-alt fa-fw me-3"></i><span>Payroll</span></a>
+			<a href="user_accounting.php?page=payroll" class="list-group-item list-group-item-action py-2 ripple nav-payroll"><i class="fas fa-money-check-alt fa-fw me-3"></i><span>Payroll</span></a>
 			<!-- <a href="index.php?page=employee" class="list-group-item list-group-item-action py-2 ripple nav-employee"><i class="fas fa-users fa-fw me-3"></i><span>Employee list</span></a>
 			<a href="index.php?page=department" class="list-group-item list-group-item-action py-2 ripple nav-department">
 				<i class="fas fa-building fa-fw me-3"></i><span>Department</span>
 			</a>
 			<a href="index.php?page=position" class="list-group-item list-group-item-action py-2 ripple nav-position"><i class="fas fa-briefcase fa-fw me-3"></i><span>Position</span></a>
 			<a href="index.php?page=allowances" class="list-group-item list-group-item-action py-2 ripple nav-allowances"><i class="fas fa-wallet fa-fw me-3"></i><span>Allowance</span></a> -->
-			<a href="index.php?page=deductions" class="list-group-item list-group-item-action py-2 ripple nav-deductions"><i class="fas fa-file-invoice-dollar fa-fw me-3"></i><span>Deduction</span></a>
+			<a href="user_accounting.php?page=deductions" class="list-group-item list-group-item-action py-2 ripple nav-deductions"><i class="fas fa-file-invoice-dollar fa-fw me-3"></i><span>Deduction</span></a>
 
 			<!-- <a href="index.php?page=schedule" class="list-group-item list-group-item-action py-2 ripple nav-schedule"><i class="fas fa-calendar-alt fa-fw me-3"></i><span>Schedule</span></a>
 			<a href="index.php?page=user" class="list-group-item list-group-item-action py-2 ripple nav-user"><i class="fas fa-user fa-fw me-3"></i><span>User</span></a> -->
