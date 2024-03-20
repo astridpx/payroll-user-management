@@ -186,7 +186,7 @@
 						<a class="dropdown-item" href="#">My profile</a>
 					</li>
 					<li>
-						<a onclick="logout()" class="dropdown-item" href="#">Settings</a>
+						<a onclick="" class="dropdown-item" href="#">Settings</a>
 					</li>
 					<li>
 						<a class="dropdown-item" href="#" onclick="logout()">Logout</a>
