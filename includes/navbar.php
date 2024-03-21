@@ -61,36 +61,40 @@
 		/* SCROLLABLE VIEW POINT. */
 	}
 
-	.item a .dropdown{
+	.item a .dropdown {
 		position: absolute;
 		right: 0;
 		margin: 20px;
 		transition: 0.3 ease;
-		}
-	.item .sub-menu{
+	}
+
+	.item .sub-menu {
 		box-shadow: 0 2px 5px 0 rgb(0 0 0 / 5%), 0 2px 10px 0 rgb(0 0 0 / 5%);
 		display: none;
 	}
+
 	.dropdown-container {
- 		 display: none;
- 		 /* background-color: #262626; */
- 		 padding-left: 8px;
-}
-.dropdown-container::after {
-    display: block;
-    position: absolute;
-    top: 50%;
-    right: 20px;
-    transform: translateY(-50%);
-}
-.dropdown-container::after {
-    top: auto;
-    bottom: 10px;
-    right: 50%;
-    -webkit-transform: translateX(50%);
-    -ms-transform: translateX(50%);
-    transform: translateX(50%);
-}
+		display: none;
+		/* background-color: #262626; */
+		padding-left: 8px;
+	}
+
+	.dropdown-container::after {
+		display: block;
+		position: absolute;
+		top: 50%;
+		right: 20px;
+		transform: translateY(-50%);
+	}
+
+	.dropdown-container::after {
+		top: auto;
+		bottom: 10px;
+		right: 50%;
+		-webkit-transform: translateX(50%);
+		-ms-transform: translateX(50%);
+		transform: translateX(50%);
+	}
 </style>
 
 <!--MAIN NAVIGATION-->
@@ -121,24 +125,24 @@
 			</a>
 			<!-- <a href="index.php?page=position" class="list-group-item list-group-item-action py-2 ripple nav-position"><i class="fas fa-briefcase fa-fw me-3"></i><span>Position</span></a> -->
 			<!-- <a href="index.php?page=allowances" class="list-group-item list-group-item-action py-2 ripple nav-allowances"><i class="fas fa-wallet fa-fw me-3"></i><span>Allowance</span></a> -->
-			<button class="dropdown-btn list-group-item list-group-item-action">    <i class="fas fa-clipboard-list fa-fw me-3"></i> <span>Opperation</span>
-   				 <i class="fa fa-caret-down"></i>
- 			 </button>
+			<button class="dropdown-btn list-group-item list-group-item-action"> <i class="fas fa-clipboard-list fa-fw me-3"></i> <span>Opperation</span>
+				<i class="fa fa-caret-down"></i>
+			</button>
 
-			  <div class="dropdown-container">
-			 		 <a href="index.php?page=schedule" class="list-group-item list-group-item-action py-2 ripple nav-schedule"><i class="fas fa-calendar-alt fa-fw me-3"></i><span>Schedule</span></a>
-					<a href="index.php?page=attendance" class="list-group-item list-group-item-action py-2 ripple nav-attendance">
-				     <i class="fas fa-clipboard-list fa-fw me-3"></i><span>Attendance</span></a>
-					
-			 </div>
+			<div class="dropdown-container">
+				<a href="index.php?page=schedule" class="list-group-item list-group-item-action py-2 ripple nav-schedule"><i class="fas fa-calendar-alt fa-fw me-3"></i><span>Schedule</span></a>
+				<a href="index.php?page=attendance" class="list-group-item list-group-item-action py-2 ripple nav-attendance">
+					<i class="fas fa-clipboard-list fa-fw me-3"></i><span>Attendance</span></a>
 
-			
-			
-			
+			</div>
+
+
+
+
 			<?php if ($_SESSION['login_type'] == 1) : ?>
-			<a href="index.php?page=users" class="list-group-item list-group-item-action py-2 ripple nav-users"><i class='fas fa-user fa-fw me-3'></i><span> Users</span></a>
+				<a href="index.php?page=users" class="list-group-item list-group-item-action py-2 ripple nav-users"><i class='fas fa-user fa-fw me-3'></i><span> Users</span></a>
 
-		<?php endif; ?>
+			<?php endif; ?>
 		</div>
 		</div>
 	</nav>
@@ -157,21 +161,6 @@
 				});
 			});
 		});
-
-		var dropdown = document.getElementsByClassName("dropdown-btn");
-		var i;
-
-		for (i = 0; i < dropdown.length; i++) {
-		dropdown[i].addEventListener("click", function() {
-			this.classList.toggle("active");
-			var dropdownContent = this.nextElementSibling;
-			if (dropdownContent.style.display === "block") {
-			dropdownContent.style.display = "none";
-			} else {
-			dropdownContent.style.display = "block";
-			}
-		});
-		}
 	</script>
 </header>
 
@@ -185,38 +174,30 @@
 			<i class="fas fa-bars"></i>
 		</button>
 
-		<!-- SAMPLE BRAND ICON 
-  
-     -->
+		<!-- SAMPLE BRAND ICON -->
 
-		<!-- RIGHT LINKS
-     -->
+		<!-- RIGHT LINKS-->
 		<ul class="navbar-nav ms-auto d-flex flex-row">
 
-			<li class="nav-item dropdown">
+			<li class="nav-item dropdown" style="padding-left:90px;">
 				<a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-					<i class="fas fa-bell" style="color: white"></i>
-					<span class="badge rounded-pill badge-notification bg-danger">1</span>
+					<img style="color: white; aspect-ratio: 1/1; " src="./assets/img/profile.jpg" class="rounded-circle" height="30" width="35" alt="Avatar" loading="lazy" />
 				</a>
 				<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
 					<li>
-						<a class="dropdown-item" href="#">Some news</a>
+						<a class="dropdown-item" href="#">My profile</a>
 					</li>
 					<li>
-						<a class="dropdown-item" href="#">Another news</a>
+						<a onclick="" class="dropdown-item" href="#">Settings</a>
 					</li>
 					<li>
-						<a class="dropdown-item" href="#">Something else here</a>
+						<a class="dropdown-item" href="#" onclick="logout()">Logout</a>
 					</li>
 				</ul>
 			</li>
-
-
-
-
 			<!-- AVATARA ICON -->
-			<li class="nav-item dropdown">
-				<a class=" nav-link dropdown-toggle hidden-arrow d-flex align-items-center " href="#" id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+			<!-- <li class="nav-item dropdown">
+				<a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
 					<img style="color: white; aspect-ratio: 1/1;" src="./assets/img/profile.jpg" class="rounded-circle" height="30" width="35" alt="Avatar" loading="lazy" />
 				</a>
 				<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
@@ -230,14 +211,72 @@
 						<a class="dropdown-item" href="#">Logout</a>
 					</li>
 				</ul>
-			</li>
+			</li> -->
 		</ul>
 	</div>
 
 </nav>
 
 </header>
+<script>
+	var dropdown = document.getElementsByClassName("dropdown-btn");
+	var i;
 
+	for (i = 0; i < dropdown.length; i++) {
+		dropdown[i].addEventListener("click", function() {
+			this.classList.toggle("active");
+			var dropdownContent = this.nextElementSibling;
+			if (dropdownContent.style.display === "block") {
+				dropdownContent.style.display = "none";
+			} else {
+				dropdownContent.style.display = "block";
+			}
+		});
+	}
+
+
+	function setupDropdown() {
+		// Get the dropdown toggle button and the dropdown menu
+		var dropdownToggle = document.querySelector('.dropdown-toggle');
+		var dropdownMenu = document.querySelector('.dropdown-menu');
+
+		// Toggle dropdown menu when the dropdown toggle button is clicked
+		dropdownToggle.addEventListener('click', function(event) {
+			event.preventDefault(); // Prevent default link behavior
+			dropdownMenu.classList.toggle('show'); // Toggle the 'show' class
+		});
+
+		// Close dropdown menu when clicking outside of it
+		document.addEventListener('click', function(event) {
+			var isClickInside = dropdownToggle.contains(event.target) || dropdownMenu.contains(event.target);
+			if (!isClickInside) {
+				dropdownMenu.classList.remove('show'); // Remove the 'show' class
+			}
+		});
+	}
+
+	// Call the setupDropdown function when the DOM content is loaded
+	document.addEventListener("DOMContentLoaded", function() {
+		setupDropdown();
+	});
+
+	function logout() {
+		var xhr = new XMLHttpRequest();
+		xhr.open("GET", "logout.php", true);
+
+		xhr.onload = function() {
+			if (xhr.status === 200) {
+				// Optionally handle response
+				// alert(xhr.responseText); // Alert the response from the server
+				window.location.href = "login.php"; // Redirect to login page
+			} else {
+				alert("Error logging out. Please try again.");
+			}
+		};
+
+		xhr.send();
+	}
+</script>
 
 <!--Main layout-->
 <main style="margin-top: 30px;">

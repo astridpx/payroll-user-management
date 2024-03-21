@@ -1,20 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script src="https://kit.fontawesome.com/64d58efce2.js" crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="./assets/css/login.css" />
-  <title>Login Page</title>
-</head>
+	<?php include('./includes/login.php'); ?>
+  <?php include('./config/db_connect.php'); ?>
+	<?php
+	session_start();
+	if (isset($_SESSION['login_id']))
+		header("location:index.php?page=home");
+  
+	?>
 
-<?php include('./includes/login.php'); ?>
-<?php include('./config/db_connect.php'); ?>
-<?php
-session_start();
-if (isset($_SESSION['login_id']))
-  header("location:index.php?page=home");
 
 ?>
 
