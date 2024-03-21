@@ -1,15 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 
-	<?php include('./includes/login.php'); ?>
-  <?php include('./config/db_connect.php'); ?>
-	<?php
-	session_start();
-	if (isset($_SESSION['login_id']))
-		header("location:index.php?page=home");
-  
-	?>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://kit.fontawesome.com/64d58efce2.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="./assets/css/login.css" />
+  <title>Login Page</title>
+</head>
 
+<?php include('./includes/login.php'); ?>
+<?php include('./config/db_connect.php'); ?>
+<?php
+session_start();
+if (isset($_SESSION['login_id']))
+  header("location:index.php?page=home");
 
 ?>
 
@@ -19,7 +24,10 @@
     <div class="forms-container">
       <div class="signin-signup">
         <form class="sign-in-form" id="login-form">
-          <h2 class="title">Sign in</h2>
+
+          <img src="img/1.png" class="image" alt="" style="width: 60%;" />
+
+          <br>
 
           <br>
 
@@ -42,7 +50,7 @@
         <div class="content">
           <h3> Jollibee User Management and Payroll System</h3>
         </div>
-        <img src="img/logo.svg" class="image" alt="" style="width: 50%; margin-right: 120px;" />
+        <img src="img/register.svg" class="image" alt="" style="width: 100%; padding-left: 20%;" />
       </div>
 
 </body>

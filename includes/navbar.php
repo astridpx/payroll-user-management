@@ -308,7 +308,7 @@
 
 		<a href="index.php?page=deductions" class="link-underline link-underline-opacity-0 nav-item nav-deductions"><span class='icon-field'><i class="fa fa-money-bill-wave"></i></span> Deduction List</a>
 
-		<!-- <a href="index.php?page=scheduling-employee" class="link-underline link-underline-opacity-0 nav-item nav-attendance"><span class='icon-field'><i class="fa fa-th-list"></i></span> Scheduling drag</a> -->
+		<! <a href="index.php?page=scheduling-employee" class="link-underline link-underline-opacity-0 nav-item nav-attendance"><span class='icon-field'><i class="fa fa-th-list"></i></span> Scheduling drag</a> -->
 <!--
 		<a href="index.php?page=schedule" class="link-underline link-underline-opacity-0 nav-item nav-schedule"><span class='icon-field'><i class="fa fa-columns"></i></span> Schedule</a>
 
