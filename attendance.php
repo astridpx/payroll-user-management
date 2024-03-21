@@ -15,19 +15,18 @@ if (mysqli_num_rows($result) > 0) {
 }
 
 // Fetch all schedules for all employees based on the selected date
-$selected_date = isset($_POST['selected_date']) ? $_POST['selected_date'] : date('Y-m-d');
-$sql = "SELECT e.lastname, s.* FROM employee e LEFT JOIN schedule s ON e.id = s.employee_ID WHERE DATE(s.time_start) = '$selected_date'";
+$selected_date = isset($_GET['selected_date']) ? $_GET['selected_date'] : date('Y-m-d');
+$sql = "SELECT e.lastname, s.* FROM employee e LEFT JOIN schedule s ON e.id = s.employee_ID WHERE DATE(s.date) = '$selected_date'";
 $result = mysqli_query($conn, $sql);
 
 if ($result) {
     while ($row = mysqli_fetch_assoc($result)) {
-        $employee_schedules[$row['lastname']] = $row;
+        $employee_schedules[$row['lastname']][] = $row;
     }
 }
 
 mysqli_close($conn);
 ?>
-
 
 
 <div class="container-fluid">
@@ -36,7 +35,6 @@ mysqli_close($conn);
         <br>
         <div class="card">
             <div class="card-header">
-<<<<<<< HEAD
                 <span id="selected_date_display"><b>Select Date</b></span> 
                 <form id="date_form" method="post" action="">
                 <input type="hidden" id="selected_date_input" name="selected_date">
@@ -47,13 +45,6 @@ mysqli_close($conn);
             </div>
             
             <!--    <button class="btn btn-sm col-md-3 float-right" type="button" id="new_attendance_btn" style="background-color: #d04848; color: white; padding: 5px 10px;"><span class="fa fa-plus"></span> Add Attendance</button>
-=======
-                <span id="selected_date_display"><b>Select Date</b></span>
-
-                <input class="btn btn-sm col-md-3 float-right" type="date" id="selected_date" onchange="displaySelectedDate()">
-
-                <!--    <button class="btn btn-sm col-md-3 float-right" type="button" id="new_attendance_btn" style="background-color: #d04848; color: white; padding: 5px 10px;"><span class="fa fa-plus"></span> Add Attendance</button>
->>>>>>> 4c27058b9cbf295e622730294e6eefd4fadcc014
             -->
             <script>
  function submitForm() {
@@ -73,7 +64,7 @@ mysqli_close($conn);
 
 
 
-
+       
             <div class="card-body">
                 <div class="table-responsive">
                     <table id="table" class="table table-striped table-bordered custom-table">
@@ -98,10 +89,10 @@ mysqli_close($conn);
                                 <th>Schedule</th>
                                 <th>1st In</th>
                                 <th>1st Out</th>
-                                <th>1st Break</th>
+                                <th>1st Break</th> 
                                 <th>2nd In</th>
                                 <th>2nd Out</th>
-                                <th>2nd Break</th>
+                                <th>2nd Break</th> 
                                 <th>3rd In</th>
                                 <th>3rd Out</th>
                                 <th>Status</th>
@@ -136,7 +127,6 @@ mysqli_close($conn);
 
 <td><i class="fas fa-minus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span></td>
 
-<<<<<<< HEAD
 <td>
 <i class="fas fa-caret-down dropdown-icon" onclick="toggleDropdown(this)"></i>
 <div class="dropdown-content">
@@ -181,49 +171,6 @@ $current_time_displayed = true;
                             <?php endforeach; ?>
                             </tbody>
 
-=======
-                                <td>
-                                    <i class="fas fa-caret-down dropdown-icon" onclick="toggleDropdown(this)"></i>
-                                    <div class="dropdown-content">
-                                        <a href="#">30 mins</a>
-                                        <a href="#">1 hour</a>
-                                    </div>
-                                </td>
-
-
-                                <td><i class="fas fa-plus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span></td>
-                                <td><i class="fas fa-minus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span></td>
-
-                                <td>
-                                    <i class="fas fa-caret-down dropdown-icon" onclick="toggleDropdown(this)"></i>
-                                    <div class="dropdown-content">
-                                        <a href="#">30 mins</a>
-                                        <a href="#">1 hour</a>
-                                    </div>
-                                </td>
-
-                                <td><i class="fas fa-plus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span></td>
-                                <td><i class="fas fa-minus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span></td>
-
-                                <?php
-
-                                $current_time_displayed = true;
-                                ?>
-                                <?php if ($current_time_displayed) : ?>
-                                    <td><i class="fas fa-circle text-success"></i></td>
-                                <?php else : ?>
-                                    <td><i class="fas fa-circle text-danger"></i></td>
-                                <?php endif; ?>
-                                <td></td>
-                                <td>
-                                    <center>
-                                        <button class="btn btn-sm btn-outline-danger remove_attendance" data-id="1" type="button"><i class="fa fa-trash"></i></button>
-                                    </center>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
->>>>>>> 4c27058b9cbf295e622730294e6eefd4fadcc014
                 </div>
             </div>
         </div>
@@ -236,6 +183,7 @@ $current_time_displayed = true;
         document.getElementById("date_form").submit();
     }
 </script>
+
 
 
 
@@ -320,56 +268,59 @@ $current_time_displayed = true;
     .custom-table td {
         border: 1px solid #dee2e6;
 
-
+        
     }
 
 
     /* Style the dropdown button */
-    .dropbtn {
-        background-color: #fff;
-        color: #333;
-        border: none;
-        font-size: 16px;
-        cursor: pointer;
-    }
+.dropbtn {
+  background-color: #fff;
+  color: #333;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+}
 
-    .dropbtn i {
-        margin-right: 5px;
-    }
+.dropbtn i {
+  margin-right: 5px;
+}
 
-    /* The container <div> - needed to position the dropdown content */
-    .dropdown {
-        position: relative;
-        display: inline-block;
-    }
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
 
-    /* Dropdown content (hidden by default) */
-    .dropdown-content {
-        display: none;
-        position: absolute;
-        background-color: #fff;
-        min-width: 160px;
-        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-        z-index: 1;
-    }
+/* Dropdown content (hidden by default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #fff;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
 
-    /* Links inside the dropdown */
-    .dropdown-content a {
-        color: #333;
-        padding: 12px 16px;
-        text-decoration: none;
-        display: block;
-    }
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: #333;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
 
-    /* Change color of dropdown links on hover */
-    .dropdown-content a:hover {
-        background-color: #f1f1f1;
-    }
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {
+  background-color: #f1f1f1;
+}
 
-    /* Show the dropdown menu (use JS to add this class to the dropdown content when the user clicks on the button) */
-    .show {
-        display: block;
-    }
+/* Show the dropdown menu (use JS to add this class to the dropdown content when the user clicks on the button) */
+.show {
+  display: block;
+}
+
+
+    
 </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
@@ -379,7 +330,6 @@ $current_time_displayed = true;
 
 
 <script>
-<<<<<<< HEAD
 
 function toggleDropdown(icon) {
   var dropdownContent = icon.nextElementSibling;
@@ -395,25 +345,9 @@ window.onclick = function(event) {
       if (openDropdown.classList.contains('show')) {
         openDropdown.classList.remove('show');
       }
-=======
-    function toggleDropdown(icon) {
-        var dropdownContent = icon.nextElementSibling;
-        dropdownContent.classList.toggle("show");
     }
-
-    // Close the dropdown if the user clicks outside of it
-    window.onclick = function(event) {
-        if (!event.target.matches('.dropdown-icon')) {
-            var dropdowns = document.getElementsByClassName("dropdown-content");
-            for (var i = 0; i < dropdowns.length; i++) {
-                var openDropdown = dropdowns[i];
-                if (openDropdown.classList.contains('show')) {
-                    openDropdown.classList.remove('show');
-                }
-            }
-        }
->>>>>>> 4c27058b9cbf295e622730294e6eefd4fadcc014
-    }
+  }
+}
 
 
     // CALENDAR FUNCTION
@@ -436,7 +370,6 @@ window.onclick = function(event) {
     }
 
     function displaySelectedDate() {
-<<<<<<< HEAD
     var selectedDate = document.getElementById("selected_date").value;
     var displayElement = document.getElementById("selected_date_display");
     var formattedDate = new Date(selectedDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
@@ -445,17 +378,6 @@ window.onclick = function(event) {
 
 
 
-=======
-        var selectedDate = document.getElementById("selected_date").value;
-        var displayElement = document.getElementById("selected_date_display");
-        var formattedDate = new Date(selectedDate).toLocaleDateString('en-US', {
-            month: 'long',
-            day: 'numeric',
-            year: 'numeric'
-        });
-        displayElement.innerHTML = "<b>" + formattedDate + "</b>";
-    }
->>>>>>> 4c27058b9cbf295e622730294e6eefd4fadcc014
 
 
 
@@ -498,93 +420,15 @@ window.onclick = function(event) {
             }).then((result) => {
                 if (result.isConfirmed) {
                     $('#qrScannerModal').modal('hide'); // Close the modal
-
-                    var currentTime = new Date().toLocaleTimeString('en-US', {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        hour12: false
-                    });
-                    $('.clicked-cell').find('.current-time').text(currentTime).fadeIn().removeClass('current-time');
+              
+                    var currentTime = new Date().toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit', hour12: false});
+                    $('.clicked-cell').find('.current-time').text(currentTime).fadeIn().removeClass('current-time'); 
                 }
             });
         }
     });
+
+    
+
+    
 </script>
-
-
-<<<<<<< HEAD
-=======
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('#table').DataTable();
-    });
-</script>
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('.edit_attendance').click(function() {
-            var $id = $(this).attr('data-id');
-            uni_modal("Edit Employee", "manage_attendance.php?id=" + $id)
-
-        });
-        $('.view_attendance').click(function() {
-            var $id = $(this).attr('data-id');
-            uni_modal("Employee Details", "view_attendance.php?id=" + $id, "mid-large")
-
-        });
-        $('#new_attendance_btn').click(function() {
-            uni_modal("New Time Record/s", "manage_attendance.php", 'mid-large')
-        })
-        $('.remove_attendance').click(function() {
-            var d = '"' + ($(this).attr('data-id')).toString() + '"';
-            _conf("Are you sure to delete this employee's time log record?", "remove_attendance", [d])
-        })
-        $('.rem_att').click(function() {
-            var $id = $(this).attr('data-id');
-            _conf("Are you sure to delete this time log?", "rem_att", [$id])
-        })
-    });
-
-
-    function remove_attendance(id) {
-        start_load()
-        $.ajax({
-            url: './services/ajax.php?action=delete_employee_attendance',
-            method: "POST",
-            data: {
-                id: id
-            },
-            error: err => console.log(err),
-            success: function(resp) {
-                if (resp == 1) {
-                    alert_toast("Selected employee's time log data successfully deleted", "success");
-                    setTimeout(function() {
-                        location.reload();
-
-                    }, 1000)
-                }
-            }
-        })
-    }
-
-    function rem_att(id) {
-        start_load()
-        $.ajax({
-            url: './services/ajax.php?action=delete_employee_attendance_single',
-            method: "POST",
-            data: {
-                id: id
-            },
-            error: err => console.log(err),
-            success: function(resp) {
-                if (resp == 1) {
-                    alert_toast("Selected employee's time log data successfully deleted", "success");
-                    setTimeout(function() {
-                        location.reload();
-
-                    }, 1000)
-                }
-            }
-        })
-    }
-</script>
->>>>>>> 4c27058b9cbf295e622730294e6eefd4fadcc014
