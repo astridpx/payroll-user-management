@@ -6,11 +6,16 @@
         <br>
         <div class="card">
             <div class="card-header">
-                <span><b>March 1, 2024</b></span>
-				<button class="btn btn-sm col-md-3 float-right" type="button" id="new_attendance_btn" style="background-color: #d04848; color: white; padding: 5px 10px;"><span class="fa fa-plus"></span> Add Attendance</button>
+                <span id="selected_date_display"><b>Select Date</b></span> 
 
-
+                <input  class="btn btn-sm col-md-3 float-right" type="date" id="selected_date" onchange="displaySelectedDate()">
+            
+            <!--    <button class="btn btn-sm col-md-3 float-right" type="button" id="new_attendance_btn" style="background-color: #d04848; color: white; padding: 5px 10px;"><span class="fa fa-plus"></span> Add Attendance</button>
+            -->
             </div>
+
+
+       
             <div class="card-body">
                 <div class="table-responsive">
                     <table id="table" class="table table-striped table-bordered custom-table">
@@ -29,92 +34,73 @@
                             <col width="8%">
                             <col width="8%">
                         </colgroup>
-						<thead>
-    <tr>
-        <th>Name</th>
-        <th>Schedule</th>
-        <th>1st In</th>
-        <th>1st Out</th>
-        <th>1st Break</th> 
-        <th>2nd In</th>
-        <th>2nd Out</th>
-        <th>2nd Break</th> 
-        <th>3rd In</th>
-        <th>3rd Out</th>
-        <th>Status</th>
-        <th>Net</th>
-        <th>Action</th>
-    </tr>
-</thead>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Schedule</th>
+                                <th>1st In</th>
+                                <th>1st Out</th>
+                                <th>1st Break</th> 
+                                <th>2nd In</th>
+                                <th>2nd Out</th>
+                                <th>2nd Break</th> 
+                                <th>3rd In</th>
+                                <th>3rd Out</th>
+                                <th>Status</th>
+                                <th>Net</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
 
                         <tbody>
-                            <?php
-                            $att = $conn->query("SELECT a.*, e.employee_no, concat(e.lastname,', ',e.firstname,' ',e.middlename) as ename FROM attendance a inner join employee e on a.employee_id = e.id order by UNIX_TIMESTAMP(datetime_log) asc  ") or die(mysqli_error($conn));
-                            $lt_arr = array(1 => "Time-in AM", 2 => "Time-out AM", 3 => "Time-in PM", 4 => "Time-out PM");
-                            while ($row = $att->fetch_array()) {
-                                $date = date("Y-m-d", strtotime($row['datetime_log']));
-                                $attendance[$row['employee_id'] . "_" . $date]['details'] = array("eid" => $row['employee_id'], "name" => $row['ename'], "eno" => $row['employee_no'], "date" => $date);
-                                if ($row['log_type'] == 1 || $row['log_type'] == 3) {
-                                    if (!isset($attendance[$row['employee_id'] . "_" . $date]['log'][$row['log_type']]))
-                                        $attendance[$row['employee_id'] . "_" . $date]['log'][$row['log_type']] = array('id' => $row['id'], "date" =>  $row['datetime_log']);
-                                } else {
-                                    $attendance[$row['employee_id'] . "_" . $date]['log'][$row['log_type']] = array('id' => $row['id'], "date" =>  $row['datetime_log']);
-                                }
-                            }
-                            foreach ($attendance as $key => $value) {
-                            ?>
+                            <tr>
+                                <td>Lubuguin</td>
+                                <td>08:00:00</td>
 
 
+                                <td><i class="fas fa-plus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span></td>
 
-                        
-							
-    <td><?php echo "Lubuguin"; ?></td>
-	<td><?php echo " 08:00:00"; ?></td>
+                                <td><i class="fas fa-minus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span></td>
 
-    <td><i class="fas fa-plus-circle " style="margin-right: 10px;"></i></td>
+                                <td>
+  <i class="fas fa-caret-down dropdown-icon" onclick="toggleDropdown(this)"></i>
+  <div class="dropdown-content">
+    <a href="#">30 mins</a>
+    <a href="#">1 hour</a>
+  </div>
+</td>
 
+                                
+                                <td><i class="fas fa-plus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span></td>
+                                <td><i class="fas fa-minus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span></td>
 
-
-    <td><i class="fas fa-minus-circle" style="margin-right: 10px;"></i><?php echo "11:00"; ?></td>
-    <td></td> 
-
-
-
-    <td><i class="fas fa-plus-circle " style="margin-right: 10px;"></i></td>
-
-
-
-
-    
-    <td><i class="fas fa-minus-circle " style="margin-right: 10px;"></i><?php echo "13:00"; ?></td>
-    <td></td> <!-- Breaktime icon -->
-    
-    <td><i class="fas fa-plus-circle " style="margin-right: 10px;"></i></td>
-
-
-    
-    <td><i class="fas fa-minus-circle " style="margin-right: 10px;"></i><?php echo "18:00 "; ?></td>
-    <td>
-        <?php 
-            $status = "Present"; // Example status pero kung kayang i lagay sa backend G!
-            if ($status == "Present") {
-                echo '<i class="fas fa-circle text-success"></i>'; // Green dot for present
-            } else {
-                echo '<i class="fas fa-circle text-danger"></i>'; // Red dot for absent
-            }
-        ?>
-    </td>
-    <td><?php echo "560"; ?></td>
-    <td>
-        <center>
-            <button class="btn btn-sm btn-outline-danger remove_attendance" data-id="1" type="button"><i class="fa fa-trash"></i></button>
-        </center>
-    </td>
-</tr>
-
-                            <?php
-                            }
-                            ?>
+                                <td>
+  <i class="fas fa-caret-down dropdown-icon" onclick="toggleDropdown(this)"></i>
+  <div class="dropdown-content">
+    <a href="#">30 mins</a>
+    <a href="#">1 hour</a>
+  </div>
+</td>
+        
+                                <td><i class="fas fa-plus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span></td>
+                                <td><i class="fas fa-minus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span></td>
+                           
+                                <?php
+                           
+                                $current_time_displayed = true;
+                                ?>
+                                <?php if ($current_time_displayed): ?>
+                                    <td><i class="fas fa-circle text-success"></i></td>
+                                <?php else: ?>
+                                    <td><i class="fas fa-circle text-danger"></i></td>
+                                <?php endif; ?>
+                                <td></td>
+                                <td>
+                                    <center>
+                                        <button class="btn btn-sm btn-outline-danger remove_attendance" data-id="1" type="button"><i class="fa fa-trash"></i></button>
+                                    </center>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -123,8 +109,30 @@
     </div>
 </div>
 
+
+<!-- QR Scanner Modal -->
+<div class="modal fade" id="qrScannerModal" tabindex="-1" role="dialog" aria-labelledby="qrScannerModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="qrScannerModalLabel">QR Code Scanner</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="qr-reader"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
-    th, td {
+    th,
+    td {
         text-align: center;
     }
 
@@ -165,8 +173,167 @@
     .custom-table th,
     .custom-table td {
         border: 1px solid #dee2e6;
+
+        
     }
+
+
+    /* Style the dropdown button */
+.dropbtn {
+  background-color: #fff;
+  color: #333;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.dropbtn i {
+  margin-right: 5px;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown content (hidden by default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #fff;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: #333;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {
+  background-color: #f1f1f1;
+}
+
+/* Show the dropdown menu (use JS to add this class to the dropdown content when the user clicks on the button) */
+.show {
+  display: block;
+}
+
+
+    
 </style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
+
+
+<script>
+
+function toggleDropdown(icon) {
+  var dropdownContent = icon.nextElementSibling;
+  dropdownContent.classList.toggle("show");
+}
+
+
+window.onclick = function(event) {
+  if (!event.target.matches('.dropdown-icon')) {
+    var dropdowns = document.getElementsByClassName("dropdown-content");
+    for (var i = 0; i < dropdowns.length; i++) {
+      var openDropdown = dropdowns[i];
+      if (openDropdown.classList.contains('show')) {
+        openDropdown.classList.remove('show');
+      }
+    }
+  }
+}
+
+
+    // CALENDAR FUNCTION
+    function showDatePicker() {
+        var input = document.createElement('input');
+        input.setAttribute('type', 'date');
+        input.setAttribute('id', 'selected_date');
+        input.setAttribute('class', 'btn btn-sm col-md-3 float-right');
+        input.style.backgroundColor = '#d04848';
+        input.style.color = 'white';
+        input.style.padding = '5px 10px';
+        input.style.display = 'none';
+
+        input.addEventListener('change', displaySelectedDate);
+
+        document.body.appendChild(input);
+
+        // Trigger click event on the hidden input to open date picker
+        input.click();
+    }
+
+    function displaySelectedDate() {
+        var selectedDate = document.getElementById("selected_date").value;
+        var displayElement = document.getElementById("selected_date_display");
+        var formattedDate = new Date(selectedDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        displayElement.innerHTML = "<b>" + formattedDate + "</b>";
+    }
+
+
+
+    $(document).ready(function() {
+        // Function to handle QR scanner modal
+        function handleQRScannerModal() {
+            $('#qrScannerModal').modal('show');
+            var html5QrcodeScanner = new Html5QrcodeScanner(
+                "qr-reader", {
+                    fps: 10,
+                    qrbox: 250
+                }
+            );
+            html5QrcodeScanner.render(onScanSuccess);
+        }
+
+        // Attach click event handler to plus icons
+        $(document).on('click', '.add-qr-scanner', function() {
+            handleQRScannerModal();
+            // Store the clicked cell for later use
+            $(this).closest('td').addClass('clicked-cell');
+        });
+
+        // Function to handle successful QR code scan
+        function onScanSuccess(decodedText, decodedResult) {
+            console.log(`Scan result ${decodedText}`, decodedResult);
+            Swal.fire({
+                title: "Attendance Successfully.",
+                text: "John Patrick Lubuguin",
+                icon: "success",
+                confirmButtonColor: "#3085d6",
+                confirmButtonText: "OK",
+                customClass: {
+                    container: "custom-sweetalert-container",
+                    popup: "custom-sweetalert-popup",
+                    title: "custom-sweetalert-title",
+                    text: "custom-sweetalert-text",
+                    confirmButton: "custom-sweetalert-confirm-button"
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#qrScannerModal').modal('hide'); // Close the modal
+              
+                    var currentTime = new Date().toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit', hour12: false});
+                    $('.clicked-cell').find('.current-time').text(currentTime).fadeIn().removeClass('current-time'); 
+                }
+            });
+        }
+    });
+
+    
+
+    
+</script>
 
 
 <script type="text/javascript">
@@ -242,5 +409,3 @@
         })
     }
 </script>
-
-

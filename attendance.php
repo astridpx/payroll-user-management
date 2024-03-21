@@ -1,4 +1,34 @@
-<?php include('./config/db_connect.php') ?>
+<?php 
+include('./config/db_connect.php');
+
+$employees = array();
+$employee_schedules = array(); 
+
+// Fetch all employees from the database
+$sql = "SELECT id, lastname FROM employee";
+$result = mysqli_query($conn, $sql);
+
+if (mysqli_num_rows($result) > 0) {
+    while ($row = mysqli_fetch_assoc($result)) {
+        $employees[$row['id']] = $row['lastname'];
+    }
+}
+
+// Fetch all schedules for all employees based on the selected date
+$selected_date = isset($_POST['selected_date']) ? $_POST['selected_date'] : date('Y-m-d');
+$sql = "SELECT e.lastname, s.* FROM employee e LEFT JOIN schedule s ON e.id = s.employee_ID WHERE DATE(s.time_start) = '$selected_date'";
+$result = mysqli_query($conn, $sql);
+
+if ($result) {
+    while ($row = mysqli_fetch_assoc($result)) {
+        $employee_schedules[$row['lastname']] = $row;
+    }
+}
+
+mysqli_close($conn);
+?>
+
+
 
 <div class="container-fluid">
     <div class="col-lg-12">
@@ -7,12 +37,32 @@
         <div class="card">
             <div class="card-header">
                 <span id="selected_date_display"><b>Select Date</b></span> 
+                <form id="date_form" method="post" action="">
+                <input type="hidden" id="selected_date_input" name="selected_date">
 
-                <input  class="btn btn-sm col-md-3 float-right" type="date" id="selected_date" onchange="displaySelectedDate()">
+
+                    <input type="date" id="selected_date" class="btn btn-sm col-md-3 float-right" onchange="submitForm()">
+                </form>
+            </div>
             
             <!--    <button class="btn btn-sm col-md-3 float-right" type="button" id="new_attendance_btn" style="background-color: #d04848; color: white; padding: 5px 10px;"><span class="fa fa-plus"></span> Add Attendance</button>
             -->
-            </div>
+            <script>
+ function submitForm() {
+    // Get the selected date value
+    var selectedDate = document.getElementById("selected_date").value;
+
+    // Set the value of the hidden input field in the form
+    document.getElementById("selected_date_input").value = selectedDate;
+
+    // Submit the form
+    document.getElementById("date_form").submit();
+}
+
+
+</script>
+
+
 
 
        
@@ -51,58 +101,77 @@
                                 <th>Action</th>
                             </tr>
                         </thead>
-
                         <tbody>
-                            <tr>
-                                <td>Lubuguin</td>
-                                <td>08:00:00</td>
+                            <?php foreach ($employees as $employee): ?>
+                                <tr>
+                                    <td><?php echo $employee; ?></td>
+                                    <?php if(isset($employee_schedules)): ?>
+                                        <?php $found = false; ?>
+                                        <?php foreach($employee_schedules as $schedule): ?>
+                                            <?php if ($schedule['lastname'] === $employee): ?>
+                                                <td><?php echo $schedule['time_start']; ?></td>
+                                            
+                                                <?php $found = true; ?>
+                                                <?php break; ?>
+                                            <?php endif; ?>
+                                        <?php endforeach; ?>
+                                        <?php if (!$found): ?>
+                                            <td>No schedule available</td>
+                                        <?php endif; ?>
+                                    <?php else: ?>
+                                        <td>No schedule available</td>
+                                    <?php endif; ?>
 
 
-                                <td><i class="fas fa-plus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span></td>
+                   
+                                    <td><i class="fas fa-plus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span></td>
 
-                                <td><i class="fas fa-minus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span></td>
+<td><i class="fas fa-minus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span></td>
 
-                                <td>
-  <i class="fas fa-caret-down dropdown-icon" onclick="toggleDropdown(this)"></i>
-  <div class="dropdown-content">
-    <a href="#">30 mins</a>
-    <a href="#">1 hour</a>
-  </div>
+<td>
+<i class="fas fa-caret-down dropdown-icon" onclick="toggleDropdown(this)"></i>
+<div class="dropdown-content">
+<a href="#">30 mins</a>
+<a href="#">1 hour</a>
+</div>
 </td>
 
-                                
-                                <td><i class="fas fa-plus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span></td>
-                                <td><i class="fas fa-minus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span></td>
 
-                                <td>
-  <i class="fas fa-caret-down dropdown-icon" onclick="toggleDropdown(this)"></i>
-  <div class="dropdown-content">
-    <a href="#">30 mins</a>
-    <a href="#">1 hour</a>
-  </div>
+<td><i class="fas fa-plus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span></td>
+<td><i class="fas fa-minus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span></td>
+
+<td>
+<i class="fas fa-caret-down dropdown-icon" onclick="toggleDropdown(this)"></i>
+<div class="dropdown-content">
+<a href="#">30 mins</a>
+<a href="#">1 hour</a>
+</div>
 </td>
-        
-                                <td><i class="fas fa-plus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span></td>
-                                <td><i class="fas fa-minus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span></td>
-                           
-                                <?php
-                           
-                                $current_time_displayed = true;
-                                ?>
-                                <?php if ($current_time_displayed): ?>
-                                    <td><i class="fas fa-circle text-success"></i></td>
-                                <?php else: ?>
-                                    <td><i class="fas fa-circle text-danger"></i></td>
-                                <?php endif; ?>
-                                <td></td>
-                                <td>
-                                    <center>
-                                        <button class="btn btn-sm btn-outline-danger remove_attendance" data-id="1" type="button"><i class="fa fa-trash"></i></button>
-                                    </center>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+
+<td><i class="fas fa-plus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span></td>
+<td><i class="fas fa-minus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span></td>
+
+<?php
+
+$current_time_displayed = true;
+?>
+<?php if ($current_time_displayed): ?>
+    <td><i class="fas fa-circle text-success"></i></td>
+<?php else: ?>
+    <td><i class="fas fa-circle text-danger"></i></td>
+<?php endif; ?>
+<td></td>
+<td>
+    <center>
+        <button class="btn btn-sm btn-outline-danger remove_attendance" data-id="1" type="button"><i class="fa fa-trash"></i></button>
+    </center>
+</td>
+
+
+                                </tr>
+                            <?php endforeach; ?>
+                            </tbody>
+
                 </div>
             </div>
         </div>
@@ -110,7 +179,32 @@
 </div>
 
 
-<!-- QR Scanner Modal -->
+<script>
+    function submitForm() {
+        document.getElementById("date_form").submit();
+    }
+</script>
+
+
+
+
+
+<!-- QR Scanner Modal 
+
+       
+
+
+
+
+
+
+
+
+
+
+
+
+-->
 <div class="modal fade" id="qrScannerModal" tabindex="-1" role="dialog" aria-labelledby="qrScannerModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -234,6 +328,7 @@
 
 
 
+
 <script>
 
 function toggleDropdown(icon) {
@@ -241,7 +336,7 @@ function toggleDropdown(icon) {
   dropdownContent.classList.toggle("show");
 }
 
-// Close the dropdown if the user clicks outside of it
+
 window.onclick = function(event) {
   if (!event.target.matches('.dropdown-icon')) {
     var dropdowns = document.getElementsByClassName("dropdown-content");
@@ -275,11 +370,14 @@ window.onclick = function(event) {
     }
 
     function displaySelectedDate() {
-        var selectedDate = document.getElementById("selected_date").value;
-        var displayElement = document.getElementById("selected_date_display");
-        var formattedDate = new Date(selectedDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-        displayElement.innerHTML = "<b>" + formattedDate + "</b>";
-    }
+    var selectedDate = document.getElementById("selected_date").value;
+    var displayElement = document.getElementById("selected_date_display");
+    var formattedDate = new Date(selectedDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    displayElement.innerHTML = "<b>" + formattedDate + "</b>";
+}
+
+
+
 
 
 
@@ -336,76 +434,3 @@ window.onclick = function(event) {
 </script>
 
 
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('#table').DataTable();
-    });
-</script>
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('.edit_attendance').click(function() {
-            var $id = $(this).attr('data-id');
-            uni_modal("Edit Employee", "manage_attendance.php?id=" + $id)
-
-        });
-        $('.view_attendance').click(function() {
-            var $id = $(this).attr('data-id');
-            uni_modal("Employee Details", "view_attendance.php?id=" + $id, "mid-large")
-
-        });
-        $('#new_attendance_btn').click(function() {
-            uni_modal("New Time Record/s", "manage_attendance.php", 'mid-large')
-        })
-        $('.remove_attendance').click(function() {
-            var d = '"' + ($(this).attr('data-id')).toString() + '"';
-            _conf("Are you sure to delete this employee's time log record?", "remove_attendance", [d])
-        })
-        $('.rem_att').click(function() {
-            var $id = $(this).attr('data-id');
-            _conf("Are you sure to delete this time log?", "rem_att", [$id])
-        })
-    });
-
-    
-    function remove_attendance(id) {
-        start_load()
-        $.ajax({
-            url: './services/ajax.php?action=delete_employee_attendance',
-            method: "POST",
-            data: {
-                id: id
-            },
-            error: err => console.log(err),
-            success: function(resp) {
-                if (resp == 1) {
-                    alert_toast("Selected employee's time log data successfully deleted", "success");
-                    setTimeout(function() {
-                        location.reload();
-
-                    }, 1000)
-                }
-            }
-        })
-    }
-
-    function rem_att(id) {
-        start_load()
-        $.ajax({
-            url: './services/ajax.php?action=delete_employee_attendance_single',
-            method: "POST",
-            data: {
-                id: id
-            },
-            error: err => console.log(err),
-            success: function(resp) {
-                if (resp == 1) {
-                    alert_toast("Selected employee's time log data successfully deleted", "success");
-                    setTimeout(function() {
-                        location.reload();
-
-                    }, 1000)
-                }
-            }
-        })
-    }
-</script>
