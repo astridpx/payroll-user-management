@@ -132,7 +132,21 @@
 		end_load()
 	})
 	$('.delete_department').click(function() {
-		_conf("Are you sure to delete this department?", "delete_department", [$(this).attr('data-id')])
+		// _conf("Are you sure to delete this department?", "delete_department", [$(this).attr('data-id')])
+
+		Swal.fire({
+			title: "Are you sure?",
+			text: "You won't be able to revert this!",
+			icon: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#3085d6",
+			cancelButtonColor: "#d33",
+			confirmButtonText: "Yes, delete it!"
+		}).then((result) => {
+			if (result.isConfirmed) {
+				delete_department($(this).attr('data-id'))
+			}
+		})
 	})
 
 	function displayImg(input, _this) {
