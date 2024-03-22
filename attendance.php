@@ -146,12 +146,12 @@ mysqli_close($conn);
 </div>
 
 <!-- QR Scanner Modal -->
-<div class="modal fade" id="qrScannerModal" tabindex="-1" role="dialog" aria-labelledby="qrScannerModalLabel" aria-hidden="true">
+<div class="modal fade scanner-close-btn" id="qrScannerModal" tabindex="-1" role="dialog" aria-labelledby="qrScannerModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="qrScannerModalLabel">QR Code Scanner</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -159,7 +159,7 @@ mysqli_close($conn);
                 <div id="qr-reader"></div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary  scanner-close-btn" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -284,51 +284,57 @@ mysqli_close($conn);
             // Set the formatted date as the value of the input field
             $('#selected_date').val(formattedDate);
         }
-    });
 
 
 
-    function toggleDropdown(icon) {
-        var dropdownContent = icon.nextElementSibling;
-        dropdownContent.classList.toggle("show");
-    }
+        function toggleDropdown(icon) {
+            var dropdownContent = icon.nextElementSibling;
+            dropdownContent.classList.toggle("show");
+        }
 
 
-    window.onclick = function(event) {
-        if (!event.target.matches('.dropdown-icon')) {
-            var dropdowns = document.getElementsByClassName("dropdown-content");
-            for (var i = 0; i < dropdowns.length; i++) {
-                var openDropdown = dropdowns[i];
-                if (openDropdown.classList.contains('show')) {
-                    openDropdown.classList.remove('show');
+        window.onclick = function(event) {
+            if (!event.target.matches('.dropdown-icon')) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
                 }
             }
         }
-    }
 
-    // DATE PICKER HANDLE
-    $("#selected_date").on("change", function() {
-        let date = $(this).val()
+        // DATE PICKER HANDLE
+        $("#selected_date").on("change", function() {
+            let date = $(this).val()
 
-        var url = new URL(window.location.href);
-        url.searchParams.set("date", date);
-        window.history.replaceState({}, '', url);
+            var url = new URL(window.location.href);
+            url.searchParams.set("date", date);
+            window.history.replaceState({}, '', url);
 
-        location.reload();
-    })
+            location.reload();
+        })
 
+        // QR CODE SCANNER
+        html5QrcodeScanner = new Html5QrcodeScanner(
+            "qr-reader", {
+                fps: 10,
+                qrbox: 250,
+                // disableFlip: true
+            }
+        );
 
-    // QR CODE SCANNER
-    $(document).ready(function() {
+        // Listen for modal close event
+        // Stop the QR code scanner when the modal is closed
+        $('#qrScannerModal').on('hidden.bs.modal', function() {
+            html5QrcodeScanner.clear();
+            html5QrcodeScanner.stop();
+        });
+
         // Function to handle QR scanner modal
         function handleQRScannerModal() {
             $('#qrScannerModal').modal('show');
-            var html5QrcodeScanner = new Html5QrcodeScanner(
-                "qr-reader", {
-                    fps: 10,
-                    qrbox: 250
-                }
-            );
             html5QrcodeScanner.render(onScanSuccess);
         }
 
@@ -367,6 +373,10 @@ mysqli_close($conn);
                     $('.clicked-cell').find('.current-time').text(currentTime).fadeIn().removeClass('current-time');
                 }
             });
+
+            html5QrcodeScanner.clear();
+            // Close the camera by stopping the scanning process.
+            html5QrcodeScanner.stop();
         }
     });
 </script>
