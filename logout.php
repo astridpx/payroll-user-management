@@ -1,4 +1,9 @@
 <?php
+session_start();
+session_unset();
+session_destroy();
+header('location:login.php');
+
 session_start(); // Start the session
 session_destroy(); // Destroy all session data
 
@@ -6,5 +11,4 @@ session_destroy(); // Destroy all session data
 
 // Response message to indicate successful logout
 $response = "You have been logged out successfully.";
-echo $response;
 ?>
