@@ -1,35 +1,21 @@
 <?php
 include('./config/db_connect.php');
 
-$employees = array();
-$employee_schedules = array();
-
-// Fetch all employees from the database
-$sql = "SELECT id, lastname FROM employee";
-$result = mysqli_query($conn, $sql);
-
-if (mysqli_num_rows($result) > 0) {
-    while ($row = mysqli_fetch_assoc($result)) {
-        $employees[$row['id']] = $row['lastname'];
-    }
-}
-
 // Fetch all schedules for all employees based on the selected date
 $selected_date = isset($_GET['date']) ? $_GET['date'] : date('Y-m-d');
-$sql = "SELECT e.*, s.*, CONCAT(e.firstname, ' ', e.lastname) AS employee FROM employee e LEFT JOIN schedule s ON e.id = s.employee_ID AND s.date = '$selected_date' WHERE s.date IS NOT NULL;";
+$sql = "SELECT e.*,s.*, CONCAT(e.firstname, ' ', e.lastname) AS employee, CASE WHEN LENGTH(s.time_start) = 0 OR LENGTH(s.time_end) = 0 THEN CONCAT(s.time_start, s.time_end) ELSE CONCAT(s.time_start, '-', s.time_end) END AS time FROM employee e LEFT JOIN schedule s ON e.id = s.employee_ID AND s.date = '$selected_date' WHERE s.date IS NOT NULL;";
 $employee_list = mysqli_query($conn, $sql);
 
 
 // Output data of each row
-// while ($row = mysqli_fetch_assoc($results)) {
+// while ($row = mysqli_fetch_assoc($employee_list)) {
 //     // Output the results as needed
-//     echo "Employee ID: " . $row["employee_no"] . " - Name: " . $row["employee"] . "<br>";
+//     var_dump($row);
 // }
 
 
 mysqli_close($conn);
 ?>
-
 
 <div class="container-fluid">
     <div class="col-lg-12">
@@ -48,16 +34,16 @@ mysqli_close($conn);
                 <div class="table-responsive">
                     <table id="table" class="table table-striped table-bordered custom-table">
                         <colgroup>
+                            <col style="min-width: 8rem;" width="8%">
+                            <col style="min-width: 10rem;" width="10%">
+                            <col style="min-width: 5rem;" width="8%">
+                            <col style="min-width: 5rem;" width="8%">
                             <col width="8%">
-                            <col width="10%">
+                            <col style="min-width: 5rem;" width="8%">
+                            <col style="min-width: 5rem;" width="8%">
                             <col width="8%">
-                            <col width="8%">
-                            <col width="8%">
-                            <col width="8%">
-                            <col width="8%">
-                            <col width="8%">
-                            <col width="8%">
-                            <col width="8%">
+                            <col style="min-width: 5rem;" width="8%">
+                            <col style="min-width: 5rem;" width="8%">
                             <col width="8%">
                             <col width="8%">
                             <col width="8%">
@@ -66,14 +52,14 @@ mysqli_close($conn);
                             <tr>
                                 <th>Name</th>
                                 <th>Schedule</th>
-                                <th>1st In</th>
-                                <th>1st Out</th>
+                                <th id="1st_in">1st In</th>
+                                <th id="1st_out">1st Out</th>
                                 <th>1st Break</th>
-                                <th>2nd In</th>
-                                <th>2nd Out</th>
+                                <th id="2nd_in">2nd In</th>
+                                <th id="2nd_out">2nd Out</th>
                                 <th>2nd Break</th>
-                                <th>3rd In</th>
-                                <th>3rd Out</th>
+                                <th id="3rd_in">3rd In</th>
+                                <th id="3rd_out">3rd Out</th>
                                 <th>Status</th>
                                 <th>Net</th>
                                 <th>Action</th>
@@ -83,11 +69,34 @@ mysqli_close($conn);
                             <?php foreach ($employee_list as $employee) : ?>
                                 <tr id="emp-<?php echo $employee["id"]; ?>">
                                     <td><?php echo $employee["employee"]; ?></td>
-                                    <td>No schedule available</td>
+                                    <td><?php echo $employee["time"] ?   $employee["time"] : "No schedule available"; ?></td>
 
-                                    <td><i class="fas fa-plus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span></td>
+                                    <td>
+                                        <?php echo $employee["1st_in"] ? $employee["1st_in"] :
+                                            '<i class="fas fa-plus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span>'; ?>
+                                    </td>
+                                    <td>
+                                        <?php echo $employee["1st_out"] ? $employee["1st_out"] :
+                                            '<i class="fas fa-minus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span>'; ?>
+                                    </td>
 
-                                    <td><i class="fas fa-minus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span></td>
+                                    <td>
+                                        <i class="fas fa-caret-down dropdown-icon " onclick="toggleDropdown(this)"></i>
+                                        <div class="dropdown-content">
+                                            <a href="#">30 mins</a>
+                                            <a href="#">1 hour</a>
+                                        </div>
+                                    </td>
+
+
+                                    <td>
+                                        <?php echo $employee["2nd_in"] ? $employee["2nd_in"] :
+                                            '<i class="fas fa-plus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span>'; ?>
+                                    </td>
+                                    <td>
+                                        <?php echo $employee["2nd_out"] ? $employee["2nd_out"] :
+                                            '<i class="fas fa-minus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span>'; ?>
+                                    </td>
 
                                     <td>
                                         <i class="fas fa-caret-down dropdown-icon" onclick="toggleDropdown(this)"></i>
@@ -97,35 +106,17 @@ mysqli_close($conn);
                                         </div>
                                     </td>
 
-
-                                    <td><i class="fas fa-plus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span></td>
-                                    <td><i class="fas fa-minus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span></td>
-
                                     <td>
-                                        <i class="fas fa-caret-down dropdown-icon" onclick="toggleDropdown(this)"></i>
-                                        <div class="dropdown-content">
-                                            <a href="#">30 mins</a>
-                                            <a href="#">1 hour</a>
-                                        </div>
+                                        <?php echo $employee["3rd_in"] ? $employee["3rd_in"] :
+                                            '<i class="fas fa-plus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span>'; ?>
                                     </td>
-
-                                    <td><i class="fas fa-plus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span></td>
-                                    <td><i class="fas fa-minus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span></td>
-
-                                    <?php
-                                    $current_time_displayed = true; // Example value for demonstration
-
-                                    // Conditional display of circle icon
-                                    if ($current_time_displayed) {
-                                        echo '<td><i class="fas fa-circle text-success"></i></td>';
-                                    }
-                                    // else {
-                                    //     echo '<td><i class="fas fa-circle text-danger"></i></td>';
-                                    // }
-                                    ?>
-
-                                    <td></td>
-
+                                    <td>
+                                        <?php echo $employee["3rd_out"] ? $employee["3rd_out"] :
+                                            '<i class="fas fa-minus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span>'; ?>
+                                    </td>
+                                    <td><i class="fas fa-circle text-success"></i></td>
+                                    <!-- <td><i class="fas fa-circle text-danger"></i></td> -->
+                                    <td>$20.00</td>
                                     <td>
                                         <center>
                                             <!-- Button with trash icon -->
@@ -138,7 +129,7 @@ mysqli_close($conn);
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
-
+                    </table>
                 </div>
             </div>
         </div>
@@ -260,8 +251,8 @@ mysqli_close($conn);
         display: block;
     }
 </style>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script> -->
 <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
 <script>
@@ -269,6 +260,7 @@ mysqli_close($conn);
     $(document).ready(function() {
         // Get the current date
         var currentDate = new Date();
+        var paramsDate = null;
 
         var urlParams = new URLSearchParams(window.location.search);
         var dateParam = urlParams.get('date');
@@ -277,22 +269,21 @@ mysqli_close($conn);
         if (dateParam !== null) {
             // Set the value of the input field to the value of the 'date' parameter
             $('#selected_date').val(dateParam);
+            paramsDate = dateParam
         } else {
             // Format the current date as "YYYY-MM-DD"
             var formattedDate = currentDate.getFullYear() + '-' + ('0' + (currentDate.getMonth() + 1)).slice(-2) + '-' + ('0' + currentDate.getDate()).slice(-2);
 
             // Set the formatted date as the value of the input field
             $('#selected_date').val(formattedDate);
+            paramsDate = formattedDate
         }
 
-
-
+        // TIME BREAK DROPDOWN
         function toggleDropdown(icon) {
             var dropdownContent = icon.nextElementSibling;
             dropdownContent.classList.toggle("show");
         }
-
-
         window.onclick = function(event) {
             if (!event.target.matches('.dropdown-icon')) {
                 var dropdowns = document.getElementsByClassName("dropdown-content");
@@ -325,11 +316,18 @@ mysqli_close($conn);
             }
         );
 
+        // DATA PAYLOAD
+        let data = {
+            column: "",
+            time: "",
+            id: null,
+            date: paramsDate,
+        }
+
         // Listen for modal close event
         // Stop the QR code scanner when the modal is closed
         $('#qrScannerModal').on('hidden.bs.modal', function() {
             html5QrcodeScanner.clear();
-            html5QrcodeScanner.stop();
         });
 
         // Function to handle QR scanner modal
@@ -339,7 +337,25 @@ mysqli_close($conn);
         }
 
         // Attach click event handler to plus icons
+        // GET THE ID OF ROWS AND COLUMN
         $(document).on('click', '.add-qr-scanner', function() {
+            // Find the closest table row (tr)
+            var row = $(this).closest('tr');
+
+            // Get the index of the cell within its row
+            var cellIndex = $(this).closest('td').index();
+
+            // Find the corresponding header cell in the <thead>
+            var headerCell = row.closest('table').find('thead th').eq(cellIndex);
+
+            // Get the column ID from the header cell
+            var columnId = headerCell.attr('id');
+            var rowId = row.attr('id')
+            console.log(rowId)
+
+            data.column = columnId
+            data.id = rowId.split("-")[1]
+
             handleQRScannerModal();
             // Store the clicked cell for later use
             $(this).closest('td').addClass('clicked-cell');
@@ -347,36 +363,76 @@ mysqli_close($conn);
 
         // Function to handle successful QR code scan
         function onScanSuccess(decodedText, decodedResult) {
-            console.log(`Scan result ${decodedText}`, decodedResult);
-            Swal.fire({
-                title: "Attendance Successfully.",
-                text: "John Patrick Lubuguin",
-                icon: "success",
-                confirmButtonColor: "#3085d6",
-                confirmButtonText: "OK",
-                customClass: {
-                    container: "custom-sweetalert-container",
-                    popup: "custom-sweetalert-popup",
-                    title: "custom-sweetalert-title",
-                    text: "custom-sweetalert-text",
-                    confirmButton: "custom-sweetalert-confirm-button"
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $('#qrScannerModal').modal('hide'); // Close the modal
+            // console.log(`Scan result ${decodedText}`, decodedResult);
 
-                    var currentTime = new Date().toLocaleTimeString('en-US', {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        hour12: false
-                    });
-                    $('.clicked-cell').find('.current-time').text(currentTime).fadeIn().removeClass('current-time');
-                }
+            $('#qrScannerModal').modal('hide'); // Close the modal
+
+            const currentTime = new Date();
+            // currentTime.toLocaleTimeString("PST");
+
+            const formattedTime = currentTime.toLocaleTimeString("en-US", {
+                hour: '2-digit',
+                minute: '2-digit'
             });
 
-            html5QrcodeScanner.clear();
+            data.time = formattedTime
+
+            $('.clicked-cell').find('.current-time').text(formattedTime).fadeIn().removeClass('current-time');
+            // Hide the icon
+            $('.clicked-cell').find('.add-qr-scanner').hide();
+
+            // console.log(data)
+            HandleAttendance(data)
+
             // Close the camera by stopping the scanning process.
-            html5QrcodeScanner.stop();
+            html5QrcodeScanner.clear();
         }
+
+
+        // ATTENDANCE AJAX
+        async function HandleAttendance(payload) {
+            await $.ajax({
+                url: './services/ajax.php?action=attendance_employee',
+                method: 'POST',
+                data: payload,
+                error: err => {
+                    console.log(err)
+                    Swal.fire({
+                        title: "Something went wrong.",
+                        // text: "John Patrick Lubuguin",
+                        icon: "error",
+                        confirmButtonColor: "#3085d6",
+                        confirmButtonText: "OK",
+                        customClass: {
+                            container: "custom-sweetalert-container",
+                            popup: "custom-sweetalert-popup",
+                            title: "custom-sweetalert-title",
+                            text: "custom-sweetalert-text",
+                            confirmButton: "custom-sweetalert-confirm-button"
+                        }
+                    });
+                },
+                success: (resp) => {
+                    if (resp) {
+                        // console.log(resp)
+                        Swal.fire({
+                            title: "Attendance Successfully.",
+                            // text: "John Patrick Lubuguin",
+                            icon: "success",
+                            confirmButtonColor: "#3085d6",
+                            confirmButtonText: "OK",
+                            customClass: {
+                                container: "custom-sweetalert-container",
+                                popup: "custom-sweetalert-popup",
+                                title: "custom-sweetalert-title",
+                                text: "custom-sweetalert-text",
+                                confirmButton: "custom-sweetalert-confirm-button"
+                            }
+                        });
+                    }
+                }
+            })
+        }
+
     });
 </script>

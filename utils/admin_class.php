@@ -570,19 +570,26 @@ class Action
 
 	function employee_attendance()
 	{
+		// $column = ["1st_in", "1st_out", "1st_break", "2nd_in", "2nd_out", "2nd_break", "3rd_in", "3rd_out"];
 		extract($_POST);
 
-		$stmt = $this->db->prepare("UPDATE attendance SET $column = ? WHERE id = ?");
+		// Sanitize and validate input data
+		$column = $_POST['column'];
+		$time = $_POST['time'];
+		$id = $_POST['id'];
+
+		$stmt = $this->db->prepare("UPDATE schedule SET  $column = ? WHERE employee_ID = ? AND date = ?");
 
 		// Bind parameters
-		$stmt->bind_param("i", $id);
+		$stmt->bind_param("sis", $time, $id, $date);
 
 		// Execute the query
 		$success = $stmt->execute();
 
 		// Check for errors and return appropriate response
 		if ($success) {
-			return "Attendance recorded successfully";
+			// return "id: " . $id . " column: " . $column . " time: " . $time . " date: " . $date;
+			return "Attendance Successfully Recorded";
 		} else {
 			// Log the error or return a meaningful message
 			return "Error: " . $stmt->error;
