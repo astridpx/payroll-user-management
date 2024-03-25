@@ -374,7 +374,7 @@ class Action
 		if ($delete)
 			return 1;
 	}
-	function calculate_payroll()
+	function calculate_payroll8382u()
 	{
 		extract($_POST);
 		$am_in = "08:00";
@@ -475,7 +475,7 @@ class Action
 		}
 		if (isset($save)) {
 			$this->db->query("UPDATE payroll set status = 1 where id = " . $pay['id']);
-			return 1;
+			return $data;
 		}
 	}
 
@@ -593,6 +593,95 @@ class Action
 		} else {
 			// Log the error or return a meaningful message
 			return "Error: " . $stmt->error;
+		}
+	}
+
+
+
+	function calculate_payroll()
+	{
+		extract($_POST);
+		$this->db->query("DELETE FROM payroll_items where payroll_id=" . $id);
+		// GET THE DATE IN  PAYROLL
+		$pay = $this->db->query("SELECT * FROM payroll where id = " . $id)->fetch_array();
+
+		$start_date = $pay["date_from"];
+		$end_date = $pay["date_to"];
+
+		// $att = $this->db->query("SELECT * FROM schedule WHERE date(date) BETWEEN '{$pay["date_from"]}' AND '{$pay["date_to"]}'");
+		$att = $this->db->query("SELECT * FROM schedule WHERE date(date) BETWEEN '$start_date' AND '$end_date'");
+
+
+		function calculateSalary($employeeID, $records)
+		{
+			$totalSalary = 0;
+			$hourly_rate = 59;
+
+
+			foreach ($records as $record) {
+				if ($record['employee_ID'] == $employeeID) {
+					// Calculate the duration between time_start and time_end
+					$startTime = strtotime($record['time_start']);
+					$endTime = strtotime($record['time_end']);
+					$durationHours = ($endTime - $startTime) / 3600; // Convert to hours
+
+					// Calculate salary for this record
+					$salary = $durationHours * $hourly_rate;
+
+					// Add salary to total
+					$totalSalary += $salary;
+				}
+			}
+
+			return $totalSalary;
+		}
+
+		// Fetch all records once
+		$allRecords = $att->fetch_all(MYSQLI_ASSOC);
+
+		if (!empty($allRecords)) {
+			// Create an associative array to store total salary for each employee
+			$employeeSalaries = array();
+
+			// Loop through all records to calculate total salary for each employee
+			foreach ($allRecords as $row) {
+				$employeeID = $row['employee_ID'];
+
+				// Check if the employee ID already exists in the array
+				if (!isset($employeeSalaries[$employeeID])) {
+					// If not, initialize the total salary for this employee
+					$employeeSalaries[$employeeID] = 0;
+				}
+
+				// Calculate the salary for this record
+				$startTime = strtotime($row['time_start']);
+				$endTime = strtotime($row['time_end']);
+				$durationHours = ($endTime - $startTime) / 3600; // Convert to hours
+				$salary = $durationHours * 59;
+
+				// Add the salary to the total salary for this employee
+				$employeeSalaries[$employeeID] += $salary;
+			}
+
+			// Output the total salary for each employee
+			foreach ($employeeSalaries as $employeeID => $totalSalary) {
+
+
+				$net = intval($totalSalary);
+				// Prepare data for inserting into payroll_items table
+				$data = " payroll_id = '" . $pay['id'] . "' ";
+				$data .= ", employee_id = '" . $employeeID . "' ";
+				$data .= ", salary = '$totalSalary' "; // Inserting total salary instead of net
+				$data .= ", net = '$net' ";
+
+				// Insert data into payroll_items table
+				$save[] = $this->db->query("INSERT INTO payroll_items SET " . $data);
+			}
+		}
+
+		if (isset($save)) {
+			$this->db->query("UPDATE payroll set status = 1 where id = " . $pay['id']);
+			return 1;
 		}
 	}
 }

@@ -1,4 +1,40 @@
 <?php include('./config/db_connect.php') ?>
+
+<!-- Modal -->
+<div class="modal fade" id="newPayrollModal" tabindex="-1" aria-labelledby="newPayrollModal" aria-hidden="true">
+	<div class="modal-dialog">
+		<form class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="newPayrollModal">Modal title</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="row g-3 needs-validation" novalidate>
+					<div class="col-full">
+						<label for="validationCustom01" class="form-label">Date From:</label>
+						<input type="date" class="form-control" id="dateFrom" required>
+						<div class="valid-feedback">
+							Looks good!
+						</div>
+					</div>
+					<div class="col">
+						<label for="validationCustom02" class="form-label">Date To:</label>
+						<input type="date" class="form-control" id="dateTo" required>
+						<div class="valid-feedback">
+							Looks good!
+						</div>
+					</div>
+
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" id="save_new_payroll">Save changes</button>
+			</div>
+		</form>
+	</div>
+</div>
+
 <div class="container-fluid ">
 	<div class="col-lg-12">
 
@@ -7,7 +43,9 @@
 		<div class="card">
 			<div class="card-header">
 				<span><b>Payroll List</b></span>
-				<button class="btn btn-primary btn-sm btn-block col-md-3 float-right" type="button" id="new_payroll_btn"><span class="fa fa-plus"></span> Add Payroll</button>
+				<button class="btn btn-primary btn-sm btn-block col-md-3 float-right" type="button" id="new_payroll_btn" data-bs-toggle="modal" data-bs-target="#newPayrollModal"><span class="fa fa-plus"></span> Add Payroll
+				</button>
+
 			</div>
 			<div class="card-body">
 				<table id="table" class="table table-bordered table-striped">
@@ -43,7 +81,9 @@
 											<button class="btn btn-sm btn-outline-primary view_payroll" data-id="<?php echo $row['id'] ?>" type="button"><i class="fa fa-eye"></i></button>
 										<?php endif ?>
 
-										<button class="btn btn-sm btn-outline-primary edit_payroll" data-id="<?php echo $row['id'] ?>" type="button"><i class="fa fa-edit"></i></button>
+										<button class="btn btn-sm btn-outline-primary edit_payroll" data-bs-toggle="modal" data-bs-target="#newPayrollModal" data-id="<?php echo $row['id'] ?>" type="button">
+											<i class="fa fa-edit"></i>
+										</button>
 										<button class="btn btn-sm btn-outline-danger remove_payroll" data-id="<?php echo $row['id'] ?>" type="button"><i class="fa fa-trash"></i></button>
 									</center>
 								</td>
@@ -68,22 +108,59 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 
+		async function PayrollManage(data) {
+			start_load()
+
+			await $.ajax({
+				url: './services/ajax.php?action=save_payroll',
+				method: "POST",
+				data: data,
+				error: err => console.log(),
+				success: function(resp) {
+					if (resp == 1) {
+						alert_toast("Payroll successfully saved", "success");
+						setTimeout(function() {
+							location.reload()
+						}, 600)
+					}
+				}
+			})
+		}
 
 
+		let data = {
+			date_from: "",
+			date_to: "",
+			type: 2,
+			id: null
+		}
 
+
+		// ADD NEW PAYROLL
+		$("#save_new_payroll").on("click", function() {
+			const dateFrom = $("#dateFrom").val()
+			const dateTo = $("#dateTo").val()
+
+			data.date_from = dateFrom
+			data.date_to = dateTo
+
+
+			PayrollManage(data)
+		})
+
+		// EDIT PAYROLL
 		$('.edit_payroll').click(function() {
-			var $id = $(this).attr('data-id');
-			uni_modal("Edit Employee", "manage_payroll.php?id=" + $id)
+			var id = $(this).attr('data-id');
 
+			data.id = id
 		});
+
 		$('.view_payroll').click(function() {
 			var $id = $(this).attr('data-id');
 			location.href = "index.php?page=payroll_items&id=" + $id;
 
 		});
-		$('#new_payroll_btn').click(function() {
-			uni_modal("New Payroll", "manage_payroll.php")
-		})
+
 		$('.remove_payroll').click(function() {
 			_conf("Are you sure to delete this payroll?", "remove_payroll", [$(this).attr('data-id')])
 		})

@@ -28,10 +28,10 @@ $pt = array(1 => "Monhtly", 2 => "Semi-Monthly");
 						<tr>
 							<th>Employee ID</th>
 							<th>Name</th>
-							<th>Absent</th>
-							<th>Late</th>
-							<th>Total Allowance</th>
-							<th>Total Deduction</th>
+							<!-- <th>Absent</th> -->
+							<!-- <th>Late</th> -->
+							<!-- <th>Total Allowance</th> -->
+							<!-- <th>Total Deduction</th> -->
 							<th>Net</th>
 							<th>Action</th>
 						</tr>
@@ -45,10 +45,10 @@ $pt = array(1 => "Monhtly", 2 => "Semi-Monthly");
 							<tr>
 								<td><?php echo $row['employee_no'] ?></td>
 								<td><?php echo ucwords($row['ename']) ?></td>
-								<td><?php echo $row['absent'] ?></td>
-								<td><?php echo $row['late'] ?></td>
-								<td><?php echo number_format($row['allowance_amount'], 2) ?></td>
-								<td><?php echo number_format($row['deduction_amount'], 2) ?></td>
+								<!-- <td><?php echo $row['absent'] ?></td> -->
+								<!-- <td><?php echo $row['late'] ?></td> -->
+								<!-- <td><?php echo number_format($row['deduction_amount'], 2) ?></td> -->
+								<!-- <td><?php echo number_format($row['allowance_amount'], 2) ?></td> -->
 								<td><?php echo number_format($row['net'], 2) ?></td>
 								<td>
 									<center>
@@ -77,9 +77,6 @@ $pt = array(1 => "Monhtly", 2 => "Semi-Monthly");
 </script>
 <script type="text/javascript">
 	$(document).ready(function() {
-
-
-
 		$('#print_btn').click(function() {
 			var nw = window.open("print_payroll.php?id=<?php echo $_GET['id'] ?>", "_blank", "height=500,width=800")
 			setTimeout(function() {
@@ -108,12 +105,13 @@ $pt = array(1 => "Monhtly", 2 => "Semi-Monthly");
 				},
 				error: err => console.log(err),
 				success: function(resp) {
+					console.log(resp)
 					if (resp == 1) {
 						alert_toast("Payroll successfully computed", "success");
 						setTimeout(function() {
 							location.reload();
 
-						}, 1000)
+						}, 600)
 					}
 				}
 			})
