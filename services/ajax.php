@@ -166,3 +166,8 @@ if ($action == "set_employee_time") {
 	if ($save)
 		echo $save;
 }
+if ($action == "attendance_employee") {
+	$save = $crud->employee_attendance();
+	if ($save)
+		echo $save;
+}
