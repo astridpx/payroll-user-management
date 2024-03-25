@@ -15,6 +15,11 @@ $employee_list = mysqli_query($conn, $sql);
 
 function NetCalculator($time_start, $time_end)
 {
+    if (!$time_start || !$time_end) {
+        echo "₱" . 0;
+        return;
+    }
+
     // Create DateTime objects for start and end times
     $start_time = DateTime::createFromFormat('h:i A', $time_start);
     $end_time = DateTime::createFromFormat('h:i A', $time_end);
