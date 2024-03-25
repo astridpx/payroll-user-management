@@ -110,22 +110,50 @@
 
 
 
-
 			<a href="index.php?page=home" class="list-group-item list-group-item-action py-2 ripple nav-home">
 				<i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Dashboard</span>
 			</a>
+
+			
 			<!-- <a href="index.php?page=attendance" class="list-group-item list-group-item-action py-2 ripple nav-attendance">
 				<i class="fas fa-clipboard-list fa-fw me-3"></i><span>Attendance</span>
 			</a> -->
 
 			<a href="index.php?page=payroll" class="list-group-item list-group-item-action py-2 ripple nav-payroll"><i class="fas fa-money-check-alt fa-fw me-3"></i><span>Payroll</span></a>
 			<a href="index.php?page=employee" class="list-group-item list-group-item-action py-2 ripple nav-employee"><i class="fas fa-users fa-fw me-3"></i><span>Employee list</span></a>
+
+
 			<a href="index.php?page=department" class="list-group-item list-group-item-action py-2 ripple nav-department">
 				<i class="fas fa-building fa-fw me-3"></i><span>Station</span>
 			</a>
+
+			<!--SICKLEAVE LINK TEMPORARY-->
+
+			<a href="index.php?page=sickleave" class="list-group-item list-group-item-action py-2 ripple nav-sickleave">
+				<i class="fas fa-envelope fa-fw me-3"></i><span>Request Leave</span>
+			</a>
+
+			<a href="index.php?page=request_leave" class="list-group-item list-group-item-action py-2 ripple nav-request_leave">
+				<i class="fas fa-envelope fa-fw me-3"></i><span>List of Request</span>
+			</a>
+
+			<button class="dropdown-btn list-group-item list-group-item-action"> <i class="fas fa-clipboard-list fa-fw me-3"></i> <span>Sick Leave</span>
+				<i class="fa fa-caret-down"></i>
+			</button>
+
+			<div class="dropdown-container">
+				<a href="index.php?page=request_leave" class="list-group-item list-group-item-action py-2 ripple nav-request_leave"><i class="fas fa-envelope fa-fw me-3"></i><span>Pending</span></a>
+				<a href="index.php?page=approved_request" class="list-group-item list-group-item-action py-2 ripple nav-approved_request">
+					<i class="fas fa-clipboard-list fa-fw me-3"></i><span>Approved</span></a>
+
+					<a href="index.php?page=declined_request" class="list-group-item list-group-item-action py-2 ripple nav-declined_request">
+					<i class="fas fa-clipboard-list fa-fw me-3"></i><span>Declined</span></a>
+
+			</div>
+
 			<!-- <a href="index.php?page=position" class="list-group-item list-group-item-action py-2 ripple nav-position"><i class="fas fa-briefcase fa-fw me-3"></i><span>Position</span></a> -->
 			<!-- <a href="index.php?page=allowances" class="list-group-item list-group-item-action py-2 ripple nav-allowances"><i class="fas fa-wallet fa-fw me-3"></i><span>Allowance</span></a> -->
-			<button class="dropdown-btn list-group-item list-group-item-action"> <i class="fas fa-clipboard-list fa-fw me-3"></i> <span>Opperation</span>
+			<button class="dropdown-btn list-group-item list-group-item-action"> <i class="fas fa-clipboard-list fa-fw me-3"></i> <span>Management</span>
 				<i class="fa fa-caret-down"></i>
 			</button>
 
