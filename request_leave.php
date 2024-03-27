@@ -2,10 +2,109 @@
 include('./config/db_connect.php');
 include('./includes/header.php');
 
-// Fetch data from the "sick_leave" table
-$query = "SELECT * FROM sick_leave";
-$result = mysqli_query($conn, $query);
+// Include PHPMailer
+use PHPMailer\PHPMailer\PHPMailer;
+require './PHPMailer/src/Exception.php';
+require './PHPMailer/src/PHPMailer.php';
+require './PHPMailer/src/SMTP.php';
 
+// Function to send email
+function RequestMailer($email, $lname, $remark, $status)
+{
+    try {
+        $mail = new PHPMailer(true);
+
+        // Server settings
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'trickster2214@gmail.com';
+        $mail->Password = 'xmeb nxvf xjmc dckh';
+        $mail->SMTPSecure = 'tls';
+        $mail->Port = 587;
+
+        // Recipients
+        $mail->setFrom('cjvaldez151@gmail.com', 'SICKLEAVE REQUEST UPDATES');
+        $mail->addAddress($email, $lname); // Add a recipient
+
+        // Content
+        $mail->isHTML(true); // Set email format to HTML
+        $mail->Subject = 'Sickleave Update';
+        $mail->Body = '<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sickleave Confirmation</title>
+    <style>
+        body {
+            font-family: "Arial", sans-serif;
+            line-height: 1.2;
+            color: #333;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #007bff;
+        }
+
+        p {
+            margin-bottom: 10px;
+        }
+
+        .appointment-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #28a745;
+        }
+
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            color: #777;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Sickleave Updates</h2>
+        <p>Dear ' . $lname . ',</p>
+        <p>Your Sickleave Request is Updated.</p>
+
+        <p><strong>Sickleave Status : </strong> ' . $status . '</p>
+        <p><strong>Remark : </strong> ' . $remark . '</p>
+
+        <p><strong>Location:</strong> SVCC Complex Mamatid, City of Cabuyao, Laguna</p>
+
+        <div class="footer">
+            <p>This is the status of your sickleave request. If you have any questions. dont bother me! .</p>
+        </div>
+        <div class="footer">
+            <p>BSIT 4A2</p>
+        </div>
+    </div>
+</body>
+
+</html>';
+        $mail->send();
+
+        return true;
+    } catch (Exception $e) {
+        return false;
+    }
+}
 // Check if form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Retrieve form data
@@ -19,37 +118,61 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Check if update was successful
     if ($updateResult) {
-        echo '<script>
-        document.addEventListener("DOMContentLoaded", function() {
-            Swal.fire({
-                title: "Success!",
-                text: "  Updating Request Successfully.",
-                icon: "success",
-                confirmButtonColor: "#3085d6",
-                confirmButtonText: "OK",
-                customClass: {
-                    container: "custom-sweetalert-container",
-                    popup: "custom-sweetalert-popup",
-                    title: "custom-sweetalert-title",
-                    text: "custom-sweetalert-text",
-                    confirmButton: "custom-sweetalert-confirm-button"
-                }
-            });
-        });
-        </script>';
-    } else {
-        echo '<script>
-        Swal.fire({
-            icon: "error",
-            title: "Error!",
-            text: "Something Went Wrong. Please try again",
-        });
-        </script>';
-    }
+        // Fetch employee data
+        $fetchQuery = "SELECT * FROM sick_leave WHERE id='$id'";
+        $fetchResult = mysqli_query($conn, $fetchQuery);
+        $employeeData = mysqli_fetch_assoc($fetchResult);
+        $email = $employeeData['email'];
+        $lname = $employeeData['lastname']; // Changed this to last name
 
-    mysqli_close($conn);
-} 
+        // Send email
+        $mailSent = RequestMailer($email, $lname, $remark, $status); // Changed $fname to $lname
+        if ($mailSent) {
+            // Email sent successfully
+            echo '<script>
+                    Swal.fire({
+                        title: "Success!",
+                        text: "Updating Request Successfully.",
+                        icon: "success",
+                        confirmButtonColor: "#3085d6",
+                        confirmButtonText: "OK",
+                        customClass: {
+                            container: "custom-sweetalert-container",
+                            popup: "custom-sweetalert-popup",
+                            title: "custom-sweetalert-title",
+                            text: "custom-sweetalert-text",
+                            confirmButton: "custom-sweetalert-confirm-button"
+                        }
+                    });
+                </script>';
+        } else {
+            // Failed to send email
+            echo '<script>
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error!",
+                        text: "Updating Request Successful but failed to send email notification.",
+                    });
+                </script>';
+        }
+    } else {
+        // Failed to update database
+        echo '<script>
+                Swal.fire({
+                    icon: "error",
+                    title: "Error!",
+                    text: "Something Went Wrong. Please try again",
+                });
+            </script>';
+    }
+}
+
+// Fetch data from the "sick_leave" table
+$query = "SELECT * FROM sick_leave";
+$result = mysqli_query($conn, $query);
+
 ?>
+
 
 <div class="container-fluid">
     <div class="col-lg-12">
