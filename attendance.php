@@ -12,8 +12,30 @@ $employee_list = mysqli_query($conn, $sql);
 //     // Output the results as needed
 //     var_dump($row);
 // }
+function convertToTime($duration_string)
+{
+    if (!$duration_string) return;
 
-function NetCalculator($time_start, $time_end)
+    // Split the duration string into parts
+    $parts = explode(" ", $duration_string);
+
+    // Extract the numeric value and unit
+    $value = (int)$parts[0];
+    $unit = strtolower($parts[1]);
+
+    // Convert to time format
+    if ($unit === 'hour' || $unit === 'hours') {
+        return $value; // Return the numeric value for hours
+    } elseif ($unit === 'min' || $unit === 'mins' || $unit === 'minute' || $unit === 'minutes') {
+        return $value / 60; // Return the numeric value for minutes converted to hours
+    } else {
+        return 0; // Return 0 for invalid duration format
+    }
+}
+
+
+
+function NetCalculator($time_start, $time_end, $break1, $break2)
 {
     if (!$time_start || !$time_end) {
         echo "₱" . 0;
@@ -28,13 +50,19 @@ function NetCalculator($time_start, $time_end)
     $interval = $start_time->diff($end_time);
     $total_hours = $interval->h + ($interval->i / 60);
 
+    $total_net_hours = $total_hours  -  convertToTime($break1) - convertToTime($break2);
+
     // Calculate the total pay
     $hourly_rate = 59; // $59 per hour
-    $total_pay = $total_hours * $hourly_rate;
+    $total_pay =  $total_net_hours * $hourly_rate;
+
+
 
     // Output the total pay
     echo "₱" . number_format($total_pay, 2);
 }
+
+
 
 
 mysqli_close($conn);
@@ -155,7 +183,7 @@ mysqli_close($conn);
                                     </td>
                                     <!-- <td><i class="fas fa-circle text-success"></i></td> -->
                                     <!-- <td><i class="fas fa-circle text-danger"></i></td> -->
-                                    <td><?php NetCalculator($employee["time_start"], $employee["time_end"]) ?></td>
+                                    <td><?php NetCalculator($employee["time_start"], $employee["time_end"], $employee["1st_break"], $employee["2nd_break"]) ?></td>
                                     <!-- <td>
                                         <center>
                                             <button class="btn btn-sm btn-outline-danger remove_attendance" data-id="1" type="button"><i class="fa fa-trash"></i></button>
