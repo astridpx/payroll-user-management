@@ -1,21 +1,4 @@
-<?php
-include './config/db_connect.php';
-
-// SICKLEAVE CHART
-$query = "SELECT status, COUNT(*) AS count FROM sick_leave GROUP BY status";
-$result = mysqli_query($conn, $query);
-
-$status_counts = array(
-    'approved' => 0,
-    'declined' => 0,
-    'pending' => 0
-);
-
-
-while ($row = mysqli_fetch_assoc($result)) {
-    $status_counts[$row['status']] = $row['count'];
-}
-?>
+<?php include './config/db_connect.php'?>
 
 <?php
 
@@ -215,159 +198,103 @@ if ($result->num_rows > 0) {
 
 			<!--END OF CARDS TABLE -->
 
-<!--CHARTS  -->
-<div class="container mt-3">
-  <div class="row gx-3">
-    <div class="col-md-7" style="background-color: #ffff; border-radius: 8px; box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.2);">
-      <canvas id="chart1" style="height: 60vh;"></canvas>
-    </div>
-    <div class="col-md-auto"></div> <!-- Short gap between the columns -->
-    <div class="col-md-4" style="background-color: #ffff; border-radius: 8px; box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.2);">
-      <canvas id="chart2" style="height: 60vh;"></canvas>
-    </div>
-  </div>
-</div>
-
-
-
-
+	<!--CHARTS  -->
+	<div style="column-gap: 8px;" class="d-flex  mt-3 ">
+		<div style="width: 59%; background-color: #fff; position: relative; height:60vh" class="flex-1 rounded-2">
+			<canvas id="chart1" class=""></canvas>
+		</div>
+		<div style=" background-color: #fff; position: relative; height:60vh" class="flex-fill rounded-2">
+			<canvas id="chart2" class=""></canvas>
+		</div>
+	</div>
 
 </div>
-
-<!--PAYROL HISTORY CHART-->
 <script>
-    // Function to fetch data from the server
-    function fetchData() {
-        $.ajax({
-            url: 'fetch_payroll_data.php', 
-            type: 'GET',
-            dataType: 'json',
-            success: function(response) {
-            
-                updateChart(response);
-            },
-            error: function(xhr, status, error) {
-                console.error(error);
-            }
-        });
-    }
+	const ctx1 = $('#chart1');
+	const ctx2 = $('#chart2');
 
-    function updateChart(data) {
-        const ctx1 = $('#chart1');
-        new Chart(ctx1, {
-            type: 'bar',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                datasets: [{
-                    label: '# Payroll',
-                    data: data.payroll_data,
-                    backgroundColor: generateGradientColors(data.payroll_data),
-                    borderWidth: 1,
-                }]
-            },
-            options: {
-                aspectRatio: 16 / 9,
-                scales: {
-                    x: {
-                        beginAtZero: true,
-                        grid: {
-                            display: false,
-                        },
-                        border: {
-                            display: false
-                        },
-                    },
-                    y: {
-                        beginAtZero: true,
-                        border: {
-                            display: false
-                        },
-                    },
-                },
-                plugins: {
-                    legend: {
-                        display: true,
-                        labels: {
-                            usePointStyle: true,
-                            pointStyle: "circle",
-                            boxWidth: 8,
-                            boxHeight: 8,
-                        },
-                    },
-                    title: {
-                        display: true,
-                        text: "Payroll History",
-                        font: {
-                            size: 19,
-                        },
-                    },
-                },
-                animation: {
-                    duration: 2000, 
-                }
-            }
-        });
-    }
+	new Chart(ctx1, {
+		type: 'bar',
+		data: {
+			labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+			datasets: [{
+				label: '# of Votes',
+				data: [12, 19, 3, 5, 20, 3],
+				borderWidth: 1,
+			}]
+		},
+		options: {
+			aspectRatio: 16 / 9,
+			scales: {
+				x: {
+					beginAtZero: true,
+					grid: {
+						display: false, // Disable vertical grid lines for the x-axis / nakahiga
+					},
+					border: {
+						display: false
+					},
+				},
+				y: {
+					beginAtZero: true,
+					border: {
+						display: false
+					},
+				},
+			},
+			plugins: {
+				legend: {
+					display: true,
+					labels: {
+						usePointStyle: true,
+						pointStyle: "circle",
+						boxWidth: 8,
+						boxHeight: 8,
+					},
+				},
+				title: {
+					display: true,
+					text: "Total Profit",
+					font: {
+						size: 19,
+					},
+				},
+			}
 
+		},
+	});
 
-    function generateGradientColors(data) {
-        const colors = [];
-        const max = Math.max(...data);
-        const min = Math.min(...data);
-        const range = max - min;
-        data.forEach(value => {
-            const normalizedValue = (value - min) / range;
-            const color = `rgba(208, 60, 60, ${normalizedValue})`; 
-            colors.push(color);
-        });
-        return colors;
-    }
+	new Chart(ctx2, {
+		type: 'pie',
+		data: {
+			labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+			datasets: [{
+				label: '# of Votes',
+				data: [12, 19, 3, 5, 20, 3],
+				borderWidth: 1,
+			}]
+		},
+		options: {
+			// aspectRatio: 16 / 9,
+			plugins: {
+				legend: {
+					display: true,
+					labels: {
+						usePointStyle: true,
+						pointStyle: "circle",
+						boxWidth: 8,
+						boxHeight: 8,
+					},
+				},
+				title: {
+					display: true,
+					text: "Total Profit",
+					font: {
+						size: 19,
+					},
+				},
+			}
 
-   
-    $(document).ready(function() {
-        fetchData();
-    });
-</script>
-
-
-
-<script>
-    const ctx2 = $('#chart2');
-    new Chart(ctx2, {
-        type: 'pie',
-        data: {
-            labels: ['Approved', 'Cancelled', 'Pending'],
-            datasets: [{
-                label: '# of Request',
-                data: [
-                    <?php echo $status_counts['approved']; ?>,
-                    <?php echo $status_counts['declined']; ?>,
-                    <?php echo $status_counts['pending']; ?>
-                ],
-                borderWidth: 1,
-            }]
-        },
-        options: {
-            // aspectRatio: 16 / 9,
-            plugins: {
-                legend: {
-                    display: true,
-                    labels: {
-                        usePointStyle: true,
-                        pointStyle: "circle",
-                        boxWidth: 8,
-                        boxHeight: 8,
-                    },
-                },
-                title: {
-                    display: true,
-                    text: "Total Sick Leave",
-                    font: {
-                        size: 19,
-                    },
-                },
-            }
-
-        },
-    });
+		},
+	});
 </script>
