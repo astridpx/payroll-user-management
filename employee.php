@@ -1,5 +1,6 @@
 <?php include('./config/db_connect.php') ?>
 
+
 <!-- Modal -->
 <div class="modal fade " id="addEmpModal" tabindex="-1" aria-labelledby="addEmpModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-lg">
