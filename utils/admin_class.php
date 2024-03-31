@@ -746,4 +746,17 @@ class Action
 			return 1;
 		}
 	}
+
+	function get_employee_sched()
+	{
+
+		$query = $this->db->query("SELECT date FROM schedule");
+
+		// Fetch all rows from the result set as an associative array
+		$result = $query->fetch_all(MYSQLI_ASSOC);
+
+		// Return the fetched result as JSON
+		header('Content-Type: application/json');
+		return json_encode($result);
+	}
 }
