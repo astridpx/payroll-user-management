@@ -1,5 +1,5 @@
 <?php
-// Include your database connection file
+
 include './config/db_connect.php';
 
 // QUERY T FETCH PAYROL BY GROUP OF MONTHLY ONLY
