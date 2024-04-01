@@ -106,12 +106,11 @@ foreach ($deptArray  as $newEntry) {
         <div style="background-color: #FFFFFF;" class="card-header ">
             <span><b>Scheduling for <?php echo isset($_GET['date']) ? (new DateTime(htmlspecialchars($_GET['date'])))->format("F j, Y") : "" ?></b></span>
 
-            <!-- <div class="d-flex align-items-center float-right ">
-                <button style="background-color: #315994;" class="fw-medium btn btn-sm text-light d-flex mr-1 " type="button" id="normalBtn">
-                    <i class="bi bi-cursor mr-1"></i> Cursor</button>
-                <button style="background-color: #D61A42;" class="fw-medium btn btn-sm text-light d-flex  " type="button" id="disposeBtn">
-                    <i class="bi bi-trash3 mr-1"></i> Dispose</button>
-            </div> -->
+            <div class="d-flex align-items-center float-right ">
+                <button class="fw-medium btn btn-success btn-sm text-light d-flex mr-1 align-items-center" type="button" id="print_sched">
+                    <i class="fa fa-print  mr-1"></i> Print</button>
+
+            </div>
         </div>
         <div style="height: 68vh;" class="card-body overflow-auto">
             <table id="table" class="table table-bordered ">
@@ -234,6 +233,16 @@ foreach ($deptArray  as $newEntry) {
     // GET URL PARAMS DATE
     const urlParams = new URLSearchParams(window.location.search);
     const dateParam = urlParams.get('date');
+
+    $('#print_sched').click(function() {
+        var nw = window.open("print_att_sched.php?date=" + dateParam, "_blank", "height=500,width=800")
+        setTimeout(function() {
+            nw.print()
+            setTimeout(function() {
+                nw.close()
+            }, 500)
+        }, 1000)
+    })
 
 
     // BTN FUNCTION
