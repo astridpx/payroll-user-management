@@ -83,7 +83,7 @@ foreach ($deptArray  as $newEntry) {
 
 ?>
 <div>
-    <h2 class="text-center">Schedule - </h2>
+    <h2 class="text-center">Schedule - <?php echo $date; ?> </h2>
     <hr>
 </div>
 <table>
