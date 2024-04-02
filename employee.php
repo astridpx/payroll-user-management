@@ -1,10 +1,10 @@
 <?php include('./config/db_connect.php') ?>
 
 <!-- Modal -->
-<div class="modal fade " id="addEmpModal" tabindex="-1" aria-labelledby="addEmpModalLabel" aria-hidden="true">
+<div class="modal fade " id="addEmpModal" tabindex="-1" aria-labelledby="addEmpModalLabel" aria-hidden="true" style="padding-right: 60px;">
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
-			<div class="modal-header">
+			<div class="modal-header" >
 				<h1 class="modal-title fs-5" id="addEmpModalLabel">New Employee</h1>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
@@ -23,11 +23,23 @@
 							<label for="lastname" style="font-size: 14px;" class="fw-medium">*Lastname</label>
 							<input type="text" id="lastname" class="form-control" placeholder="lastname*" aria-label="lastname*">
 						</div>
+						<div class="col ">
+							<label for="suffix" style="font-size: 14px;" class="fw-medium">*Suffix</label>
+							<input type="text" id="suffix" class="form-control" placeholder="suffix*" aria-label="suffix*">
+						</div>
 					</div>
 					<div class="row">
 						<div class="col ">
 							<label for="email" style="font-size: 14px;" class="fw-medium">*Email</label>
 							<input type="email" id="email" class="form-control" placeholder="email*" aria-label="email*">
+						</div>
+						<div class="col ">
+							<label for="emergencynumber" style="font-size: 14px;" class="fw-medium">*Emergencynuber</label>
+							<input type="number" id="emergencynumber" class="form-control" placeholder="Emergencynumber*" aria-label="Emergencynuber*">
+						</div>
+						<div class="col ">
+							<label for="name" style="font-size: 14px;" class="fw-medium">*Name</label>
+							<input type="text" id="name" class="form-control" placeholder="Name*" aria-label="email*">
 						</div>
 						<div class="col ">
 							<label for="status" style="font-size: 14px;" class="fw-medium">*Job-Type</label>
@@ -54,7 +66,7 @@
 
 		<br />
 		<br />
-		<div class="card">
+		<div class="card" style="width: 1600px">
 			<div class="card-header">
 				<span><b>Employee List</b></span>
 				<button class="btn btn-primary btn-sm btn-block col-md-3 float-right" data-bs-toggle="modal" data-bs-target="#addEmpModal" type="button" id="addEmpbtn"><span class="fa fa-plus"></span> Add Employee</button>
@@ -64,10 +76,13 @@
 					<thead>
 						<tr>
 							<th>Employee No</th>
-							<th>Fullname</th>
+							<th>Firstname</th>
 							<th>Middlename</th>
 							<th>Lastname</th>
+							<th>Suffix</th>
 							<th>Email</th>
+							<th>Emergencynumber</th>
+							<th>Name</th>
 							<th>Status</th>
 							<th>Action</th>
 						</tr>
@@ -92,7 +107,10 @@
 								<td data-firstname="<?php echo $row['firstname'] ?>"><?php echo $row['firstname'] ?></td>
 								<td data-middlename="<?php echo $row['middlename'] ?>"><?php echo $row['middlename'] ?></td>
 								<td data-lastname="<?php echo $row['lastname'] ?>"> <?php echo $row['lastname'] ?></td>
+								<td data-suffix="<?php echo $row['suffix'] ?>"> <?php echo $row['suffix'] ?></td>
 								<td data-email="<?php echo $row['email']  ?>"><?php echo $row['email']  ?></td>
+								<td data-emergencynumber="<?php echo $row['emergencynumber'] ?>"> <?php echo $row['emergencynumber'] ?></td>
+								<td data-name="<?php echo $row['name'] ?>"> <?php echo $row['name'] ?></td>
 								<td data-status="<?php echo $row['status'] ?>"><?php echo $row['status'] ?></td>
 								<td>
 									<center>
@@ -143,7 +161,10 @@
 			firstname: "",
 			middlename: "",
 			lastname: "",
+			suffix: "",
 			email: "",
+			emergencynumber: "",
+			name: "",
 			status: "",
 		}
 
@@ -151,7 +172,10 @@
 			newEmpData.firstname = $("#firstname").val();
 			newEmpData.lastname = $("#lastname").val();
 			newEmpData.middlename = $("#middlename").val();
+			newEmpData.suffix=$("#suffix").val();
 			newEmpData.email = $("#email").val();
+			newEmpData.emergencynumber=$("#emergencynumber").val();
+			newEmpData.name=$("#name").val();
 			newEmpData.status = $("#status").val();
 
 			if (newEmpData.isNew)
@@ -187,8 +211,11 @@
 			var firstname = row.find("td:eq(1)").data("firstname");
 			var middlename = row.find("td:eq(2)").data("middlename");
 			var lastname = row.find("td:eq(3)").data("lastname");
-			var email = row.find("td:eq(4)").data("email");
-			var status = row.find("td:eq(5)").data("status");
+			var suffix = row.find("td:eq(4)").data("suffix");
+			var email = row.find("td:eq(5)").data("email");
+			var emergencynumber = row.find("td:eq(6)").data("emergencynumber");
+			var name = row.find("td:eq(7)").data("name");
+			var status = row.find("td:eq(8)").data("status");
 			var employeeId = $(this).data("id");
 			newEmpData.id = employeeId
 
@@ -197,7 +224,10 @@
 			$("#addEmpModal #firstname").val(firstname);
 			$("#addEmpModal #middlename").val(middlename);
 			$("#addEmpModal #lastname").val(lastname);
+			$("#addEmpModal #suffix").val(suffix);
 			$("#addEmpModal #email").val(email);
+			$("#addEmpModal #emergencynumber").val(emergencynumber);
+			$("#addEmpModal #name").val(name);
 			$("#addEmpModal #status").val(status);
 		});
 
