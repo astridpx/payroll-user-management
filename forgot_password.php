@@ -49,7 +49,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $mail->Body    = 'Your verification code for password reset is: ' . $verification_code;
 
             $mail->send();
-            echo "Password reset verification code sent to your email. <a href='reset_password.php'>Reset Password</a>";
+            echo "One time Verification code sent to your email. <a href='reset_password.php'>Reset Password</a>";
         } catch (Exception $e) {
             echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
         }
@@ -70,12 +70,40 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>Login Page</title>
 </head>
 <body>
+<div class="container">
     
-    <form method="post" action="">
-    <h2>Forgot Password</h2>
-        <label for="email">Enter your email address:</label><br>
-        <input type="email" id="email" name="email" required><br><br>
-        <button class="btn solid" type="submit" value="Reset Password">submit</button>
-    </form>
+    <div class="forms-container">
+    
+        <div class="signin-signup">
+        
+            <form method="post" action="">
+                <img src="img/1.png" class="image" alt="" style="width: 60%;"/>
+                        <br>
+                        <br>
+                    <h3>Forgot Password</h3>
+                    <div class="input-field">
+                        <i class="fas fa-user" ></i>
+                        <input type="email" id="email" name="email"  placeholder="Enter Email Address" required>
+                    
+                    </div>
+                    <a role="button" class="btn solid btn2" href="login.php" >cancel</a>
+                    <button class="btn solid" type="submit" value="Reset Password" style="margin-left: 130px;">submit</button>
+                    
+            </form>
+        </div>
+    </div>
+
+    <div class="panels-container">
+        <div class="panel left-panel">
+            <div class="content">
+                <h3> Jollibee User Management and Payroll System</h3>
+            </div>
+            <img src="img/register.svg" class="image" alt="" style="width: 100%; padding-left: 20%;"/>
+        </div>
+    </div>
+</div>    
+
+
+   
 </body>
 </html>
