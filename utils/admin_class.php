@@ -206,7 +206,10 @@ class Action
 		$data = " firstname='$firstname' ";
 		$data .= ", middlename='$middlename' ";
 		$data .= ", lastname='$lastname' ";
+		$data .= ", suffix='$suffix' ";
 		$data .= ", email='$email' ";
+		$data .= ", emergencynumber='$emergencynumber' ";
+		$data .= ", name='$name' ";
 		$data .= ", status='$status' ";
 
 		// if theres is no ID the request will recognized as new employee
