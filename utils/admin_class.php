@@ -21,6 +21,10 @@ class Action
 	function login()
 	{
 		extract($_POST);
+
+		if (!$username || !$password)
+			return "All fields are required.";
+
 		$qry = $this->db->query("SELECT * FROM users where username = '" . $username . "' and password = '" . $password . "' ");
 		if ($qry->num_rows > 0) {
 			foreach ($qry->fetch_array() as $key => $value) {
@@ -29,7 +33,65 @@ class Action
 			}
 			return 1;
 		} else {
-			return 3;
+			// return 3;
+			// Unsuccessful login
+			$query = $this->db->query("SELECT login_attempt , login_cd FROM users WHERE username = '" . $username . "'");
+
+			// Fetch the result
+			$result = $query->fetch_assoc();
+			if (!$result)
+				return "Username not found.";
+
+			// ADD # MINUSTES
+			function Cooldown()
+			{
+				// Get the current time
+				$current_time = new DateTime();
+
+				// Add 3 minutes to the current time
+				$current_time->add(new DateInterval('PT3M'));
+
+				// Get the timestamp of the new time
+				$new_timestamp = $current_time->format('Y-m-d H:i:s');
+
+				return $new_timestamp;
+			}
+
+			// GET THE MINUTS COOLDOWN
+			function getMinutesRemaining($given_timestamp)
+			{
+				// Convert the given timestamp to a UNIX timestamp
+				$given_unix_timestamp = strtotime($given_timestamp);
+
+				// Get the current UNIX timestamp
+				$current_unix_timestamp = time();
+
+				// Calculate time difference in minutes
+				$time_difference_minutes = ($given_unix_timestamp - $current_unix_timestamp) / 60;
+
+				// Return remaining minutes
+				return floor($time_difference_minutes);
+			}
+
+			// CHECK IF IT'S IN COOLDOWN
+			if (getMinutesRemaining($result['login_cd']) > 0) {
+				$this->db->query("UPDATE users SET login_attempt = 1 WHERE username = '" . $username . "'");
+				return 'Your are in a ' . getMinutesRemaining($result['login_cd']) . ' min cooldown';
+			}
+
+			$loginAttempt = $result['login_attempt'];
+
+
+			// HANDLE THE LOGIN ATTEMPT UPDATE THE TIME AND ATTEMPT
+			if ($loginAttempt >= 5) {
+				$cd =  Cooldown();
+				$this->db->query("UPDATE users SET login_attempt = 1, login_cd = '" . $cd . "'WHERE username = '" . $username . "'");
+			}
+
+			// Increment the login attempt count
+			$save = $this->db->query("UPDATE users SET login_attempt = " . ($loginAttempt + 1) . " WHERE username = '" . $username . "'");
+			if ($save)
+				return "Invalid username or password. Your atempt is " .	$loginAttempt;
 		}
 	}
 	function login2()
@@ -41,7 +103,7 @@ class Action
 				if ($key != 'passwors' && !is_numeric($key))
 					$_SESSION['login_' . $key] = $value;
 			}
-			return 1;
+			return;
 		} else {
 			return 3;
 		}
@@ -144,7 +206,10 @@ class Action
 		$data = " firstname='$firstname' ";
 		$data .= ", middlename='$middlename' ";
 		$data .= ", lastname='$lastname' ";
+		$data .= ", suffix='$suffix' ";
 		$data .= ", email='$email' ";
+		$data .= ", emergencynumber='$emergencynumber' ";
+		$data .= ", name='$name' ";
 		$data .= ", status='$status' ";
 
 		// if theres is no ID the request will recognized as new employee
@@ -683,5 +748,18 @@ class Action
 			$this->db->query("UPDATE payroll set status = 1 where id = " . $pay['id']);
 			return 1;
 		}
+	}
+
+	function get_employee_sched()
+	{
+
+		$query = $this->db->query("SELECT date FROM schedule");
+
+		// Fetch all rows from the result set as an associative array
+		$result = $query->fetch_all(MYSQLI_ASSOC);
+
+		// Return the fetched result as JSON
+		header('Content-Type: application/json');
+		return json_encode($result);
 	}
 }

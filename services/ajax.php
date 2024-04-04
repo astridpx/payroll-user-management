@@ -171,3 +171,8 @@ if ($action == "attendance_employee") {
 	if ($save)
 		echo $save;
 }
+if ($action == "get_employee_sched") {
+	$save = $crud->get_employee_sched();
+	if ($save)
+		echo $save;
+}
