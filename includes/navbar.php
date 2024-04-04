@@ -228,11 +228,12 @@
 		<!-- SAMPLE BRAND ICON -->
 
 		<!-- RIGHT LINKS-->
+		<?php if ($_SESSION['login_type'] == 1) : ?>
 		<ul class="navbar-nav ms-auto d-flex flex-row">
 
 			<li class="nav-item dropdown" style="padding-left:90px;">
 				<a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-					<img style="color: white; aspect-ratio: 1/1; " src="./assets/img/profile.jpg" class="rounded-circle" height="30" width="35" alt="Avatar" loading="lazy" />
+					<img style="color: white; aspect-ratio: 1/1; " src="./assets/img/admin.png" class="rounded-circle" height="30" width="35" alt="Avatar" loading="lazy" />
 				</a>
 				<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
 					<li>
@@ -246,6 +247,32 @@
 					</li>
 				</ul>
 			</li>
+
+			<?php endif; ?>
+
+
+					<!-- RIGHT LINKS-->
+		<?php if ($_SESSION['login_type'] == 2) : ?>
+		<ul class="navbar-nav ms-auto d-flex flex-row">
+
+			<li class="nav-item dropdown" style="padding-left:90px;">
+				<a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+					<img style="color: white; aspect-ratio: 1/1; " src="./assets/img/accounting.png" class="rounded-circle" height="30" width="35" alt="Avatar" loading="lazy" />
+				</a>
+				<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+					<li>
+						<a class="dropdown-item" href="#">My profile</a>
+					</li>
+					<li>
+						<a onclick="" class="dropdown-item" href="#">Settings</a>
+					</li>
+					<li>
+						<a class="dropdown-item" href="#" onclick="logout()">Logout</a>
+					</li>
+				</ul>
+			</li>
+
+			<?php endif; ?>
 			<!-- AVATARA ICON -->
 			<!-- <li class="nav-item dropdown">
 				<a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
