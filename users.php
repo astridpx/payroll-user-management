@@ -19,7 +19,9 @@
 							<th class="text-center">#</th>
 							<th class="text-center">Name</th>
 							<th class="text-center">Username</th>
+							<th class="text-center">Email</th>
 							<th class="text-center">Action</th>
+							
 						</tr>
 					</thead>
 					<tbody>
@@ -38,6 +40,9 @@
 								</td>
 								<td>
 									<?php echo $row['username'] ?>
+								</td>
+								<td>
+									<?php echo $row['email'] ?>
 								</td>
 								<td>
 									<center>

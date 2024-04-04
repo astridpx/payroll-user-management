@@ -126,6 +126,16 @@ form.sign-in-form {
   cursor: pointer;
   transition: 0.5s;
 }
+.btn2{
+  text-align: center;
+  color: black;
+  padding-top: 10px;
+  background-color: grey;
+  margin-right: 200px;
+  margin-bottom: -60px;
+  margin-left: 20px;
+  text-decoration: none;
+}
 
 .btn:hover {
   background-color: #982a2a;
