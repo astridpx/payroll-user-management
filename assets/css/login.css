@@ -101,6 +101,16 @@ form.sign-in-form {
   color: #aaa;
   font-weight: 500;
 }
+.forgot-link {
+  display: flex;
+  justify-content: end;
+  max-width: 378px;
+  width: 100%;
+}
+.forgot-link a {
+  /* text-decoration: none; */
+  font-size: 14px;
+}
 
 .social-text {
   padding: 0.7rem 0;
@@ -126,7 +136,7 @@ form.sign-in-form {
   cursor: pointer;
   transition: 0.5s;
 }
-.btn2{
+.btn2 {
   text-align: center;
   color: black;
   padding-top: 10px;
@@ -139,6 +149,7 @@ form.sign-in-form {
 
 .btn:hover {
   background-color: #982a2a;
+  color: #fff;
 }
 .panels-container {
   position: absolute;
