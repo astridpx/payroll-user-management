@@ -58,7 +58,7 @@
 
   <!--i removed the id = "view-panel"-->
   <main>
-    <?php $page = isset($_GET['page']) ? $_GET['page'] : 'home'; ?>
+    <?php $page = isset($_GET['page']) ? $_GET['page'] : 'home-admin'; ?>
     <?php include $page . '.php' ?>
 
 

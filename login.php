@@ -74,7 +74,7 @@ if (isset($_SESSION['login_id']))
       },
       success: function(resp) {
         if (resp == 1) {
-          location.href = 'index.php?page=home';
+          location.href = 'index.php?page=home-admin';
         } else if (resp == 2) {
           location.href = 'voting.php';
         } else {
