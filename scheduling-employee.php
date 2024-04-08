@@ -84,12 +84,10 @@ foreach ($deptArray  as $newEntry) {
                     <div class="d-flex flex-column">
                         <label for="time_start" class="col-form-label mb-1">Start:</label>
                         <label for="time_end" class=" col-form-label mb-1">Out:</label>
-                        <label for="recipient-name" class=" col-form-label">Status:</label>
                     </div>
                     <div class="col">
                         <input type="time" class="form-control mb-2" required id="time_start">
                         <input type="time" class="form-control mb-2" required id="time_end">
-                        <p class="mt-2" id="statusTime"></p>
                     </div>
                 </div>
             </div>
@@ -100,7 +98,6 @@ foreach ($deptArray  as $newEntry) {
         </form>
     </div>
 </div>
-
 <div class="row p-2 gap-3 w-full mx-auto  ">
     <section class="card h-full p-2 shadow-sm col-8">
         <div style="background-color: #FFFFFF;" class="card-header ">
@@ -301,18 +298,7 @@ foreach ($deptArray  as $newEntry) {
 
 
     $("#time_end").on("change", function() {
-        const startTime = $("#time_start").val();
-        const endTime = $(this).val();
-
-        // Calculate the time difference in milliseconds
-        const timeDifference = OT_Calculator(startTime, endTime);
-
-        // Convert the time difference to hours
-        const hoursDifference = timeDifference / (1000 * 60 * 60);
-
-        $("#statusTime").text(hoursDifference > 8 ? "Overtime" : "Normal Time")
-        // set isOT true or false
-        selectedEmp.isOT = hoursDifference > 8 ? true : false
+        
     })
 
     $("#saveTime").on("click", async function(e) {

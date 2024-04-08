@@ -1,5 +1,7 @@
 <?php include('./config/db_connect.php') ?>
 <?php
+$payroll = $conn->query("SELECT DISTINCT p.*, concat(e.lastname,', ',e.firstname,' ',e.middlename) as ename, e.employee_no FROM payroll_items p INNER JOIN employee e ON e.id = p.employee_id") or die(mysqli_error($conn));
+
 $pay = $conn->query("SELECT * FROM payroll where id = " . $_GET['id'])->fetch_array();
 $pt = array(1 => "Monhtly", 2 => "Semi-Monthly");
 ?>
@@ -32,6 +34,8 @@ $pt = array(1 => "Monhtly", 2 => "Semi-Monthly");
 							<!-- <th>Late</th> -->
 							<!-- <th>Total Allowance</th> -->
 							<!-- <th>Total Deduction</th> -->
+							
+							
 							<th>Net</th>
 							<th>Action</th>
 						</tr>
@@ -42,13 +46,15 @@ $pt = array(1 => "Monhtly", 2 => "Semi-Monthly");
 						$payroll = $conn->query("SELECT p.*,concat(e.lastname,', ',e.firstname,' ',e.middlename) as ename,e.employee_no FROM payroll_items p inner join employee e on e.id = p.employee_id ") or die(mysqli_error($conn));
 						while ($row = $payroll->fetch_array()) {
 						?>
-							<tr>
+							<tr	>
 								<td><?php echo $row['employee_no'] ?></td>
 								<td><?php echo ucwords($row['ename']) ?></td>
 								<!-- <td><?php echo $row['absent'] ?></td> -->
 								<!-- <td><?php echo $row['late'] ?></td> -->
 								<!-- <td><?php echo number_format($row['deduction_amount'], 2) ?></td> -->
 								<!-- <td><?php echo number_format($row['allowance_amount'], 2) ?></td> -->
+								
+								
 								<td><?php echo number_format($row['net'], 2) ?></td>
 								<td>
 									<center>

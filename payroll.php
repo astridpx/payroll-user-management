@@ -162,8 +162,10 @@
 		});
 
 		$('.remove_payroll').click(function() {
-			_conf("Are you sure to delete this payroll?", "remove_payroll", [$(this).attr('data-id')])
-		})
+    var id = $(this).attr('data-id');
+    remove_payroll(id);
+});
+
 		$('.calculate_payroll').click(function() {
 			start_load()
 			$.ajax({

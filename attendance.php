@@ -100,101 +100,47 @@ mysqli_close($conn);
                             <!-- <col width="8%"> -->
                         </colgroup>
                         <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Schedule</th>
-                                <th id="1st_in">1st In</th>
-                                <th id="1st_out">1st Out</th>
-                                <th id="1st_break">1st Break</th>
-                                <th id="2nd_in">2nd In</th>
-                                <th id="2nd_out">2nd Out</th>
-                                <th id="2nd_break">2nd Break</th>
-                                <th id="3rd_in">3rd In</th>
-                                <th id="3rd_out">3rd Out</th>
-                                <!-- <th>Status</th> -->
-                                <th>Net</th>
-                                <!-- <th>Action</th> -->
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($employee_list as $employee) : ?>
-                                <tr id="emp-<?php echo $employee["id"]; ?>">
-                                    <td><?php echo $employee["employee"]; ?></td>
-                                    <td><?php echo $employee["time"] ?   $employee["time"] : "No schedule available"; ?></td>
+                        <th>Name</th>
+<th>Schedule</th>
+<th>1st In</th>
+<th>1st Out</th>
+<th>2nd In</th>
+<th>2nd Out</th>
+<th>3rd In</th>
+<th>3rd Out</th>
+<th>Net</th>
 
-                                    <td>
-                                        <?php echo $employee["1st_in"] ? $employee["1st_in"] :
-                                            '<i class="fas fa-plus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span>'; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $employee["1st_out"] ? $employee["1st_out"] :
-                                            '<i class="fas fa-minus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span>'; ?>
-                                    </td>
+<tbody>
+    <?php foreach ($employee_list as $employee) : ?>
+        <tr id="emp-<?php echo $employee["id"]; ?>">
+            <td><?php echo $employee["employee"]; ?></td>
+            <td><?php echo $employee["time"] ? $employee["time"] : "No schedule available"; ?></td>
 
-                                    <td>
-                                        <?php
-                                        if ($employee["1st_break"]) {
-                                            echo $employee["1st_break"];
-                                        } else {
-                                        ?>
-                                            <i class="fas fa-caret-down dropdown-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"></i>
-                                            <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item" href="#" onclick="handleDropdownSelection.call(this, '30 mins')">30 mins</a></li>
-                                                <li><a class="dropdown-item" href="#" onclick="handleDropdownSelection.call(this, '1 hour')">1 hour</a></li>
-                                            </ul>
-                                        <?php
-                                        }
-                                        ?>
-                                    </td>
+            <td>
+                <?php echo $employee["1st_in"] ? $employee["1st_in"] : ''; ?>
+            </td>
+            <td>
+                <?php echo $employee["1st_out"] ? $employee["1st_out"] : ''; ?>
+            </td>
 
+            <td>
+                <?php echo $employee["2nd_in"] ? $employee["2nd_in"] : ''; ?>
+            </td>
+            <td>
+                <?php echo $employee["2nd_out"] ? $employee["2nd_out"] : ''; ?>
+            </td>
 
-                                    <td>
-                                        <?php echo $employee["2nd_in"] ? $employee["2nd_in"] :
-                                            '<i class="fas fa-plus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span>'; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $employee["2nd_out"] ? $employee["2nd_out"] :
-                                            '<i class="fas fa-minus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span>'; ?>
-                                    </td>
+            <td>
+                <?php echo $employee["3rd_in"] ? $employee["3rd_in"] : ''; ?>
+            </td>
+            <td>
+                <?php echo $employee["3rd_out"] ? $employee["3rd_out"] : ''; ?>
+            </td>
 
-                                    <td>
-                                        <?php
-                                        if ($employee["2nd_break"]) {
-                                            echo $employee["1st_break"];
-                                        } else {
-                                        ?>
-                                            <i class="fas fa-caret-down dropdown-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"></i>
-                                            <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item" href="#" onclick="handleDropdownSelection.call(this, '30 mins')">30 mins</a></li>
-                                                <li><a class="dropdown-item" href="#" onclick="handleDropdownSelection.call(this, '1 hour')">1 hour</a></li>
-                                            </ul>
-                                        <?php
-                                        }
-                                        ?>
-                                    </td>
-
-                                    <td>
-                                        <?php echo $employee["3rd_in"] ? $employee["3rd_in"] :
-                                            '<i class="fas fa-plus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span>'; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $employee["3rd_out"] ? $employee["3rd_out"] :
-                                            '<i class="fas fa-minus-circle add-qr-scanner" style="margin-right: 10px;"></i><span class="current-time"></span>'; ?>
-                                    </td>
-                                    <!-- <td><i class="fas fa-circle text-success"></i></td> -->
-                                    <!-- <td><i class="fas fa-circle text-danger"></i></td> -->
-                                    <td><?php NetCalculator($employee["time_start"], $employee["time_end"], $employee["1st_break"], $employee["2nd_break"]) ?></td>
-                                    <!-- <td>
-                                        <center>
-                                            <button class="btn btn-sm btn-outline-danger remove_attendance" data-id="1" type="button"><i class="fa fa-trash"></i></button>
-                                        </center>
-                                    </td> -->
-
-
-
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
+            <td><?php NetCalculator($employee["time_start"], $employee["time_end"], $employee["1st_break"], $employee["2nd_break"]) ?></td>
+        </tr>
+    <?php endforeach; ?>
+</tbody>
                     </table>
                 </div>
             </div>
