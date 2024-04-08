@@ -35,7 +35,14 @@ if (isset($_SESSION['login_id']))
             <i class="fas fa-lock" style="margin: 20px 0 0 20px;"></i>
             <input type="password" id="password" name="password" placeholder="Enter Password" />
           </div>
-          <div class="forgot-link">
+          <div class="">
+          
+          <a href="qr_scan.php" class="">Attendance Scanner</a> <br>
+          </div>
+         
+          
+          <div class="">
+          
             <a href="forgot_password.php" class="">Forgot Password?</a>
           </div>
           <button class="btn solid">Login</button>
