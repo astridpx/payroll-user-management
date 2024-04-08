@@ -52,13 +52,38 @@ include('./config/db_connect.php');
 
 // Function to update the employee's schedule based on the current state
 function updateSchedule($conn, $employee_id, $current_state, $selected_date) {
-    $current_time = date('h:i A'); // Get current time
+    $current_time = date('H:i:s'); // Get current time in 24-hour format
 
     // Update the appropriate field based on the current state and selected date
     $update_sql = "UPDATE schedule SET $current_state = '$current_time' WHERE employee_ID = '$employee_id' AND DATE(date) = '$selected_date'";
 
     // Execute the update query
     if (mysqli_query($conn, $update_sql)) {
+        // Retrieve the employee's schedule for the selected date
+        $schedule_sql = "SELECT * FROM schedule WHERE employee_ID = '$employee_id' AND DATE(date) = '$selected_date'";
+        $schedule_result = mysqli_query($conn, $schedule_sql);
+        $schedule_row = mysqli_fetch_assoc($schedule_result);
+
+        // Calculate time differences
+        $first_in = strtotime($schedule_row['1st_in']);
+        $first_out = strtotime($schedule_row['1st_out']);
+        $second_in = strtotime($schedule_row['2nd_in']);
+        $second_out = strtotime($schedule_row['2nd_out']);
+        $third_in = strtotime($schedule_row['3rd_in']);
+        $third_out = strtotime($schedule_row['3rd_out']);
+
+        // Calculate net time differences
+        $net_time1 = $first_out && $second_in ? ($second_in - $first_out) / 3600 : 0;
+        $net_time2 = $second_out && $third_in ? ($third_in - $second_out) / 3600 : 0;
+        $net_time3 = $third_out ? ($third_out - $third_in) / 3600 : 0;
+
+        // Calculate total net time
+        $total_net_time = $net_time1 + $net_time2 + $net_time3;
+
+        // Update net time in the database
+        $update_net_sql = "UPDATE schedule SET net = '$total_net_time' WHERE employee_ID = '$employee_id' AND DATE(date) = '$selected_date'";
+        mysqli_query($conn, $update_net_sql);
+
         echo "$current_state updated successfully for $selected_date.";
     } else {
         echo "Error updating $current_state: " . mysqli_error($conn);
@@ -126,5 +151,8 @@ $schedule_sql = "SELECT * FROM schedule WHERE employee_ID = '$employee_id' AND D
 }
 
 
+
 mysqli_close($conn);
+
+
 ?>

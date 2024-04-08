@@ -165,7 +165,7 @@ foreach ($deptArray  as $newEntry) {
             </button>
 
             <button style="background-color: #D61A42;" class="fw-medium btn btn-sm text-light d-flex  " type="button" id="disposeBtn">
-                <i class="bi bi-trash3 mr-1"></i> Dispose
+                <i class="bi bi-trash3 mr-1"></i> Remove
             </button>
         </div>
     </section>

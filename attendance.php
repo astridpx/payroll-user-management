@@ -1,19 +1,19 @@
+
 <?php
 include('./config/db_connect.php');
 
 // Fetch all schedules for all employees based on the selected date
 $selected_date = isset($_GET['date']) ? $_GET['date'] : date('Y-m-d');
-$sql = "SELECT e.*,s.*, CONCAT(e.firstname, ' ', e.lastname) AS employee, CASE WHEN LENGTH(s.time_start) = 0 OR LENGTH(s.time_end) = 0 THEN CONCAT(s.time_start, s.time_end) ELSE CONCAT(s.time_start, '-', s.time_end) END AS time FROM employee e LEFT JOIN schedule s ON e.id = s.employee_ID AND s.date = '$selected_date' WHERE s.date IS NOT NULL;";
+$sql = "SELECT e.*, s.*, CONCAT(e.firstname, ' ', e.lastname) AS employee, 
+        CASE WHEN LENGTH(s.time_start) = 0 OR LENGTH(s.time_end) = 0 
+        THEN CONCAT(s.time_start, s.time_end) ELSE CONCAT(s.time_start, '-', s.time_end) END AS time,
+        s.1st_in, s.1st_out, s.2nd_in, s.2nd_out, s.3rd_in, s.3rd_out
+        FROM employee e 
+        LEFT JOIN schedule s ON e.id = s.employee_ID AND s.date = '$selected_date' 
+        WHERE s.date IS NOT NULL;";
 $employee_list = mysqli_query($conn, $sql);
-
-
-// Output data of each row
-// while ($row = mysqli_fetch_assoc($employee_list)) {
-//     // Output the results as needed
-//     var_dump($row);
-// }
-function convertToTime($duration_string)
-{
+// Function to convert duration string to hours
+function convertToTime($duration_string) {
     if (!$duration_string) return;
 
     // Split the duration string into parts
@@ -32,14 +32,10 @@ function convertToTime($duration_string)
         return 0; // Return 0 for invalid duration format
     }
 }
-
-
-
-function NetCalculator($time_start, $time_end, $break1, $break2)
-{
+// Output data of each row
+function calculateNetHours($time_start, $time_end) {
     if (!$time_start || !$time_end) {
-        echo "₱" . 0;
-        return;
+        return 0;
     }
 
     // Create DateTime objects for start and end times
@@ -50,22 +46,19 @@ function NetCalculator($time_start, $time_end, $break1, $break2)
     $interval = $start_time->diff($end_time);
     $total_hours = $interval->h + ($interval->i / 60);
 
-    $total_net_hours = $total_hours  -  convertToTime($break1) - convertToTime($break2);
+    return $total_hours;
+}
 
-    // Calculate the total pay
-    $hourly_rate = 59; // $59 per hour
-    $total_pay =  $total_net_hours * $hourly_rate;
-
-
-
-    // Output the total pay
-    echo "₱" . number_format($total_pay, 2);
+// Calculate total pay
+function calculateTotalPay($net_hours, $hourly_rate) {
+    return $net_hours * $hourly_rate;
 }
 
 
 
 
-mysqli_close($conn);
+
+
 ?>
 
 <div class="container-fluid">
@@ -111,35 +104,56 @@ mysqli_close($conn);
 <th>Net</th>
 
 <tbody>
-    <?php foreach ($employee_list as $employee) : ?>
-        <tr id="emp-<?php echo $employee["id"]; ?>">
-            <td><?php echo $employee["employee"]; ?></td>
-            <td><?php echo $employee["time"] ? $employee["time"] : "No schedule available"; ?></td>
+<?php foreach ($employee_list as $employee) : ?>
+    <tr id="emp-<?php echo $employee["id"]; ?>">
+        <td><?php echo $employee["employee"]; ?></td>
+        <td><?php echo $employee["time"] ? $employee["time"] : "No schedule available"; ?></td>
 
-            <td>
-                <?php echo $employee["1st_in"] ? $employee["1st_in"] : ''; ?>
-            </td>
-            <td>
-                <?php echo $employee["1st_out"] ? $employee["1st_out"] : ''; ?>
-            </td>
+        <?php // Calculate net working hours and total pay for 1st and 2nd shifts ?>
+        <?php 
+        $net_hours_1st_2nd = 0;
+        $total_pay_1st_2nd = 0;
 
-            <td>
-                <?php echo $employee["2nd_in"] ? $employee["2nd_in"] : ''; ?>
-            </td>
-            <td>
-                <?php echo $employee["2nd_out"] ? $employee["2nd_out"] : ''; ?>
-            </td>
+        // Calculate net working hours and total pay for 1st shift
+        $net_hours_1st = calculateNetHours($employee["1st_in"], $employee["1st_out"]);
+        $total_pay_1st = calculateTotalPay($net_hours_1st, 59.875);
 
-            <td>
-                <?php echo $employee["3rd_in"] ? $employee["3rd_in"] : ''; ?>
-            </td>
-            <td>
-                <?php echo $employee["3rd_out"] ? $employee["3rd_out"] : ''; ?>
-            </td>
+        // Calculate net working hours and total pay for 2nd shift
+        $net_hours_2nd = calculateNetHours($employee["2nd_in"], $employee["2nd_out"]);
+        $total_pay_2nd = calculateTotalPay($net_hours_2nd, 59.875);
 
-            <td><?php NetCalculator($employee["time_start"], $employee["time_end"], $employee["1st_break"], $employee["2nd_break"]) ?></td>
-        </tr>
-    <?php endforeach; ?>
+        $net_hours_1st_2nd += $net_hours_1st + $net_hours_2nd;
+        $total_pay_1st_2nd += $total_pay_1st + $total_pay_2nd;
+        ?>
+
+
+        <?php // Calculate net working hours and total pay for 3rd shift ?>
+        <?php 
+        $net_hours_3rd = calculateNetHours($employee["3rd_in"], $employee["3rd_out"]);
+        $total_pay_3rd = calculateTotalPay($net_hours_3rd, 74.84375);
+        ?>
+
+        <?php 
+        // Calculate total pay for all shifts
+        $total_pay = $total_pay_1st_2nd + $total_pay_3rd;
+
+        // Update the 'net' column in the 'schedule' table with the total pay
+        $employee_id = $employee["id"];
+        $update_sql = "UPDATE schedule SET net = $total_pay WHERE employee_ID = $employee_id AND date = '$selected_date'";
+        mysqli_query($conn, $update_sql);
+        ?>
+
+        <td><?php echo $employee["1st_in"] ? $employee["1st_in"] : ''; ?></td>
+        <td><?php echo $employee["1st_out"] ? $employee["1st_out"] : ''; ?></td>
+        <td><?php echo $employee["2nd_in"] ? $employee["2nd_in"] : ''; ?></td>
+        <td><?php echo $employee["2nd_out"] ? $employee["2nd_out"] : ''; ?></td>
+        <td><?php echo $employee["3rd_in"] ? $employee["3rd_in"] : ''; ?></td>
+        <td><?php echo $employee["3rd_out"] ? $employee["3rd_out"] : ''; ?></td>
+        <td><?php echo "₱" . number_format($total_pay, 2); ?></td>
+    </tr>
+    <?php mysqli_close($conn);?>
+<?php endforeach; ?>
+
 </tbody>
                     </table>
                 </div>
