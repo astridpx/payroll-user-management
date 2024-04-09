@@ -666,6 +666,7 @@ class Action
 	function calculate_payroll() {
 		// Extract POST data
 		extract($_POST);
+		$this->db->query("DELETE FROM payroll_items WHERE payroll_id = $id");
 	
 		// Fetch payroll data
 		$pay = $this->db->query("SELECT * FROM payroll WHERE id = $id")->fetch_array();
@@ -673,55 +674,42 @@ class Action
 		$end_date = $pay["date_to"];
 	
 		// Fetch attendance records within the specified date range
-		$att = $this->db->query("SELECT * FROM schedule WHERE date(date) BETWEEN '$start_date' AND '$end_date'");
-		
+		$att = $this->db->query("SELECT *, net FROM schedule WHERE date(date) BETWEEN '$start_date' AND '$end_date'");
+
 		// Function to calculate salary for an employee based on attendance records
 		function calculateSalary($employeeID, $records) {
-			$totalSalary = 0;
-			$hourly_rate = 59;
-	
-			foreach ($records as $record) {
-				if ($record['employee_ID'] == $employeeID) {
-					// Calculate the duration between time_start and time_end
-					$startTime = strtotime($record['time_start']);
-					$endTime = strtotime($record['time_end']);
-					$durationHours = ($endTime - $startTime) / 3600; // Convert to hours
-	
-					// Calculate salary for this record
-					$salary = $durationHours * $hourly_rate;
-	
-					// Add salary to total
-					$totalSalary += $salary;
-				}
-			}
-			return $totalSalary;
-		}
+    $totalNetSalary = 0;
+
+    foreach ($records as $record) {
+        if ($record['employee_ID'] == $employeeID) {
+            // Add net salary to total
+            $totalNetSalary += $record['net'];
+        }
+    }
+
+    return $totalNetSalary;
+}
+
 	
 		// Fetch all attendance records
 		$allRecords = $att->fetch_all(MYSQLI_ASSOC);
 	
 		if (!empty($allRecords)) {
-			// Array to store total salary for each employee
-			$employeeSalaries = array();
-	
-			// Loop through all records to calculate total salary for each employee
+			// Array to store total net salary for each employee
+			$employeeNetSalaries = array();
+		
+			// Loop through all records to calculate total net salary for each employee
 			foreach ($allRecords as $row) {
 				$employeeID = $row['employee_ID'];
-	
+		
 				// Check if the employee ID already exists in the array
-				if (!isset($employeeSalaries[$employeeID])) {
-					// If not, initialize the total salary for this employee
-					$employeeSalaries[$employeeID] = 0;
+				if (!isset($employeeNetSalaries[$employeeID])) {
+					// If not, initialize the total net salary for this employee
+					$employeeNetSalaries[$employeeID] = 0;
 				}
-	
-				// Calculate the salary for this record
-				$startTime = strtotime($row['time_start']);
-				$endTime = strtotime($row['time_end']);
-				$durationHours = ($endTime - $startTime) / 3600; // Convert to hours
-				$salary = $durationHours * 59;
-	
-				// Add the salary to the total salary for this employee
-				$employeeSalaries[$employeeID] += $salary;
+		
+				// Add the net salary to the total net salary for this employee
+				$employeeNetSalaries[$employeeID] += $row['net'];
 			}
 	
 			// Begin transaction
@@ -729,7 +717,7 @@ class Action
 	
 			try {
 				// Insert new data into payroll_items table
-				foreach ($employeeSalaries as $employeeID => $totalSalary) {
+				foreach ($employeeNetSalaries as $employeeID => $totalSalary) {
 					// Deductions for PhilHealth and SSS for days 1-15
 					$deduction_philhealth = 0;
 					$deduction_sss = 0;
@@ -757,8 +745,7 @@ class Action
 				}
 	
 				// Delete previous payroll_items records
-				$this->db->query("DELETE FROM payroll_items WHERE payroll_id = $id");
-	
+				
 				// Commit transaction
 				$this->db->commit();
 			} catch (Exception $e) {
