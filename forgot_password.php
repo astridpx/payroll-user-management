@@ -1,4 +1,3 @@
-
 <?php
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -50,41 +49,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $mail->Body    = 'Your verification code for password reset is: ' . $verification_code;
 
             $mail->send();
-            echo "<script>
-                    swal({
-                        title: 'Success',
-                        text: 'One time Verification code sent to your email.',
-                        icon: 'success',
-                        button: 'OK'
-                    }).then(function() {
-                        window.location.href = 'reset_password.php';
-                    });
-                  </script>";
-            exit; // Exit after sending the alert
+            echo "One time Verification code sent to your email. <a href='reset_password.php'>Reset Password</a>";
         } catch (Exception $e) {
-            echo "<script>
-                    swal({
-                        title: 'Error',
-                        text: 'Message could not be sent. Mailer Error: {$mail->ErrorInfo}',
-                        icon: 'error',
-                        button: 'OK'
-                    });
-                  </script>";
+            echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
         }
     } else {
         // If the email does not exist in the database
-        echo "<script>
-                swal({
-                    title: 'Error',
-                    text: 'Email not found. Please enter a valid email address.',
-                    icon: 'error',
-                    button: 'OK'
-                });
-              </script>";
+        echo "Email not found. Please enter a valid email address.";
     }
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -92,33 +66,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://kit.fontawesome.com/64d58efce2.js" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <link rel="stylesheet" href="./assets/css/login.css" />
     <title>Login Page</title>
-    <style>
-        /* Custom styling for SweetAlert */
-        .swal-text {
-            color: #333;
-        }
-
-        .swal-button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 4px 2px;
-            cursor: pointer;
-            border-radius: 8px;
-        }
-
-        .swal-button:hover {
-            background-color: #45a049;
-        }
-    </style>
 </head>
 <body>
 <div class="container">
@@ -147,7 +96,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="panels-container">
         <div class="panel left-panel">
             <div class="content">
-                <h3> Jollibee User Management and Payroll System</h3>
+            <h2> Attendance and Payroll Management System for Jollibee Lianas</h2>
             </div>
             <img src="img/register.svg" class="image" alt="" style="width: 100%; padding-left: 20%;"/>
         </div>

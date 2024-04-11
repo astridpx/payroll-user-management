@@ -55,7 +55,7 @@ if (isset($_SESSION['login_id']))
     <div class="panels-container">
       <div class="panel left-panel">
         <div class="content">
-          <h3> Jollibee User Management and Payroll System</h3>
+          <h3> Attendance and Payroll Management System for Jollibee Lianas</h3>
         </div>
         <img src="img/register.svg" class="image" alt="" style="width: 100%; padding-left: 20%;" />
       </div>
