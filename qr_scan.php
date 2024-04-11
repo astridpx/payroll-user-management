@@ -6,14 +6,74 @@
     <title>QR Code Scanner</title>
     <!-- Include the html5-qrcode library -->
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <!-- Include SweetAlert CDN link -->
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    <link rel="stylesheet" href="./assets/css/login.css" />
+    <style>
+        body {
+            font-family: Arial, sans-serif; /* Set font family */
+        }
+
+        #qr-reader {
+            max-width: 300px; /* Set max width for the QR code reader */
+            margin: 0 auto; /* Center the QR code reader */
+        }
+
+        #qr-reader video {
+            width: 100%; /* Set video width to 100% */
+            height: auto; /* Set video height to auto */
+        }
+
+        .card-header {
+            background-color: crimson; /* Set background color for card header */
+            padding: 10px; /* Add padding to the card header */
+            color: white; /* Set text color to white */
+            text-align: center; /* Center align text */
+            font-size: 20px; /* Set font size */
+            margin-bottom: 20px; /* Add margin bottom */
+        }
+
+        #selected_date_display {
+            font-weight: bold; /* Set font weight to bold */
+        }
+
+        input[type="date"] {
+            width: 100%; /* Set input width to 100% */
+            padding: 8px; /* Add padding to input */
+            border: none; /* Remove border */
+            border-radius: 4px; /* Add border radius */
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* Add box shadow */
+        }
+    </style>
 </head>
 <body>
-    <div id="qr-reader"></div>
+<div class="container">
+    <div class="forms-container">
+      <div class="signin-signup">
+        <form class="sign-in-form" id="login-form">
+        <div id="qr-reader"></div>
     <div class="card-header">
     <span id="selected_date_display"><b>Select Date</b></span>
     <!-- Set the value of the input field to the current date -->
     <input type="date" id="selected_date" class="btn btn-sm col-md-3 float-right border shadow-sm py-2 fw-semibold rounded-4 " value="<?php echo date('Y-m-d'); ?>">
-</div>
+
+
+        </form>
+      </div>
+    </div>
+
+    <div class="panels-container">
+      <div class="panel left-panel">
+        <div class="content">
+          <h3> Jollibee User Management and Payroll System</h3>
+        </div>
+        <img src="img/register.svg" class="image" alt="" style="width: 100%; padding-left: 20%;" />
+      </div>
+    </div>
+  </div>
+
+    </div>
 
 
     <script>
@@ -52,7 +112,7 @@ include('./config/db_connect.php');
 
 // Function to update the employee's schedule based on the current state
 function updateSchedule($conn, $employee_id, $current_state, $selected_date) {
-    $current_time = date('H:i:s'); // Get current time in 24-hour format
+    $current_time = date('H:i A'); // Get current time in 24-hour format
 
     // Update the appropriate field based on the current state and selected date
     $update_sql = "UPDATE schedule SET $current_state = '$current_time' WHERE employee_ID = '$employee_id' AND DATE(date) = '$selected_date'";
@@ -84,8 +144,10 @@ function updateSchedule($conn, $employee_id, $current_state, $selected_date) {
         $update_net_sql = "UPDATE schedule SET net = '$total_net_time' WHERE employee_ID = '$employee_id' AND DATE(date) = '$selected_date'";
         mysqli_query($conn, $update_net_sql);
 
-        echo "$current_state updated successfully for $selected_date.";
+        echo "<script>swal('No schedule found for employee $employee_id on $selected_date.');</script>";
+    
     } else {
+        
         echo "Error updating $current_state: " . mysqli_error($conn);
     }
 }
@@ -112,7 +174,7 @@ $schedule_sql = "SELECT * FROM schedule WHERE employee_ID = '$employee_id' AND D
 
         // Check if the query executed successfully
         if ($schedule_result === false) {
-            echo "Error: " . mysqli_error($conn);
+            echo "<script>alert('Error: " . mysqli_error($conn) . "');</script>";
         } else {
             // Check if any rows were returned
             if ($schedule_result !== null && mysqli_num_rows($schedule_result) > 0) {
@@ -133,21 +195,22 @@ $schedule_sql = "SELECT * FROM schedule WHERE employee_ID = '$employee_id' AND D
                 } elseif (empty($schedule_row['3rd_out'])) {
                     $current_state = '3rd_out';
                 } else {
-                    echo "All schedule slots filled for $selected_date.";
+                    echo "<script>alert('All schedule slots filled for $selected_date.');</script>";
                     exit; // Exit the script as all slots are filled
                 }
 
                 // Update the schedule based on the current state and selected date
                 updateSchedule($conn, $employee_id, $current_state, $selected_date);
             } else {
-                echo "No schedule found for employee $employee_id on $selected_date.";
+                echo "<script>swal('No schedule found for employee $employee_id on $selected_date.');</script>";
             }
         }
     } else {
-        echo "No employee found with the provided ID.";
+        echo "<script>swal('No employee found with the provided ID.');</script>";
     }
 } else {
-    echo "QR content or selected date not provided.";
+    echo "<script>swal('QR content or selected date not provided.;');</script>";
+    
 }
 
 
