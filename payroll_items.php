@@ -1,5 +1,16 @@
 <?php include('./config/db_connect.php') ?>
+
 <?php
+function view_payroll($payroll_id) {
+    include('./config/db_connect.php');
+    
+    // Retrieve payroll details
+    $payroll_query = $conn->query("SELECT DISTINCT p.*, concat(e.lastname,', ',e.firstname,' ',e.middlename) as ename, e.employee_no FROM payroll_items p INNER JOIN employee e ON e.id = p.employee_id WHERE p.id = $payroll_id") or die(mysqli_error($conn));
+    $payroll_data = $payroll_query->fetch_assoc();
+
+ 
+}
+
 $payroll = $conn->query("SELECT DISTINCT p.*, concat(e.lastname,', ',e.firstname,' ',e.middlename) as ename, e.employee_no FROM payroll_items p INNER JOIN employee e ON e.id = p.employee_id") or die(mysqli_error($conn));
 
 $pay = $conn->query("SELECT * FROM payroll where id = " . $_GET['id'])->fetch_array();
@@ -59,7 +70,7 @@ $pt = array(1 => "Monhtly", 2 => "Semi-Monthly");
 								<td>
 									<center>
 
-										<button class="btn btn-sm btn-outline-primary view_payroll" data-id="<?php echo $row['id'] ?>" type="button"><i class="fa fa-eye"></i> View</button>
+									<button class="btn btn-sm btn-outline-primary view_payroll" data-id="<?php echo $row['id'] ?>" type="button"><i class="fa fa-eye"></i> View</button>
 
 									</center>
 								</td>
@@ -94,12 +105,11 @@ $pt = array(1 => "Monhtly", 2 => "Semi-Monthly");
 		})
 
 
-
-		$('.view_payroll').click(function() {
-			var $id = $(this).attr('data-id');
-			uni_modal("Employee Payslip", "view_payslip.php?id=" + $id, "large")
-
-		});
+$('.view_payroll').click(function() {
+    var id = $(this).attr('data-id');
+    // Instead of AJAX, directly open the view payslip file in a new tab/window
+    window.open('view_payslip.php?id=' + id, '_blank');
+});
 
 		$('#new_payroll_btn').click(function() {
 			start_load()

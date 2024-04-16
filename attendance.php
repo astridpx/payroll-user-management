@@ -48,12 +48,54 @@ function calculateNetHours($time_start, $time_end) {
 
     return $total_hours;
 }
+function calculatePay($employee) {
+    // Calculate net working hours for each shift
+    $net_hours_1st = calculateNetHours($employee["1st_in"], $employee["1st_out"]);
+    $net_hours_2nd = calculateNetHours($employee["2nd_in"], $employee["2nd_out"]);
+    $net_hours_3rd = calculateNetHours($employee["3rd_in"], $employee["3rd_out"]);
+    
+    // Calculate total net working hours
+    $net_hours_1st_2nd_3rd = $net_hours_1st + $net_hours_2nd + $net_hours_3rd;
 
-// Calculate total pay
-function calculateTotalPay($net_hours, $hourly_rate) {
-    return $net_hours * $hourly_rate;
+    // Initialize variables for pay calculation
+    $regular_pay = 0;
+    $ot_pay = 0;
+
+    // Check if total net hours exceed 8 hours
+    if ($net_hours_1st_2nd_3rd > 8) {
+        // Calculate overtime pay
+        $ot_hours = $net_hours_1st_2nd_3rd - 8;
+        $ot_pay = $ot_hours * 74.84375;
+
+        // Calculate regular pay
+        $regular_hours = $net_hours_1st_2nd_3rd - $ot_hours;
+        $regular_pay = $regular_hours * 59.875;
+    } else {
+        // Calculate regular pay
+        $regular_pay = $net_hours_1st_2nd_3rd * 59.875;
+    }
+
+    // Total pay is the sum of regular pay and overtime pay
+    $total_pay = $regular_pay + $ot_pay;
+
+    return $total_pay;
 }
 
+function calculateLate($first_in, $time_start) {
+    if (!$first_in || !$time_start) {
+        return 0; // Return 0 if either time is missing
+    }
+
+    // Create DateTime objects for first_in and time_start
+    $first_in_time = DateTime::createFromFormat('h:i A', $first_in);
+    $time_start = DateTime::createFromFormat('h:i A', $time_start);
+
+    // Calculate the difference in minutes
+    $interval = $first_in_time->diff($time_start);
+    $minutes_difference = $interval->i;
+
+    return $minutes_difference;
+}
 
 
 
@@ -102,6 +144,7 @@ function calculateTotalPay($net_hours, $hourly_rate) {
 <th>3rd In</th>
 <th>3rd Out</th>
 <th>Net</th>
+<th>Lates</th>
 
 <tbody>
 <?php foreach ($employee_list as $employee) : ?>
@@ -111,36 +154,30 @@ function calculateTotalPay($net_hours, $hourly_rate) {
 
         <?php // Calculate net working hours and total pay for 1st and 2nd shifts ?>
         <?php 
-        $net_hours_1st_2nd = 0;
+        $net_hours_1st_2nd_3rd = 0;
         $total_pay_1st_2nd = 0;
 
-        // Calculate net working hours and total pay for 1st shift
+        // Calculate net working hours for 1st shift
         $net_hours_1st = calculateNetHours($employee["1st_in"], $employee["1st_out"]);
-        $total_pay_1st = calculateTotalPay($net_hours_1st, 59.875);
 
-        // Calculate net working hours and total pay for 2nd shift
+        // Calculate net working hours for 2nd shift
         $net_hours_2nd = calculateNetHours($employee["2nd_in"], $employee["2nd_out"]);
-        $total_pay_2nd = calculateTotalPay($net_hours_2nd, 59.875);
 
-        $net_hours_1st_2nd += $net_hours_1st + $net_hours_2nd;
-        $total_pay_1st_2nd += $total_pay_1st + $total_pay_2nd;
-        ?>
-
-
-        <?php // Calculate net working hours and total pay for 3rd shift ?>
-        <?php 
+        // Calculate net working hours for 3rd shift
         $net_hours_3rd = calculateNetHours($employee["3rd_in"], $employee["3rd_out"]);
-        $total_pay_3rd = calculateTotalPay($net_hours_3rd, 74.84375);
-        ?>
 
-        <?php 
-        // Calculate total pay for all shifts
-        $total_pay = $total_pay_1st_2nd + $total_pay_3rd;
-
+        // Calculate total net working hours for all shifts
+        $net_hours_1st_2nd_3rd = $net_hours_1st + $net_hours_2nd + $net_hours_3rd;
+        
+        // Calculate total pay for 1st and 2nd shifts
+        $total_pay_1st_2nd = calculatePay($employee);
+        $late_minutes = calculateLate($employee["1st_in"], $employee["time_start"]);
+     
+        
         // Update the 'net' column in the 'schedule' table with the total pay
         $employee_id = $employee["id"];
-        $update_sql = "UPDATE schedule SET net = $total_pay WHERE employee_ID = $employee_id AND date = '$selected_date'";
-        mysqli_query($conn, $update_sql);
+        $update_sql = "UPDATE schedule SET net = $total_pay_1st_2nd, lates=$late_minutes  WHERE employee_ID = $employee_id AND date = '$selected_date'";
+        mysqli_query($conn, $update_sql); // Execute the SQL update statement
         ?>
 
         <td><?php echo $employee["1st_in"] ? $employee["1st_in"] : ''; ?></td>
@@ -149,10 +186,11 @@ function calculateTotalPay($net_hours, $hourly_rate) {
         <td><?php echo $employee["2nd_out"] ? $employee["2nd_out"] : ''; ?></td>
         <td><?php echo $employee["3rd_in"] ? $employee["3rd_in"] : ''; ?></td>
         <td><?php echo $employee["3rd_out"] ? $employee["3rd_out"] : ''; ?></td>
-        <td><?php echo "₱" . number_format($total_pay, 2); ?></td>
+        <td><?php echo "₱" . number_format($total_pay_1st_2nd, 2); ?></td>
+        <td><?php echo "Late: " . $late_minutes . " minutes"; ?></td>
     </tr>
-    <?php mysqli_close($conn);?>
 <?php endforeach; ?>
+
 
 </tbody>
                     </table>

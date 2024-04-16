@@ -112,7 +112,7 @@ include('./config/db_connect.php');
 
 // Function to update the employee's schedule based on the current state
 function updateSchedule($conn, $employee_id, $current_state, $selected_date) {
-    $current_time = date('H:i A'); // Get current time in 24-hour format
+    $current_time = date('h:i A'); // Get current time in 24-hour format
 
     // Update the appropriate field based on the current state and selected date
     $update_sql = "UPDATE schedule SET $current_state = '$current_time' WHERE employee_ID = '$employee_id' AND DATE(date) = '$selected_date'";
@@ -141,10 +141,10 @@ function updateSchedule($conn, $employee_id, $current_state, $selected_date) {
         $total_net_time = $net_time1 + $net_time2 + $net_time3;
 
         // Update net time in the database
-        $update_net_sql = "UPDATE schedule SET net = '$total_net_time' WHERE employee_ID = '$employee_id' AND DATE(date) = '$selected_date'";
+        $update_net_sql = "UPDATE schedule SET net = '$total_net_time' WHERE employee_ID = '$employee_id' AND DATE(date) = '$selected_date' ";
         mysqli_query($conn, $update_net_sql);
 
-        echo "<script>swal('No schedule found for employee $employee_id on $selected_date.');</script>";
+        echo "<script>swal('Successfuly update the attendance ID NO: $employee_id on $selected_date.');</script>";
     
     } else {
         

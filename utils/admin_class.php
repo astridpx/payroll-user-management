@@ -666,7 +666,7 @@ class Action
 	function calculate_payroll() {
 		// Extract POST data
 		extract($_POST);
-		$this->db->query("DELETE FROM payroll_items WHERE payroll_id = $id");
+		
 	
 		// Fetch payroll data
 		$pay = $this->db->query("SELECT * FROM payroll WHERE id = $id")->fetch_array();
@@ -716,6 +716,11 @@ class Action
 			$this->db->begin_transaction();
 	
 			try {
+				// Delete previous payroll_items records for the current payroll ID
+				 $this->db->query("DELETE FROM payroll_items");
+
+				
+				
 				// Insert new data into payroll_items table
 				foreach ($employeeNetSalaries as $employeeID => $totalSalary) {
 					// Deductions for PhilHealth and SSS for days 1-15

@@ -185,6 +185,7 @@
 					<i class="fas fa-clipboard-list fa-fw me-3"></i><span>Attendance</span></a>
 
 			</div>
+			
 			<?php endif; ?>
 
 
@@ -200,18 +201,24 @@
 
 	<script>
 		document.addEventListener("DOMContentLoaded", function() {
-			const links = document.querySelectorAll(".list-group-item");
+    const links = document.querySelectorAll(".list-group-item");
+    const logo = document.getElementById("./img/LOgo.png"); // Replace "yourLogoId" with the actual ID of your logo element
 
-			links.forEach(function(link) {
-				link.addEventListener("click", function(event) {
-					links.forEach(function(otherLink) {
-						otherLink.classList.remove("active");
-					});
+    // Check if logo element exists before adding event listeners
+    if (logo) {
+        links.forEach(function(link) {
+            link.addEventListener("click", function(event) {
+                links.forEach(function(otherLink) {
+                    otherLink.classList.remove("active");
+                });
 
-					this.classList.add("active");
-				});
-			});
-		});
+                this.classList.add("active");
+            });
+        });
+    } else {
+        console.log("Logo element not found. Event listeners not added.");
+    }
+});
 	</script>
 </header>
 

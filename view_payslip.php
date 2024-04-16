@@ -23,8 +23,8 @@ $pt = array(1 => "Monhtly", 2 => "Semi-Monthly");
 			<div class="col-md-6">
 				<p><b>Days of Absent : <?php echo $absent ?></b></p>
 				<p><b>Tardy/Undertime (mins) : <?php echo $late ?></b></p>
-				<p><b>Total Allowance Amount : <?php echo number_format($allowance_amount, 2) ?></b></p>
-				<p><b>Total Deduction Amount : <?php echo number_format($deduction_amount, 2) ?></b></p>
+				
+	
 				<p><b>Net Pay : <?php echo number_format($net, 2) ?></b></p>
 			</div>
 		</div>
@@ -33,66 +33,20 @@ $pt = array(1 => "Monhtly", 2 => "Semi-Monthly");
 		<hr class="divider">
 		<div class="row">
 			<div class="col-md-6">
-				<div class="card">
-					<div class="card-header">
-						<span><b>Allowances</b></span>
-
-					</div>
-					<div class="card-body">
-						<ul class="list-group">
-							<?php
-							$all_qry = $conn->query("SELECT * from allowances ");
-							$t_arr = array(1 => "Monthly", 2 => "Semi-Monthly", 3 => "Once");
-							while ($row = $all_qry->fetch_assoc()) :
-								$all_arr[$row['id']] = $row['allowance'];
-							endwhile;
-							foreach (json_decode($allowances) as $k => $val) :
-
-							?>
-								<li class="list-group-item d-flex justify-content-between align-items-center">
-									<?php echo $all_arr[$val->aid] ?> Allowance
-									<span class="badge badge-primary badge-pill"><?php echo number_format($val->amount, 2) ?></span>
-								</li>
-
-							<?php endforeach; ?>
-						</ul>
-					</div>
-				</div>
+				
 			</div>
 			<div class="col-md-6">
-				<div class="card">
-					<div class="card-header">
-						<span><b>Deductions</b></span>
-
-					</div>
-					<div class="card-body">
-						<ul class="list-group">
-							<?php
-							$all_qry = $conn->query("SELECT * from deductions ");
-							$t_arr = array(1 => "Monthly", 2 => "Semi-Monthly", 3 => "Once");
-							while ($row = $all_qry->fetch_assoc()) :
-								$ded_arr[$row['id']] = $row['deduction'];
-							endwhile;
-							foreach (json_decode($deductions) as $k => $val) :
-
-							?>
-								<li class="list-group-item d-flex justify-content-between align-items-center">
-									<?php echo $ded_arr[$val->did] ?>
-									<span class="badge badge-primary badge-pill"><?php echo number_format($val->amount, 2) ?></span>
-								</li>
-
-							<?php endforeach; ?>
-						</ul>
-					</div>
-				</div>
-			</div>
+				
+		</div>
 
 		</div>
 	</div>
 	<hr>
 	<div class="row">
 		<div class="col-lg-12">
-			<button class="btn btn-primary btn-sm btn-block col-md-2 float-right" type="button" data-dismiss="modal">Close</button>
+		<button class="btn btn-primary btn-sm btn-block col-md-2 float-right" type="button" onclick="closeTab();">Close</button>
+
+
 		</div>
 	</div>
 </div>
@@ -115,5 +69,10 @@ $pt = array(1 => "Monhtly", 2 => "Semi-Monthly");
 	}
 </style>
 <script>
-
+function closeTab() {
+    window.close();
+}
 </script>
+
+
+
