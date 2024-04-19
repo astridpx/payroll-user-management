@@ -121,6 +121,7 @@ function calculateLate($first_in, $time_start) {
                     <table id="table" class="table table-striped table-bordered custom-table">
                         <colgroup>
                             <col style="min-width: 8rem;" width="8%">
+                            <col style="min-width: 8rem;" width="8%">
                             <col style="min-width: 10rem;" width="10%">
                             <col style="min-width: 5rem;" width="8%">
                             <col style="min-width: 5rem;" width="8%">
@@ -136,6 +137,7 @@ function calculateLate($first_in, $time_start) {
                         </colgroup>
                         <thead>
                         <th>Name</th>
+                        <th>employee_no</th>
 <th>Schedule</th>
 <th>1st In</th>
 <th>1st Out</th>
@@ -150,6 +152,7 @@ function calculateLate($first_in, $time_start) {
 <?php foreach ($employee_list as $employee) : ?>
     <tr id="emp-<?php echo $employee["id"]; ?>">
         <td><?php echo $employee["employee"]; ?></td>
+        <td><?php echo $employee["employee_no"]; ?></td>
         <td><?php echo $employee["time"] ? $employee["time"] : "No schedule available"; ?></td>
 
         <?php // Calculate net working hours and total pay for 1st and 2nd shifts ?>

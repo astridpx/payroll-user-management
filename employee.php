@@ -61,7 +61,6 @@
 		</div>
 	</div>
 </div>
-
 <div class="container-fluid ">
 	<div class="col-lg-12">
 
@@ -86,6 +85,7 @@
 							<th>Name</th>
 							<th>Status</th>
 							<th>Action</th>
+							<th>Qr Code</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -101,7 +101,10 @@
 							$p_arr[$row['id']] = $row['name'];
 						endwhile;
 						$employee_qry = $conn->query("SELECT * FROM employee") or die(mysqli_error($conn));
-						while ($row = $employee_qry->fetch_array()) {
+while ($row = $employee_qry->fetch_array()) {
+    // Employee data
+    $employeeID = $row['id'];
+    $qrCodeURL = 'https://api.qrserver.com/v1/create-qr-code/?data=' . urlencode($employeeID) . '&size=100x100';
 						?>
 							<tr class="empRow">
 								<td><?php echo $row['employee_no'] ?></td>
@@ -118,6 +121,19 @@
 										<button class="btn btn-sm btn-outline-primary edit_employee" data-bs-toggle="modal" data-bs-target="#addEmpModal" data-id="<?php echo $row['id'] ?>" type="button"><i class="fa fa-edit"></i></button>
 										<button class="btn btn-sm btn-outline-danger remove_employee" data-id="<?php echo $row['id'] ?>" type="button"><i class="fa fa-trash"></i></button>
 									</center>
+									
+								</td>
+								<td>
+									<div>
+									<a href="<?php echo $qrCodeURL; ?>" id="qrLink<?php echo $employeeID; ?>" onclick="openQRInNewTab(event, <?php echo $employeeID; ?>)">
+    <img src="<?php echo $qrCodeURL; ?>" alt="QR Code" id="qrImg<?php echo $employeeID; ?>">
+</a>
+
+
+										<br>
+										 <!-- Displaying QR code and Print button -->
+										 <a href="#" onclick="printQR('<?php echo $qrCodeURL; ?>')" class="btn btn-primary">Print QR</a>
+									</div>
 								</td>
 							</tr>
 						<?php
@@ -129,6 +145,32 @@
 		</div>
 	</div>
 </div>
+
+<script>
+	   function printQR(qrCodeURL) {
+        var qrWindow = window.open('', 'PrintQRWindow');
+        qrWindow.document.write('<html><head><title>Print QR Code</title><style>@media print { #printButton { display: none; } }</style></head><body>');
+        qrWindow.document.write('<img src="' + qrCodeURL + '" alt="QR Code">');
+        qrWindow.document.write('<button id="printButton" onclick="window.print()">Print</button>');
+        qrWindow.document.write('</body></html>');
+        qrWindow.document.close();
+    }
+	function openQRInNewTab(event, employeeID) {
+    // Prevent the default behavior of the anchor tag
+    event.preventDefault();
+
+    var qrLink = document.getElementById('qrLink' + employeeID);
+    var qrCodeURL = qrLink.getAttribute('href');
+
+    // Open QR code URL in a new tab
+    window.open(qrCodeURL, '_blank');
+}
+
+
+
+
+</script>
+
 
 
 
