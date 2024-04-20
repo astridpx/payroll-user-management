@@ -7,7 +7,7 @@
     <!-- Include the html5-qrcode library -->
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <!-- Include SweetAlert CDN link -->
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     <link rel="stylesheet" href="./assets/css/login.css" />
     <style>
@@ -52,13 +52,12 @@
     <div class="forms-container">
       <div class="signin-signup">
         <form class="sign-in-form" id="login-form">
-        <div id="qr-reader"></div>
-    <div class="card-header">
-    <span id="selected_date_display"><b>Select Date</b></span>
-    <!-- Set the value of the input field to the current date -->
-    <input type="date" id="selected_date" class="btn btn-sm col-md-3 float-right border shadow-sm py-2 fw-semibold rounded-4 " value="<?php echo date('Y-m-d'); ?>">
-
-
+            <div id="qr-reader"></div>
+            <div class="card-header">
+                <span id="selected_date_display"><b>Select Date</b></span>
+                <!-- Set the value of the input field to the current date -->
+                <input type="date" id="selected_date" class="btn btn-sm col-md-3 float-right border shadow-sm py-2 fw-semibold rounded-4" value="<?php echo date('Y-m-d'); ?>" max="<?php echo date('Y-m-d'); ?>" min="<?php echo date('Y-m-d'); ?>">
+            </div>
         </form>
       </div>
     </div>
@@ -72,35 +71,33 @@
       </div>
     </div>
   </div>
+</div>
 
-    </div>
-
-
-    <script>
-        // HTML5 QR Code Scanner
-        html5QrcodeScanner = new Html5QrcodeScanner(
-            "qr-reader", {
-                fps: 10,
-                qrbox: 250,
-            }
-        );
-
-        // Function to handle successful QR code scan
-        function onScanSuccess(decodedText, decodedResult) {
-            // Redirect to the PHP file passing the QR content as a parameter along with selected date
-            var selectedDate = document.getElementById('selected_date').value;
-            window.location.href = 'qr_scan.php?qr_content=' + decodedText + '&selected_date=' + selectedDate;
+<script>
+    // HTML5 QR Code Scanner
+    html5QrcodeScanner = new Html5QrcodeScanner(
+        "qr-reader", {
+            fps: 10,
+            qrbox: 250,
         }
+    );
 
-        // Attach event handler for successful scan
-        html5QrcodeScanner.render(onScanSuccess);
+    // Function to handle successful QR code scan
+    function onScanSuccess(decodedText, decodedResult) {
+        // Redirect to the PHP file passing the QR content as a parameter along with selected date
+        var selectedDate = document.getElementById('selected_date').value;
+        window.location.href = 'qr_scan.php?qr_content=' + decodedText + '&selected_date=' + selectedDate;
+    }
 
-        // Listen for modal close event
-        // Stop the QR code scanner when the modal is closed
-        window.addEventListener('beforeunload', function () {
-            html5QrcodeScanner.clear();
-        });
-    </script>
+    // Attach event handler for successful scan
+    html5QrcodeScanner.render(onScanSuccess);
+
+    // Listen for modal close event
+    // Stop the QR code scanner when the modal is closed
+    window.addEventListener('beforeunload', function () {
+        html5QrcodeScanner.clear();
+    });
+</script>
 </body>
 </html>
 

@@ -227,22 +227,19 @@ foreach ($deptArray  as $newEntry) {
     };
 
 
-    // GET URL PARAMS DATE
-    const urlParams = new URLSearchParams(window.location.search);
-    const dateParam = urlParams.get('date');
+  // GET URL PARAMS DATE
+const urlParams = new URLSearchParams(window.location.search);
+const dateParam = urlParams.get('date');
+const currentDate = new Date();
+const selectedDate = new Date(dateParam);
 
-    $('#print_sched').click(function() {
-        var nw = window.open("print_att_sched.php?date=" + dateParam, "_blank", "height=500,width=800")
-        setTimeout(function() {
-            nw.print()
-            setTimeout(function() {
-                nw.close()
-            }, 500)
-        }, 1000)
-    })
+// Check if the selected date is in the future or the same as the current date
+const isFutureOrCurrentDate = selectedDate >= currentDate;
 
-
-    // BTN FUNCTION
+if (isFutureOrCurrentDate) {
+    // Allow editing for the current date and future dates
+    console.log("Selected date is the current date or in the future, allowing editing.");
+} else{// BTN FUNCTION
     $("#disposeBtn").on("click", () => {
         isAllowRemoveEmployee = true;
         isSelectEmployee = false;
@@ -294,7 +291,19 @@ foreach ($deptArray  as $newEntry) {
                 selectedEmp.IDs.push($this.attr("data-value"));
             }
         }
-    });
+    });}
+    $('#print_sched').click(function() {
+        var nw = window.open("print_att_sched.php?date=" + dateParam, "_blank", "height=500,width=800")
+        setTimeout(function() {
+            nw.print()
+            setTimeout(function() {
+                nw.close()
+            }, 500)
+        }, 1000)
+    })
+
+
+    
 
 
     $("#time_end").on("change", function() {

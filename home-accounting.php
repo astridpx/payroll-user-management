@@ -153,7 +153,7 @@ if ($result->num_rows > 0) {
 						</div>
 						</div>
 						<div class="col-auto">
-						<i class="fas fa-dollar-sign fa-2x text-gray-600"></i>
+						<i class="fa-solid fa-p"></i>
 						</div>
 					</div>
 					</div>
