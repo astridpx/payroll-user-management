@@ -6,7 +6,7 @@ FIRST Download
 
 2."TEXT EDITOR" NOTEPAD++ OR SUBLIME TEXT 3 / ETC.
 
-3"Payroll_Management_System"
+3"Attendance and Payroll Management System"
 
 4. Download the zip file/ download winrar
 
@@ -20,16 +20,14 @@ FIRST Download
 
 6. Import payroll.sql file(given inside the zip package in SQL file folder)
 
-7.Run the script http://localhost/Payroll_Management_System
+
 
 
 **LOGIN DETAILS** 
 
-Create your own User 
+
 
 Admin
 user: admin
 pass: admin123
 
-****** https:1sourcecodr.blogspot.com ******
-Subcribe my You tube Channel **** 1 Source code ****
