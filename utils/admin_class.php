@@ -18,97 +18,57 @@ class Action
 		ob_end_flush();
 	}
 
+
 	function login()
-	{
-		extract($_POST);
+{
+    extract($_POST);
 
-		if (!$username || !$password)
-			return "All fields are required.";
+    if (!$username || !$password)
+        return "All fields are required.";
 
-		$qry = $this->db->query("SELECT * FROM users where username = '" . $username . "' and password = '" . $password . "' ");
-		if ($qry->num_rows > 0) {
-			foreach ($qry->fetch_array() as $key => $value) {
-				if ($key != 'passwors' && !is_numeric($key))
-					$_SESSION['login_' . $key] = $value;
-			}
-			return 1;
-		} else {
-			// return 3;
-			// Unsuccessful login
-			$query = $this->db->query("SELECT login_attempt , login_cd FROM users WHERE username = '" . $username . "'");
+    // Check if the username exists
+    $qry = $this->db->query("SELECT *, TIMESTAMPDIFF(SECOND, NOW(), login_cd) AS seconds_remaining FROM users WHERE username = '" . $username . "'");
+    $result = $qry->fetch_assoc();
 
-			// Fetch the result
-			$result = $query->fetch_assoc();
-			if (!$result)
-				return "Username not found.";
+    if (!$result)
+        return "Username not found.";
 
-			// ADD # MINUSTES
-			function Cooldown()
-			{
-				// Get the current time
-				$current_time = new DateTime();
+    // Check if the cooldown period is still active
+    $secondsRemaining = $result['seconds_remaining'];
+    if ($secondsRemaining > 0) {
+        return 'Your account is currently in cooldown. Please wait for ' . $secondsRemaining . ' second(s) and try again.';
+    }
 
-				// Add 3 minutes to the current time
-				$current_time->add(new DateInterval('PT3M'));
+    // Check if the password is correct
+    if ($result['password'] !== $password) {
+        // Increment login attempt count
+        $loginAttempt = $result['login_attempt'] + 1;
+        $this->db->query("UPDATE users SET login_attempt = " . $loginAttempt . " WHERE username = '" . $username . "'");
 
-				// Get the timestamp of the new time
-				$new_timestamp = $current_time->format('Y-m-d H:i:s');
+        // Check if the login attempt count exceeds the threshold
+        if ($loginAttempt >= 5) {
+            $this->db->query("UPDATE users SET login_cd = NOW() + INTERVAL 1 MINUTE WHERE username = '" . $username . "'");
+            return 'Your account has been temporarily locked due to multiple unsuccessful login attempts. Please try again later.';
+        }
 
-				return $new_timestamp;
-			}
+        return "Invalid username or password. Your attempt count is " . $loginAttempt;
+    }
 
-			// GET THE MINUTS COOLDOWN
-			function getMinutesRemaining($given_timestamp)
-			{
-				// Convert the given timestamp to a UNIX timestamp
-				$given_unix_timestamp = strtotime($given_timestamp);
+    // Successful login
+    foreach ($result as $key => $value) {
+        if ($key !== 'password') {
+            $_SESSION['login_' . $key] = $value;
+        }
+    }
+    
+    // Reset login attempt count and cooldown
+    $this->db->query("UPDATE users SET login_attempt = 0, login_cd = NULL WHERE username = '" . $username . "'");
 
-				// Get the current UNIX timestamp
-				$current_unix_timestamp = time();
+    return 1;
+}
+	
 
-				// Calculate time difference in minutes
-				$time_difference_minutes = ($given_unix_timestamp - $current_unix_timestamp) / 60;
-
-				// Return remaining minutes
-				return floor($time_difference_minutes);
-			}
-
-			// CHECK IF IT'S IN COOLDOWN
-			if (getMinutesRemaining($result['login_cd']) > 0) {
-				$this->db->query("UPDATE users SET login_attempt = 1 WHERE username = '" . $username . "'");
-				return 'Your are in a ' . getMinutesRemaining($result['login_cd']) . ' min cooldown';
-			}
-
-			$loginAttempt = $result['login_attempt'];
-
-
-			// HANDLE THE LOGIN ATTEMPT UPDATE THE TIME AND ATTEMPT
-			if ($loginAttempt >= 5) {
-				$cd =  Cooldown();
-				$this->db->query("UPDATE users SET login_attempt = 1, login_cd = '" . $cd . "'WHERE username = '" . $username . "'");
-			}
-
-			// Increment the login attempt count
-			$save = $this->db->query("UPDATE users SET login_attempt = " . ($loginAttempt + 1) . " WHERE username = '" . $username . "'");
-			if ($save)
-				return "Invalid username or password. Your atempt is " .	$loginAttempt;
-		}
-	}
-	function login2()
-	{
-		extract($_POST);
-		$qry = $this->db->query("SELECT * FROM users where username = '" . $email . "' and password = '" . md5($password) . "' ");
-		if ($qry->num_rows > 0) {
-			foreach ($qry->fetch_array() as $key => $value) {
-				if ($key != 'passwors' && !is_numeric($key))
-					$_SESSION['login_' . $key] = $value;
-			}
-			return;
-		} else {
-			return 3;
-		}
-	}
-	function logout()
+		function logout()
 	{
 		session_destroy();
 		foreach ($_SESSION as $key => $value) {
