@@ -54,7 +54,7 @@ $pt = array(1 => "Monhtly", 2 => "Semi-Monthly");
                 <td class="text-right"><?php echo number_format($row['salary'], 2) ?></td>
                 <td class="text-right"><?php echo $row['absent'] ?></td>
                 <td class="text-right"><?php echo $row['late'] ?></td>
-                <td class="text-right"><?php echo number_format($row['allowance_amount'], 2) ?></td>
+               
                 <td class="text-right"><?php echo number_format($row['deduction_amount'], 2) ?></td>
                 <td class="text-right"><?php echo number_format($row['net'], 2) ?></td>
             </tr>
