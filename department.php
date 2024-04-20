@@ -9,7 +9,7 @@
 				<form action="" id="manage-department">
 					<div class="card">
 						<div class="card-header">
-							Department Form
+							<strong>Stations</strong>
 						</div>
 						<div class="card-body">
 							<input type="hidden" name="id">
@@ -60,7 +60,7 @@
 											<p> <b><?php echo $row['name'] ?></b></p>
 										</td>
 										<td class="text-center">
-											<button class="btn btn-sm btn-primary edit_department" type="button" data-id="<?php echo $row['id'] ?>" data-name="<?php echo $row['name'] ?>">Edit</button>
+											
 											<button class="btn btn-sm btn-danger delete_department" type="button" data-id="<?php echo $row['id'] ?>">Delete</button>
 										</td>
 									</tr>

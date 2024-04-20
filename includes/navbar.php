@@ -105,7 +105,7 @@
 	<nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
 
 		<a style="margin-left: 10%">
-			<img src="./img/LOgo.png" alt="System LOGO" width="35%;"> APMSJL
+			<img src="./img/LOgo.png" alt="System LOGO" width="35%;"> <strong>APMSJL</strong>	
 		</a>
 
 		<div class="list-group list-group-flush mx-3 mt-4">
