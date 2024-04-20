@@ -160,23 +160,29 @@ function calculateLate($first_in, $time_start) {
         $net_hours_1st_2nd_3rd = 0;
         $total_pay_1st_2nd = 0;
 
-        // Calculate net working hours for 1st shift
-        $net_hours_1st = calculateNetHours($employee["1st_in"], $employee["1st_out"]);
+        // Check if the employee has a schedule
+        if ($employee["time"]) {
+            // Calculate net working hours for 1st shift
+            $net_hours_1st = calculateNetHours($employee["1st_in"], $employee["1st_out"]);
 
-        // Calculate net working hours for 2nd shift
-        $net_hours_2nd = calculateNetHours($employee["2nd_in"], $employee["2nd_out"]);
+            // Calculate net working hours for 2nd shift
+            $net_hours_2nd = calculateNetHours($employee["2nd_in"], $employee["2nd_out"]);
 
-        // Calculate net working hours for 3rd shift
-        $net_hours_3rd = calculateNetHours($employee["3rd_in"], $employee["3rd_out"]);
+            // Calculate net working hours for 3rd shift
+            $net_hours_3rd = calculateNetHours($employee["3rd_in"], $employee["3rd_out"]);
 
-        // Calculate total net working hours for all shifts
-        $net_hours_1st_2nd_3rd = $net_hours_1st + $net_hours_2nd + $net_hours_3rd;
-        
-        // Calculate total pay for 1st and 2nd shifts
-        $total_pay_1st_2nd = calculatePay($employee);
+            // Calculate total net working hours for all shifts
+            $net_hours_1st_2nd_3rd = $net_hours_1st + $net_hours_2nd + $net_hours_3rd;
+            
+            // Calculate total pay for 1st and 2nd shifts
+            $total_pay_1st_2nd = calculatePay($employee);
+        } else {
+            // If no schedule is available, set net pay to zero
+            $total_pay_1st_2nd = 0;
+        }
+
         $late_minutes = calculateLate($employee["1st_in"], $employee["time_start"]);
      
-        
         // Update the 'net' column in the 'schedule' table with the total pay
         $employee_id = $employee["id"];
         $update_sql = "UPDATE schedule SET net = $total_pay_1st_2nd, lates=$late_minutes  WHERE employee_ID = $employee_id AND date = '$selected_date'";
@@ -193,7 +199,6 @@ function calculateLate($first_in, $time_start) {
         <td><?php echo "Late: " . $late_minutes . " minutes"; ?></td>
     </tr>
 <?php endforeach; ?>
-
 
 </tbody>
                     </table>

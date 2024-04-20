@@ -676,19 +676,22 @@ class Action
 		// Fetch attendance records within the specified date range
 		$att = $this->db->query("SELECT *, net FROM schedule WHERE date(date) BETWEEN '$start_date' AND '$end_date'");
 
-		// Function to calculate salary for an employee based on attendance records
 		function calculateSalary($employeeID, $records) {
-    $totalNetSalary = 0;
-
-    foreach ($records as $record) {
-        if ($record['employee_ID'] == $employeeID) {
-            // Add net salary to total
-            $totalNetSalary += $record['net'];
-        }
-    }
-
-    return $totalNetSalary;
-}
+			$totalNetSalary = 0;
+		
+			foreach ($records as $record) {
+				if ($record['employee_ID'] == $employeeID) {
+					// Check if net salary is empty or zero
+					if (isset($record['net']) && $record['net'] != '') {
+						// Add net salary to total
+						$totalNetSalary += $record['net'];
+					}
+				}
+			}
+		
+			return $totalNetSalary;
+		}
+		
 
 	
 		// Fetch all attendance records
@@ -723,46 +726,50 @@ class Action
 				
 				// Insert new data into payroll_items table
 				foreach ($employeeNetSalaries as $employeeID => $totalSalary) {
-					// Deductions for PhilHealth and SSS for days 1-15
+					// Deductions for PhilHealth, SSS, and Pag-IBIG for days 1-15
 					$deduction_philhealth = 0;
 					$deduction_sss = 0;
+					$deduction_pagibig = 0;
 					$start_day = date('d', strtotime($start_date));
 					$end_day = date('d', strtotime($end_date));
-	
+		
 					if ($start_day <= 15 && $end_day >= 1) {
 						$deduction_philhealth = 250;
 						$deduction_sss = 180;
+						$deduction_pagibig = 200;
 					}
-	
+		
 					// Deduct the specified amounts
-					$totalSalary -= $deduction_philhealth + $deduction_sss;
-	
+					$totalSalary -= $deduction_philhealth + $deduction_sss + $deduction_pagibig;
+		
 					// Prepare data for inserting into payroll_items table
 					$data = " payroll_id = '" . $pay['id'] . "' ";
 					$data .= ", employee_id = '" . $employeeID . "' ";
 					$data .= ", salary = '$totalSalary' "; // Inserting total salary instead of net
 					$data .= ", deductions_philhealth = '$deduction_philhealth' ";
+					$data .= ", deduction_pagibig = '$deduction_pagibig' "; // Fixed typo here
 					$data .= ", deductions_sss = '$deduction_sss' ";
 					$data .= ", net = '$totalSalary' "; // Net salary after deductions
-	
+		
 					// Insert data into payroll_items table
 					$this->db->query("INSERT INTO payroll_items SET " . $data);
 				}
-	
+		
+				
 				// Delete previous payroll_items records
 				
 				// Commit transaction
 				$this->db->commit();
-			} catch (Exception $e) {
-				// Rollback transaction on error
-				$this->db->rollback();
-				throw $e;
-			}
-	
-			// Update payroll status to indicate it's calculated
-			$this->db->query("UPDATE payroll SET status = 1 WHERE id = " . $pay['id']);
-			return 1;
-		}
+				} catch (Exception $e) {
+					// Rollback transaction on error
+					$this->db->rollback();
+					throw $e;
+				}
+				
+				// Update payroll status to indicate it's calculated
+				$this->db->query("UPDATE payroll SET status = 1 WHERE id = " . $pay['id']);
+				return 1;
+				}
 	}
 	
 	
