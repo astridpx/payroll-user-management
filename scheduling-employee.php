@@ -227,19 +227,28 @@ foreach ($deptArray  as $newEntry) {
     };
 
 
-  // GET URL PARAMS DATE
-const urlParams = new URLSearchParams(window.location.search);
-const dateParam = urlParams.get('date');
-const currentDate = new Date();
-const selectedDate = new Date(dateParam);
+    // GET URL PARAMS DATE
+    const urlParams = new URLSearchParams(window.location.search);
+    const dateParam = urlParams.get('date');
+    const currentDate = new Date();
+    const selectedDate = new Date(dateParam);
 
-// Check if the selected date is in the future or the same as the current date
-const isFutureOrCurrentDate = selectedDate >= currentDate;
+    // Check if the selected date is in the past
+    const isPastDate = selectedDate < currentDate;
 
-if (isFutureOrCurrentDate) {
-    // Allow editing for the current date and future dates
-    console.log("Selected date is the current date or in the future, allowing editing.");
-} else{// BTN FUNCTION
+    if (isPastDate) {
+        // Disable dragging and dropping
+        $(".employee").draggable("disable");
+        $(".canvas, .canvas *").droppable("disable");
+
+        // Disable time setting
+        $("#time_start").prop("disabled", true);
+        $("#time_end").prop("disabled", true);
+        $("#saveTime").prop("disabled", true);
+
+        // Remove event handlers for buttons
+        $("#disposeBtn, #normalBtn, #selectBtn").off("click");
+    }else{// BTN FUNCTION
     $("#disposeBtn").on("click", () => {
         isAllowRemoveEmployee = true;
         isSelectEmployee = false;
