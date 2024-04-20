@@ -36,6 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <script src="https://kit.fontawesome.com/64d58efce2.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="./assets/css/login.css" />
     <title>Reset Password</title>
+    <link rel="icon" href="./img/LOgo.png" type="image/png">
 </head>
 <body>
     <div class="container">

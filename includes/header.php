@@ -59,3 +59,4 @@
 
 <!-- CHART JS  -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="icon" href="./img/LOgo.png" type="image/png">

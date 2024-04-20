@@ -1,3 +1,4 @@
+
 <?php
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -46,12 +47,80 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Content
             $mail->isHTML(true);
             $mail->Subject = 'Password Reset Verification Code';
-            $mail->Body    = 'Your verification code for password reset is: ' . $verification_code;
+            $mail->Body    =  '<!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Sickleave Confirmation</title>
+                <style>
+                    body {
+                        font-family: "Arial", sans-serif;
+                        line-height: 1.2;
+                        color: #333;
+                        background-color: #f4f4f4;
+                        margin: 0;
+                        padding: 0;
+                    }
+            
+                    .container {
+                        max-width: 600px;
+                        margin: 20px auto;
+                        background-color: #fff;
+                        padding: 20px;
+                        border-radius: 8px;
+                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                    }
+            
+                    h2 {
+                        color: #007bff;
+                    }
+            
+                    p {
+                        margin-bottom: 10px;
+                    }
+            
+                    .appointment-number {
+                        font-size: 24px;
+                        font-weight: bold;
+                        color: #28a745;
+                    }
+            
+                    .footer {
+                        margin-top: 20px;
+                        text-align: center;
+                        color: #777;
+                    }
+                </style>
+            </head>
+            
+            <body>
+            
+                <div class="container">
+                    <h2>Your One Time Verification Code</h2>
+                    
+                    
+                    <p></p>Your verification code for password reset is: <strong> ' . $verification_code . '</strong></p>
+                    
+                    
+            
+                    <p><strong>Location:</strong> Lianas City Of Calamba, Laguna</p>
+            
+                    <div class="footer">
+                       
+                    </div>
+                    <div class="footer">
+                        
+                    </div>
+                </div>
+            </body>
+            
+            </html>';
 
             $mail->send();
             echo "One time Verification code sent to your email. <a href='reset_password.php'>Reset Password</a>";
         } catch (Exception $e) {
-            echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+            echo "Message could not be sent. Mailer Error: <strong>{$mail->ErrorInfo}</strong>";
         }
     } else {
         // If the email does not exist in the database
@@ -61,14 +130,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
-<head>
+  <html lang="en">
+
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://kit.fontawesome.com/64d58efce2.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="./assets/css/login.css" />
-    <title>Login Page</title>
-</head>
+    <title>Forget Password</title>
+    <link rel="icon" href="./img/LOgo.png" type="image/png">
+  </head>
 <body>
 <div class="container">
     

@@ -7,6 +7,7 @@
     <script src="https://kit.fontawesome.com/64d58efce2.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="./assets/css/login.css" />
     <title>Login Page</title>
+    <link rel="icon" href="./img/LOgo.png" type="image/png">
   </head>
 
   <?php include('./includes/login.php'); ?>

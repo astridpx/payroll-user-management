@@ -1,3 +1,4 @@
+
 <style>
 	body {
 		background-color: #f0f2f5;
@@ -99,6 +100,7 @@
 
 <!--MAIN NAVIGATION-->
 <header>
+	
 	<!-- Sidebar -->
 	<nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
 
