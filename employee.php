@@ -13,38 +13,39 @@
 				<div class="container-fluid ">
 					<div class="row mb-3">
 						<div class="col ">
-							<label for="firstname" style="font-size: 14px;" class="fw-medium">*Firstname</label>
-							<input type="text" id="firstname" class="form-control" placeholder="firstname*" aria-label="firstname*">
+							<label for="firstname" style="font-size: 14px;" class="fw-medium">*First Name</label>
+							<input type="text" id="firstname" class="form-control"   required>
 						</div>
 						<div class="col">
-							<label for="middlename" style="font-size: 14px;" class="fw-medium">*Middlename</label>
-							<input type="text" id="middlename" class="form-control" placeholder="middlename*" aria-label="middlename*">
+							<label for="middlename" style="font-size: 14px;" class="fw-medium">*Middle Name</label>
+							<input type="text" id="middlename" class="form-control"  required>
 						</div>
 						<div class="col">
 							<label for="lastname" style="font-size: 14px;" class="fw-medium">*Lastname</label>
-							<input type="text" id="lastname" class="form-control" placeholder="lastname*" aria-label="lastname*">
+							<input type="text" id="lastname" class="form-control"  required>
 						</div>
 						<div class="col ">
 							<label for="suffix" style="font-size: 14px;" class="fw-medium">*Suffix</label>
-							<input type="text" id="suffix" class="form-control" placeholder="suffix*" aria-label="suffix*">
+							<input type="text" id="suffix" class="form-control"  >
 						</div>
 					</div>
 					<div class="row">
 						<div class="col ">
 							<label for="email" style="font-size: 14px;" class="fw-medium">*Email</label>
-							<input type="email" id="email" class="form-control" placeholder="email*" aria-label="email*">
+							<input type="email" id="email" class="form-control"  required>
 						</div>
 						<div class="col ">
-							<label for="emergencynumber" style="font-size: 14px;" class="fw-medium">*Emergencynuber</label>
-							<input type="number" id="emergencynumber" class="form-control" placeholder="Emergencynumber*" aria-label="Emergencynuber*">
+							<label for="emergencynumber" style="font-size: 14px;" class="fw-medium">*Emergency No.</label>
+							<input type="tel" id="emergencynumber" class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required>
+
 						</div>
 						<div class="col ">
-							<label for="name" style="font-size: 14px;" class="fw-medium">*Name</label>
-							<input type="text" id="name" class="form-control" placeholder="Name*" aria-label="email*">
+							<label for="name" style="font-size: 14px;" class="fw-medium">*Contact Person</label>
+							<input type="text" id="name" class="form-control" required>
 						</div>
 						<div class="col ">
 							<label for="status" style="font-size: 14px;" class="fw-medium">*Job-Type</label>
-							<select id="status" class="form-select" aria-label="Default select example">
+							<select id="status" class="form-select" aria-label="Default select example" required>
 								<option selected value="0" class="fw-semibold">Select a job-type</option>
 								<option value="Parttime">Parttime</option>
 								<option value="Fulltime">Fulltime</option>
@@ -212,21 +213,37 @@ while ($row = $employee_qry->fetch_array()) {
 		}
 
 		$("#saveEmp").on("click", async function() {
-			newEmpData.firstname = $("#firstname").val();
-			newEmpData.lastname = $("#lastname").val();
-			newEmpData.middlename = $("#middlename").val();
-			newEmpData.suffix=$("#suffix").val();
-			newEmpData.email = $("#email").val();
-			newEmpData.emergencynumber=$("#emergencynumber").val();
-			newEmpData.name=$("#name").val();
-			newEmpData.status = $("#status").val();
+    // Retrieve data from input fields
+    newEmpData.firstname = $("#firstname").val().trim();
+    newEmpData.lastname = $("#lastname").val().trim();
+    newEmpData.middlename = $("#middlename").val().trim();
+    newEmpData.suffix = $("#suffix").val().trim();
+    newEmpData.email = $("#email").val().trim();
+    newEmpData.emergencynumber = $("#emergencynumber").val().trim();
+    newEmpData.name = $("#name").val().trim();
+    newEmpData.status = $("#status").val().trim();
 
-			if (newEmpData.isNew)
-				newEmpData.id = null
+    // Check if any required field is empty
+    if (
+        newEmpData.firstname === "" ||
+        newEmpData.lastname === "" ||
+        newEmpData.middlename === "" ||
+        newEmpData.email === "" ||
+        newEmpData.emergencynumber === "" ||
+        newEmpData.name === "" ||
+        newEmpData.status === "0"
+    ) {
+        // Show alert if any required field is empty
+        alert_toast("Please fill in all required fields.");
+        return; // Exit function to prevent further execution
+    }
 
-			await add_employee_req(newEmpData)
+    // If all required fields are filled, proceed to save the employee data
+    if (newEmpData.isNew)
+        newEmpData.id = null;
 
-		})
+    await add_employee_req(newEmpData);
+})
 
 		function add_employee_req(data) {
 			start_load()
