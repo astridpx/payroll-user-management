@@ -42,7 +42,7 @@
 		<br />
 		<div class="card">
 			<div class="card-header">
-				<span><b>Payroll List</b></span>
+				<span><b>Monitoring List</b></span>
 				<button class="btn btn-primary btn-sm btn-block col-md-3 float-right" type="button" id="new_payroll_btn" data-bs-toggle="modal" data-bs-target="#newPayrollModal"><span class="fa fa-plus"></span> Add Payroll
 				</button>
 
