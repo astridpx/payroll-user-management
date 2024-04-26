@@ -167,7 +167,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="panels-container">
         <div class="panel left-panel">
             <div class="content">
-            <h2> Attendance and Payroll Management System for Jollibee Lianas</h2>
+            <h2> Attendance and Management System for Jollibee Lianas</h2>
             </div>
             <img src="img/register.svg" class="image" alt="" style="width: 100%; padding-left: 20%;"/>
         </div>

@@ -47,19 +47,19 @@ if ($result->num_rows > 0) {
   $total_sick_leave_requests = 0;
 }
 
-// TOTAL SALARY CARDS
+// // TOTAL SALARY CARDS
 
-$sql = "SELECT SUM(salary) AS total_salary FROM payroll_items";
-$result = $conn->query($sql);
+// $sql = "SELECT SUM(salary) AS total_salary FROM payroll_items";
+// $result = $conn->query($sql);
 
-if ($result->num_rows > 0) {
-  // Output data of each row
-  while ($row = $result->fetch_assoc()) {
-    $total_salary = $row["total_salary"];
-  }
-} else {
-  $total_salary = 0;
-}
+// if ($result->num_rows > 0) {
+//   // Output data of each row
+//   while ($row = $result->fetch_assoc()) {
+//     $total_salary = $row["total_salary"];
+//   }
+// } else {
+//   $total_salary = 0;
+// }
 
 
 // TOTAL NUMBER OF EMPLOYEE

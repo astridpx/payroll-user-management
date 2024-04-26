@@ -47,19 +47,19 @@ if ($result->num_rows > 0) {
   $total_sick_leave_requests = 0;
 }
 
-// TOTAL SALARY CARDS
+// // TOTAL SALARY CARDS
 
-$sql = "SELECT SUM(salary) AS total_salary FROM payroll_items";
-$result = $conn->query($sql);
+// $sql = "SELECT SUM(salary) AS total_salary FROM payroll_items";
+// $result = $conn->query($sql);
 
-if ($result->num_rows > 0) {
-  // Output data of each row
-  while ($row = $result->fetch_assoc()) {
-    $total_salary = $row["total_salary"];
-  }
-} else {
-  $total_salary = 0;
-}
+// if ($result->num_rows > 0) {
+//   // Output data of each row
+//   while ($row = $result->fetch_assoc()) {
+//     $total_salary = $row["total_salary"];
+//   }
+// } else {
+//   $total_salary = 0;
+// }
 
 // CREW TODAY DISPLAY
 
@@ -120,7 +120,7 @@ if ($result->num_rows > 0) {
 
              
 <!-- EMPLOYEE -->
-<div class="col-xl-3 col-md-6 mb-4">
+<div class="col-xl-3 col-md-6 mb-4" >
   <div class="card border-left-primary shadow h-100 py-2">
     <div class="card-body">
       <div class="row no-gutters align-items-center">
@@ -140,7 +140,7 @@ if ($result->num_rows > 0) {
   </div>
 </div>
 
-              <!-- Total Salary -->
+              <!-- Total Salary
 				<div class="col-xl-3 col-md-6 mb-4">
 				<div class="card border-left-success shadow h-100 py-2">
 					<div class="card-body">
@@ -159,7 +159,7 @@ if ($result->num_rows > 0) {
 					</div>
 					</div>
 				</div>
-				</div>
+				</div> -->
 
 						<!-- Crew Today -->
 				<div class="col-xl-3 col-md-6 mb-4">

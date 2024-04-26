@@ -634,10 +634,12 @@ class Action
 		$end_date = $pay["date_to"];
 	
 		// Fetch attendance records within the specified date range
-		$att = $this->db->query("SELECT *, net FROM schedule WHERE date(date) BETWEEN '$start_date' AND '$end_date'");
+		$att = $this->db->query("SELECT *, net, lates, absent FROM schedule WHERE date(date) BETWEEN '$start_date' AND '$end_date'");
 
 		function calculateSalary($employeeID, $records) {
 			$totalNetSalary = 0;
+			$totalLates = 0;
+			$totalAbsents = 0;
 		
 			foreach ($records as $record) {
 				if ($record['employee_ID'] == $employeeID) {
@@ -646,14 +648,15 @@ class Action
 						// Add net salary to total
 						$totalNetSalary += $record['net'];
 					}
+		
+					// Add lates and absents for each record
+					$totalLates += $record['lates'];
+					$totalAbsents += $record['absent'];
 				}
 			}
 		
-			return $totalNetSalary;
+			return array('net' => $totalNetSalary, 'lates' => $totalLates, 'absent' => $totalAbsents);
 		}
-		
-
-	
 		// Fetch all attendance records
 		$allRecords = $att->fetch_all(MYSQLI_ASSOC);
 	
@@ -664,15 +667,18 @@ class Action
 			// Loop through all records to calculate total net salary for each employee
 			foreach ($allRecords as $row) {
 				$employeeID = $row['employee_ID'];
-		
+			
 				// Check if the employee ID already exists in the array
 				if (!isset($employeeNetSalaries[$employeeID])) {
 					// If not, initialize the total net salary for this employee
 					$employeeNetSalaries[$employeeID] = 0;
 				}
-		
+			
+				// Calculate salary, lates, and absents for this employee
+				$salaryData = calculateSalary($employeeID, $allRecords);
+			
 				// Add the net salary to the total net salary for this employee
-				$employeeNetSalaries[$employeeID] += $row['net'];
+				$employeeNetSalaries[$employeeID] += $salaryData['net'];
 			}
 	
 			// Begin transaction
@@ -700,17 +706,20 @@ class Action
 					}
 		
 					// Deduct the specified amounts
-					$totalSalary -= $deduction_philhealth + $deduction_sss + $deduction_pagibig;
-		
+									// Calculate lates and absents for this employee
+					$salaryData = calculateSalary($employeeID, $allRecords);
+
 					// Prepare data for inserting into payroll_items table
 					$data = " payroll_id = '" . $pay['id'] . "' ";
 					$data .= ", employee_id = '" . $employeeID . "' ";
-					$data .= ", salary = '$totalSalary' "; // Inserting total salary instead of net
+					$data .= ", salary = '$totalSalary' ";
+					$data .= ", lates = '" . $salaryData['lates'] . "' ";
+					$data .= ", absents = '" . $salaryData['absent'] . "' ";
 					$data .= ", deductions_philhealth = '$deduction_philhealth' ";
-					$data .= ", deduction_pagibig = '$deduction_pagibig' "; // Fixed typo here
+					$data .= ", deduction_pagibig = '$deduction_pagibig' ";
 					$data .= ", deductions_sss = '$deduction_sss' ";
-					$data .= ", net = '$totalSalary' "; // Net salary after deductions
-		
+					$data .= ", net = '" . ($totalSalary - $deduction_philhealth - $deduction_sss - $deduction_pagibig) . "' ";
+
 					// Insert data into payroll_items table
 					$this->db->query("INSERT INTO payroll_items SET " . $data);
 				}

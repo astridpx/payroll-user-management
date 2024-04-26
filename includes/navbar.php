@@ -105,7 +105,7 @@
 	<nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
 
 		<a style="margin-left: 10%">
-			<img src="./img/LOgo.png" alt="System LOGO" width="35%;"> <strong>APMSJL</strong>	
+			<img src="./img/LOgo.png" alt="System LOGO" width="35%;"> <strong>AMSJL</strong>	
 		</a>
 
 		<div class="list-group list-group-flush mx-3 mt-4">
@@ -132,7 +132,7 @@
 				<i class="fas fa-clipboard-list fa-fw me-3"></i><span>Attendance</span>
 			</a> -->
 			<?php if ($_SESSION['login_type'] == 2) : ?>
-			<a href="index.php?page=payroll" class="list-group-item list-group-item-action py-2 ripple nav-payroll"><i class="fas fa-money-check-alt fa-fw me-3"></i><span>Payroll</span></a>
+			<a href="index.php?page=payroll" class="list-group-item list-group-item-action py-2 ripple nav-payroll"><i class="fas fa-money-check-alt fa-fw me-3"></i><span>Monitoring</span></a>
 			<?php endif; ?>
 
 			<a href="index.php?page=employee" class="list-group-item list-group-item-action py-2 ripple nav-employee"><i class="fas fa-users fa-fw me-3"></i><span>Employee list</span></a>
